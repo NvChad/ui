@@ -11,6 +11,7 @@ return {
          modules = vim.tbl_deep_extend("force", modules, tabufline_opts.overriden_modules())
       end
 
-      return modules.CoverNvimTree() .. modules.bufferlist() .. (modules.tablist() or "") .. modules.buttons()
+      local result = modules.bufferlist() .. (modules.tablist() or "") .. modules.buttons()
+      return (vim.g.nvimtree_side == "left" ) and modules.CoverNvimTree() .. result or result .. modules.CoverNvimTree()
    end,
 }
