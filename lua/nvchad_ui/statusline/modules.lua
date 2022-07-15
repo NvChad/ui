@@ -1,5 +1,6 @@
 local fn = vim.fn
-local separators = require("nvchad_ui.icons").statusline_separators[vim.g.statusline_sep_style]
+local sep_style = vim.g.statusline_sep_style
+local separators = (type(sep_style) == "table" and sep_style) or require("nvchad_ui.icons").statusline_separators[sep_style]
 local sep_l = separators["left"]
 local sep_r = separators["right"]
 
@@ -119,7 +120,7 @@ M.LSP_status = function()
    if rawget(vim, "lsp") then
       for _, client in ipairs(vim.lsp.get_active_clients()) do
          if client.attached_buffers[vim.api.nvim_get_current_buf()] then
-            return (vim.o.columns > 70 and "%#St_LspStatus#" .. "   LSP ~ " .. client.name .. " ") or "   LSP "
+            return (vim.o.columns > 100 and "%#St_LspStatus#" .. "   LSP ~ " .. client.name .. " ") or "   LSP "
          end
       end
    end
@@ -128,7 +129,7 @@ end
 M.cwd = function()
    local dir_icon = "%#St_cwd_icon#" .. " "
    local dir_name = "%#St_cwd_text#" .. " " .. fn.fnamemodify(fn.getcwd(), ":t") .. " "
-   return (vim.o.columns > 120 and ("%#St_cwd_sep#" .. sep_l .. dir_icon .. dir_name)) or ""
+   return (vim.o.columns > 85 and ("%#St_cwd_sep#" .. sep_l .. dir_icon .. dir_name)) or ""
 end
 
 M.cursor_position = function()
