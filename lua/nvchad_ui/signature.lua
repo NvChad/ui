@@ -12,8 +12,6 @@ M.signature_window = function(_, result, ctx, config)
             relative = "cursor",
             row = 0,
             col = -1,
-            border = "single",
-            focusable = false,
          })
       end
    end
@@ -69,7 +67,10 @@ local open_signature = function()
 
    if triggered then
       local params = util.make_position_params()
-      vim.lsp.buf_request(0, "textDocument/signatureHelp", params, vim.lsp.with(M.signature_window, {}))
+      vim.lsp.buf_request(0, "textDocument/signatureHelp", params, vim.lsp.with(M.signature_window, {
+          border = "single",
+          focusable = false,
+      }))
    end
 end
 
