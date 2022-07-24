@@ -1,17 +1,20 @@
--- config
+local M = {}
+local config = require "nvchad_ui.config"
 
-local M = {
-  statusline = {
-    separator_style = "default", -- default/round/block/arrow
-    overriden_modules = nil,
-  },
+-- lazyload tabufline
+require "nvchad_ui.tabufline.lazyload"(config.tabufline)
 
-  -- lazyload it when there are 1+ buffers
-  tabufline = {
-    enabled = true,
-    lazyload = true,
-    overriden_modules = nil,
-  },
-}
+M.statusline = function()
+  return require("nvchad_ui.statusline").run(config.statusline)
+end
+
+M.tabufline = function()
+  return require("nvchad_ui.tabufline").run(config.tabufline)
+end
+
+M.setup = function()
+  vim.opt.statusline = "%!v:lua.require('nvchad_ui').statusline()"
+  vim.opt.tabline = "%!v:lua.require('nvchad_ui').tabufline()"
+end
 
 return M
