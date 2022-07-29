@@ -3,6 +3,7 @@ local devicons_present, devicons = pcall(require, "nvim-web-devicons")
 local fn = vim.fn
 local new_cmd = api.nvim_create_user_command
 local config = require "nvchad_ui.config"
+local bufnrs = {}
 
 require("base46").load_highlight "tbline"
 
@@ -32,6 +33,7 @@ new_cmd("Tbufprev", function()
 end, {})
 
 new_cmd("Tbufclose", function()
+  bufnrs = {}
   require("core.utils").close_buffer()
 end, {})
 
@@ -107,6 +109,18 @@ local function getBtnsWidth()
   return width
 end
 
+local function getName(path,depth)
+  depth = (depth and depth > 1) and depth or 1
+  local ancestor = ""
+  for index = 1, depth do
+    local modifier = string.rep(":h", index)
+    local dir = fn.fnamemodify(path, ":p" .. modifier .. ":t")
+    if dir == "" then break end
+    ancestor = dir .. "/" .. ancestor
+  end
+  return ancestor
+end
+
 local function add_fileInfo(name, bufnr)
   if devicons_present then
     local icon, icon_hl = devicons.get_icon(name, string.match(name, "%a+$"))
@@ -122,6 +136,16 @@ local function add_fileInfo(name, bufnr)
       api.nvim_get_current_buf() == bufnr and new_hl(icon_hl, "TbLineBufOn") .. " " .. icon
       or new_hl(icon_hl, "TbLineBufOff") .. " " .. icon
     )
+
+    local buf = bufnrs[name]
+    if not buf then
+      bufnrs[name] = {id = bufnr, num = 0}
+    elseif buf.id ~= bufnr and buf.num == 0 then
+      buf.num = buf.num + 1
+    elseif buf.num > 0 then
+      local path = api.nvim_buf_get_name(bufnr)
+      name = getName(path,1) .. name
+    end
 
     name = (#name > 15 and string.sub(name, 1, 13) .. "..") or name
     if config.tabufline.picking then
