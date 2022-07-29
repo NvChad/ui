@@ -8,6 +8,7 @@ local options = {
 
   -- lazyload it when there are 1+ buffers
   tabufline = {
+    picking = false,
     enabled = true,
     lazyload = true,
     overriden_modules = nil,

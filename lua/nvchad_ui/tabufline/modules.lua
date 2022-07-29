@@ -2,6 +2,7 @@ local api = vim.api
 local devicons_present, devicons = pcall(require, "nvim-web-devicons")
 local fn = vim.fn
 local new_cmd = api.nvim_create_user_command
+local config = require "nvchad_ui.config"
 
 require("base46").load_highlight "tbline"
 
@@ -34,7 +35,53 @@ new_cmd("Tbufclose", function()
   require("core.utils").close_buffer()
 end, {})
 
+---------------------------------------------------------- BufferPick ----------------------------------------------------------
+local current = {}
+local function refresh()
+  current = {}
+  vim.cmd("redrawtabline")
+  vim.cmd("redraw")
+end
+
+-- from  `akinsho/bufferline.nvim` pick.lua
+local function bufpick()
+  -- NOTE: handle keyboard interrupts by catching any thrown errors
+  config.tabufline.picking = true
+  refresh()
+  local ok, char = pcall(fn.getchar)
+  if ok then
+    local id = current[fn.nr2char(char)]
+    if id then
+      api.nvim_set_current_buf(id)
+    end
+  end
+  config.tabufline.picking = false
+  refresh()
+end
+
+new_cmd("TbufPick", function()
+  bufpick()
+end, {})
+
 -------------------------------------------------------- functions ------------------------------------------------------------
+-- from  `akinsho/bufferline.nvim` pick.lua
+local function getLetter(id,name)
+  local valid = "abcdefghijklmopqrstuvwxyzABCDEFGHIJKLMOPQRSTUVWXYZ"
+  local first_letter = name:sub(1, 1)
+  -- should only match alphanumeric characters
+  local invalid_char = first_letter:match("[^%w]")
+  if not current[first_letter] and not invalid_char then
+    current[first_letter] = id
+    return first_letter
+  end
+  for letter in valid:gmatch(".") do
+    if not current[letter] then
+      current[letter] = id
+      return letter
+    end
+  end
+end
+
 local function new_hl(group1, group2)
   local fg = fn.synIDattr(fn.synIDtrans(fn.hlID(group1)), "fg#")
   local bg = fn.synIDattr(fn.synIDtrans(fn.hlID(group2)), "bg#")
@@ -77,6 +124,10 @@ local function add_fileInfo(name, bufnr)
     )
 
     name = (#name > 15 and string.sub(name, 1, 13) .. "..") or name
+    if config.tabufline.picking then
+      icon = new_hl(icon_hl, "TbLineBufOn") .. getLetter(bufnr,name)
+    end
+
     name = (api.nvim_get_current_buf() == bufnr and "%#TbLineBufOn# " .. name .. " ")
       or ("%#TbLineBufOff# " .. name .. " ")
 
