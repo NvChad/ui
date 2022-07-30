@@ -66,22 +66,15 @@ new_cmd("TbufPick", function()
 end, {})
 
 -------------------------------------------------------- functions ------------------------------------------------------------
--- from  `akinsho/bufferline.nvim` pick.lua
-local function getLetter(id,name)
-  local valid = "abcdefghijklmopqrstuvwxyzABCDEFGHIJKLMOPQRSTUVWXYZ"
-  local first_letter = name:sub(1, 1)
-  -- should only match alphanumeric characters
-  local invalid_char = first_letter:match("[^%w]")
-  if not current[first_letter] and not invalid_char then
-    current[first_letter] = id
-    return first_letter
-  end
-  for letter in valid:gmatch(".") do
-    if not current[letter] then
-      current[letter] = id
-      return letter
+local function getNum(id)
+  local num = 1
+  for index,bufid in ipairs(vim.t.bufs) do
+    current[tostring(index)] = bufid
+    if bufid == id then
+      num = index
     end
   end
+  return num
 end
 
 local function new_hl(group1, group2)
@@ -109,7 +102,7 @@ local function getBtnsWidth()
   return width
 end
 
-local function getName(path,depth)
+local function getDir(path,depth)
   depth = (depth and depth > 1) and depth or 1
   local ancestor = ""
   for index = 1, depth do
@@ -144,12 +137,12 @@ local function add_fileInfo(name, bufnr)
       buf.num = buf.num + 1
     elseif buf.num > 0 then
       local path = api.nvim_buf_get_name(bufnr)
-      name = getName(path,1) .. name
+      name = getDir(path,1) .. name
     end
 
     name = (#name > 15 and string.sub(name, 1, 13) .. "..") or name
     if config.tabufline.picking then
-      icon = new_hl(icon_hl, "TbLineBufOn") .. getLetter(bufnr,name)
+      icon = new_hl(icon_hl, "TbLineBufOn") .. getNum(bufnr)
     end
 
     name = (api.nvim_get_current_buf() == bufnr and "%#TbLineBufOn# " .. name .. " ")
