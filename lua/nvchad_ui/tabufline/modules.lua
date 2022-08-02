@@ -22,17 +22,6 @@ vim.cmd "function! TbToggle_theme(a,b,c,d) \n lua require('base46').toggle_theme
 vim.cmd "function! TbToggleTabs(a,b,c,d) \n let g:TbTabsToggled = !g:TbTabsToggled | redrawtabline \n endfunction"
 
 ---------------------------------------------------------- commands ------------------------------------------------------------
-new_cmd("Tbufnext", function()
-  require("core.utils").tabuflineNext()
-end, {})
-
-new_cmd("Tbufprev", function()
-  require("core.utils").tabuflinePrev()
-end, {})
-
-new_cmd("Tbufclose", function()
-  require("core.utils").close_buffer()
-end, {})
 
 new_cmd("TbufPick", function()
   vim.g.tbufpick_showNums = true
@@ -92,8 +81,11 @@ local function add_fileInfo(name, bufnr)
 
     -- check for same buffer names under different dirs
     for _, value in ipairs(vim.t.bufs) do
-      if name == fn.fnamemodify(api.nvim_buf_get_name(value), ":t") and value ~= bufnr then
-        name = api.nvim_buf_get_name(bufnr):match "[^/]*/?[^/]*$"
+      if api.nvim_buf_is_valid(value) then
+        if name == fn.fnamemodify(api.nvim_buf_get_name(value), ":t") and value ~= bufnr then
+          name = api.nvim_buf_get_name(bufnr):match "[^/]*/?[^/]*$"
+          break
+        end
       end
     end
 
