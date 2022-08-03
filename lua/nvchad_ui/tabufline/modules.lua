@@ -28,11 +28,19 @@ new_cmd("TbufPick", function()
   vim.cmd "redrawtabline"
 
   api.nvim_echo({ { "Enter Num ", "Question" } }, false, {})
-  vim.cmd("b" .. vim.t.bufs[tonumber(fn.nr2char(fn.getchar()))])
-  api.nvim_echo({ { "" } }, false, {})
-  vim.g.tbufpick_showNums = false
 
-  vim.cmd "redraw"
+  local key = tonumber(fn.nr2char(fn.getchar()))
+
+  if key then
+    vim.cmd("b" .. vim.t.bufs[key])
+    api.nvim_echo({ { "" } }, false, {})
+    vim.cmd "redraw"
+  else
+    vim.cmd "redraw"
+    print "bufpick cancelled, press a number key!"
+  end
+
+  vim.g.tbufpick_showNums = false
   vim.cmd "redrawtabline"
 end, {})
 
