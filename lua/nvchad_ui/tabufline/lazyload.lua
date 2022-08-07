@@ -1,5 +1,11 @@
 return function(opts)
-  if opts.enabled and opts.lazyload then
+  if not opts.enabled then
+    return
+  end
+
+  require("core.utils").load_mappings "tabufline"
+
+  if opts.lazyload then
     vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead", "TabEnter" }, {
       pattern = "*",
       group = vim.api.nvim_create_augroup("TabuflineLazyLoad", {}),
@@ -11,7 +17,7 @@ return function(opts)
         end
       end,
     })
-  elseif opts.enabled then
+  else
     vim.opt.showtabline = 2
     vim.opt.tabline = "%!v:lua.require('nvchad_ui').tabufline()"
   end
