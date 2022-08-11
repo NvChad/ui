@@ -90,8 +90,31 @@ local function add_fileInfo(name, bufnr)
     -- check for same buffer names under different dirs
     for _, value in ipairs(vim.t.bufs) do
       if api.nvim_buf_is_valid(value) then
+
         if name == fn.fnamemodify(api.nvim_buf_get_name(value), ":t") and value ~= bufnr then
-          name = api.nvim_buf_get_name(bufnr):match "[^/]*/?[^/]*$"
+          local other = {};
+          for match in (api.nvim_buf_get_name(value).."/"):gmatch("(.-)".."/") do
+            table.insert(other, match);
+          end
+
+          local current = {};
+          for match in (api.nvim_buf_get_name(bufnr).."/"):gmatch("(.-)".."/") do
+            table.insert(current, match);
+          end
+
+          name = current[#current]
+
+          for i = #current - 1, 1, -1 do
+
+            local value_current = current[i]
+            local other_current = other[i]
+
+            if value_current ~= other_current then
+              name = value_current .. "/../" .. name
+              break
+            end
+
+          end
           break
         end
       end
