@@ -138,7 +138,7 @@ end
 local M = {}
 
 M.CoverNvimTree = function()
-  return "%#NvimTreeNormal#" .. string.rep(" ", getNvimTreeWidth())
+  return "%#NvimTreeNormal#" .. (vim.g.nvimtree_side == "right" and "" or string.rep(" ", getNvimTreeWidth()))
 end
 
 M.bufferlist = function()
