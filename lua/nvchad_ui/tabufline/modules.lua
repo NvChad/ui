@@ -30,9 +30,9 @@ new_cmd("TbufPick", function()
   api.nvim_echo({ { "Enter Num ", "Question" } }, false, {})
 
   local key = tonumber(fn.nr2char(fn.getchar()))
-
-  if key then
-    vim.cmd("b" .. vim.t.bufs[key])
+  local bufid = vim.t.bufs[(key and key or 0) + vim.g.bufirst]
+  if key and bufid then
+    vim.cmd("b" .. bufid)
     api.nvim_echo({ { "" } }, false, {})
     vim.cmd "redraw"
   else
@@ -90,22 +90,20 @@ local function add_fileInfo(name, bufnr)
     -- check for same buffer names under different dirs
     for _, value in ipairs(vim.t.bufs) do
       if api.nvim_buf_is_valid(value) then
-
         if name == fn.fnamemodify(api.nvim_buf_get_name(value), ":t") and value ~= bufnr then
-          local other = {};
-          for match in (api.nvim_buf_get_name(value).."/"):gmatch("(.-)".."/") do
-            table.insert(other, match);
+          local other = {}
+          for match in (api.nvim_buf_get_name(value) .. "/"):gmatch("(.-)" .. "/") do
+            table.insert(other, match)
           end
 
-          local current = {};
-          for match in (api.nvim_buf_get_name(bufnr).."/"):gmatch("(.-)".."/") do
-            table.insert(current, match);
+          local current = {}
+          for match in (api.nvim_buf_get_name(bufnr) .. "/"):gmatch("(.-)" .. "/") do
+            table.insert(current, match)
           end
 
           name = current[#current]
 
           for i = #current - 1, 1, -1 do
-
             local value_current = current[i]
             local other_current = other[i]
 
@@ -113,7 +111,6 @@ local function add_fileInfo(name, bufnr)
               name = value_current .. "/../" .. name
               break
             end
-
           end
           break
         end
@@ -122,17 +119,6 @@ local function add_fileInfo(name, bufnr)
 
     name = (#name > 18 and string.sub(name, 1, 16) .. "..") or name
     name = (api.nvim_get_current_buf() == bufnr and "%#TbLineBufOn# " .. name) or ("%#TbLineBufOff# " .. name)
-
-    -- show buffer index numbers
-    if vim.g.tbufpick_showNums then
-      for index, value in ipairs(vim.t.bufs) do
-        if value == bufnr then
-          name = name .. " (" .. index .. ")"
-          vim.cmd "redrawtabline"
-          break
-        end
-      end
-    end
 
     return string.rep(" ", padding) .. icon .. name .. string.rep(" ", padding)
   end
@@ -170,6 +156,16 @@ M.bufferlist = function()
   local current_buf = api.nvim_get_current_buf()
   local has_current = false -- have we seen current buffer yet?
 
+  -- show buffer index numbers
+  if vim.g.tbufpick_showNums then
+    for index, value in ipairs(vim.g.visibuffers) do
+      local name = value:gsub("", "(" .. index .. ")")
+      table.insert(buffers, name)
+    end
+    return table.concat(buffers) .. "%#TblineFill#" .. "%=" -- buffers + empty space
+  end
+
+  vim.g.bufirst = 0
   for _, bufnr in ipairs(vim.t.bufs) do
     if api.nvim_buf_is_valid(bufnr) then
       if ((#buffers + 1) * 21) > available_space then
@@ -177,6 +173,7 @@ M.bufferlist = function()
           break
         end
 
+        vim.g.bufirst = vim.g.bufirst + 1
         table.remove(buffers, 1)
       end
 
@@ -185,6 +182,7 @@ M.bufferlist = function()
     end
   end
 
+  vim.g.visibuffers = buffers
   return table.concat(buffers) .. "%#TblineFill#" .. "%=" -- buffers + empty space
 end
 
