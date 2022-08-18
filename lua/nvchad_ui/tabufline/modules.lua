@@ -2,6 +2,7 @@ local api = vim.api
 local devicons_present, devicons = pcall(require, "nvim-web-devicons")
 local fn = vim.fn
 local new_cmd = api.nvim_create_user_command
+local duplicates = require "nvchad_ui.tabufline.duplicates"
 
 require("base46").load_highlight "tbline"
 
@@ -87,36 +88,6 @@ local function add_fileInfo(name, bufnr)
       or new_hl(icon_hl, "TbLineBufOff") .. " " .. icon
     )
 
-    -- check for same buffer names under different dirs
-    for _, value in ipairs(vim.t.bufs) do
-      if api.nvim_buf_is_valid(value) then
-        if name == fn.fnamemodify(api.nvim_buf_get_name(value), ":t") and value ~= bufnr then
-          local other = {}
-          for match in (api.nvim_buf_get_name(value) .. "/"):gmatch("(.-)" .. "/") do
-            table.insert(other, match)
-          end
-
-          local current = {}
-          for match in (api.nvim_buf_get_name(bufnr) .. "/"):gmatch("(.-)" .. "/") do
-            table.insert(current, match)
-          end
-
-          name = current[#current]
-
-          for i = #current - 1, 1, -1 do
-            local value_current = current[i]
-            local other_current = other[i]
-
-            if value_current ~= other_current then
-              name = value_current .. "/../" .. name
-              break
-            end
-          end
-          break
-        end
-      end
-    end
-
     name = (#name > 18 and string.sub(name, 1, 16) .. "..") or name
     name = (api.nvim_get_current_buf() == bufnr and "%#TbLineBufOn# " .. name) or ("%#TbLineBufOff# " .. name)
 
@@ -124,9 +95,8 @@ local function add_fileInfo(name, bufnr)
   end
 end
 
-local function styleBufferTab(nr)
+local function styleBufferTab(nr, name)
   local close_btn = "%" .. nr .. "@TbKillBuf@ %X"
-  local name = (#api.nvim_buf_get_name(nr) ~= 0) and fn.fnamemodify(api.nvim_buf_get_name(nr), ":t") or " No Name "
   name = "%" .. nr .. "@TbGoToBuf@" .. add_fileInfo(name, nr) .. "%X"
 
   -- color close btn for focused / hidden  buffers
@@ -151,39 +121,47 @@ M.CoverNvimTree = function()
 end
 
 M.bufferlist = function()
-  local buffers = {} -- buffersults
+  local buffers, elements = {}, {} -- buffersults
   local available_space = vim.o.columns - getNvimTreeWidth() - getBtnsWidth()
   local current_buf = api.nvim_get_current_buf()
   local has_current = false -- have we seen current buffer yet?
+  local buffernames = "" -- buffer names concat string
+  duplicates.reset()
 
   -- show buffer index numbers
   if vim.g.tbufpick_showNums then
     for index, value in ipairs(vim.g.visibuffers) do
-      local name = value:gsub("", "(" .. index .. ")")
-      table.insert(buffers, name)
+      buffernames = buffernames .. value:gsub("", "(" .. index .. ")")
     end
-    return table.concat(buffers) .. "%#TblineFill#" .. "%=" -- buffers + empty space
+    return buffernames .. "%#TblineFill#" .. "%=" -- buffers + empty space
   end
 
   vim.g.bufirst = 0
-  for _, bufnr in ipairs(vim.t.bufs) do
+  for idx, bufnr in ipairs(vim.t.bufs) do
     if api.nvim_buf_is_valid(bufnr) then
-      if ((#buffers + 1) * 21) > available_space then
+      if ((#elements + 1) * 21) > available_space then
         if has_current then
           break
         end
 
         vim.g.bufirst = vim.g.bufirst + 1
-        table.remove(buffers, 1)
+        table.remove(elements, 1)
       end
 
-      has_current = (bufnr == current_buf and true) or has_current
-      table.insert(buffers, styleBufferTab(bufnr))
+      has_current = bufnr == current_buf or has_current
+      table.insert(elements, duplicates.mark(elements, idx, vim.g.bufirst, bufnr))
     end
   end
 
+  for _, value in ipairs(elements) do
+    local name = duplicates.ancestor(value.path, value.depth)
+    name = styleBufferTab(value.bufnr, name)
+    buffernames = buffernames .. name
+    table.insert(buffers, name)
+  end
+
   vim.g.visibuffers = buffers
-  return table.concat(buffers) .. "%#TblineFill#" .. "%=" -- buffers + empty space
+  return buffernames .. "%#TblineFill#" .. "%=" -- buffers + empty space
 end
 
 vim.g.TbTabsToggled = 0
