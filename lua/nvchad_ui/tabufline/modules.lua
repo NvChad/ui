@@ -166,7 +166,7 @@ M.bufferlist = function()
   end
 
   vim.g.bufirst = 0
-  for _, bufnr in ipairs(vim.t.bufs) do
+  for _, bufnr in ipairs(vim.t.bufs or {}) do
     if api.nvim_buf_is_valid(bufnr) then
       if ((#buffers + 1) * 21) > available_space then
         if has_current then
