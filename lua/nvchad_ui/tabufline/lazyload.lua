@@ -8,7 +8,7 @@ return function(opts)
 
   -- autocmds for tabufline -> store bufnrs on bufadd, bufenter events
   -- thx to https://github.com/ii14 & stores buffer per tab -> table
-  vim.api.nvim_create_autocmd({ "BufAdd", "BufEnter" }, {
+  vim.api.nvim_create_autocmd({ "BufAdd", "BufEnter", "tabnew" }, {
     callback = function(args)
       if vim.t.bufs == nil then
         vim.t.bufs = { args.buf }
