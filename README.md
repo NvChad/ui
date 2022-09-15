@@ -9,16 +9,16 @@ Lightweight &amp; performant ui plugin for nvchad
 
 ```lua
 ["NvChad/ui"] = {
-      statusline = {
-        separator_style = "default", -- default/round/block/arrow
-        overriden_modules = nil,
-      },
+     statusline = {
+       separator_style = "default", -- default/round/block/arrow
+       overriden_modules = nil,
+     },
 
-      -- lazyload it when there are 1+ buffers
-      tabufline = {
-        enabled = true,
-        lazyload = true,
-        overriden_modules = nil,
-      },
-    },
+     -- lazyload it when there are 1+ buffers
+     tabufline = {
+       enabled = true,
+       lazyload = true,
+       overriden_modules = nil,
+     },
+   },
 ```
