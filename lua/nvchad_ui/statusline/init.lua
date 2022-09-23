@@ -8,7 +8,7 @@ return {
       modules = vim.tbl_deep_extend("force", modules, config.overriden_modules())
     end
 
-    return table.concat {
+    defaults = {
       modules.mode(),
       modules.fileInfo(),
       modules.git(),
@@ -22,5 +22,12 @@ return {
       modules.cwd(),
       modules.cursor_position(),
     }
+
+    -- Pass in all the modules, and let users decide their order
+    if config.overriden_table then
+      defaults = config.overriden_table(modules)
+    end
+
+    return table.concat(defaults)
   end,
 }

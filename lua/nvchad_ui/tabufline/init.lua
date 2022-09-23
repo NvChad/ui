@@ -74,8 +74,24 @@ M.run = function(opts)
     modules = vim.tbl_deep_extend("force", modules, opts.overriden_modules())
   end
 
-  local result = modules.bufferlist() .. (modules.tablist() or "") .. modules.buttons()
-  return (vim.g.nvimtree_side == "left") and modules.CoverNvimTree() .. result or result .. modules.CoverNvimTree()
+  local defaults = {
+    modules.bufferlist(),
+    modules.tablist() or "",
+    modules.buttons(),
+  }
+
+  if vim.g.nvimtree_side == "left" then
+    table.insert(defaults, 1, modules.CoverNvimTree())
+  else
+    table.insert(defaults, modules.CoverNvimTree())
+  end
+
+    -- Pass in all the modules, and let users decide their order
+  if opts.overriden_table then
+    defaults = opts.overriden_table(modules)
+  end
+
+  return table.concat(defaults)
 end
 
 return M
