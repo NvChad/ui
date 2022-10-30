@@ -44,6 +44,14 @@ new_cmd("TbufPick", function()
   vim.cmd "redrawtabline"
 end, {})
 
+-- move buffers left / right
+new_cmd("TbufLeft", function()
+  require("nvchad_ui.tabufline").move_buf(-1)
+end, {})
+
+new_cmd("TbufRight", function()
+  require("nvchad_ui.tabufline").move_buf(1)
+end, {})
 -------------------------------------------------------- functions ------------------------------------------------------------
 
 local function new_hl(group1, group2)

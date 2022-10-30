@@ -66,6 +66,25 @@ M.closeAllBufs = function(action)
   end
 end
 
+M.move_buf = function(n)
+  local bufs = vim.t.bufs
+
+  for i, bufnr in ipairs(bufs) do
+    if bufnr == vim.api.nvim_get_current_buf() then
+      if i == 1 or i == #bufs then
+        bufs[1], bufs[#bufs] = bufs[#bufs], bufs[1]
+      else
+        bufs[i], bufs[i + n] = bufs[i + n], bufs[i]
+      end
+
+      break
+    end
+  end
+
+  vim.t.bufs = bufs
+  vim.cmd "redrawtabline"
+end
+
 M.run = function(opts)
   local modules = require "nvchad_ui.tabufline.modules"
 
