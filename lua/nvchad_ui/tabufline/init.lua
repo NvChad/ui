@@ -1,6 +1,7 @@
 local M = {}
 local api = vim.api
 
+local utils = require "nvchad_ui.tabufline.utils"
 M.bufilter = function()
   local bufs = vim.t.bufs or nil
 
@@ -9,7 +10,7 @@ M.bufilter = function()
   end
 
   for i = #bufs, 1, -1 do
-    if not api.nvim_buf_is_valid(bufs[i]) then
+    if not utils.isBufValid(bufs[i]) then
       table.remove(bufs, i)
     end
   end
