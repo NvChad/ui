@@ -11,12 +11,16 @@ return function(opts)
   vim.api.nvim_create_autocmd({ "BufAdd", "BufEnter", "tabnew" }, {
     callback = function(args)
       if vim.t.bufs == nil then
-        vim.t.bufs = { args.buf }
+        vim.t.bufs = vim.api.nvim_get_current_buf() == args.buf and {} or { args.buf }
       else
         local bufs = vim.t.bufs
 
         -- check for duplicates
-        if not vim.tbl_contains(bufs, args.buf) and (args.event == "BufAdd" or vim.bo[args.buf].buflisted) then
+        if
+          not vim.tbl_contains(bufs, args.buf)
+          and (args.event == "BufEnter" or vim.bo[args.buf].buflisted)
+          and args.event ~= "BufAdd"
+        then
           table.insert(bufs, args.buf)
           vim.t.bufs = bufs
         end
