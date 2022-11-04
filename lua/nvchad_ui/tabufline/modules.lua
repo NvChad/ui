@@ -2,7 +2,7 @@ local api = vim.api
 local devicons_present, devicons = pcall(require, "nvim-web-devicons")
 local fn = vim.fn
 local new_cmd = api.nvim_create_user_command
-local utils = require "nvchad_ui.tabufline.utils"
+local isBufValid = require("nvchad_ui.tabufline").isBufValid
 
 require("base46").load_highlight "tbline"
 
@@ -98,7 +98,7 @@ local function add_fileInfo(name, bufnr)
 
     -- check for same buffer names under different dirs
     for _, value in ipairs(vim.t.bufs) do
-      if utils.isBufValid(value) then
+      if isBufValid(value) then
         if name == fn.fnamemodify(api.nvim_buf_get_name(value), ":t") and value ~= bufnr then
           local other = {}
           for match in (api.nvim_buf_get_name(value) .. "/"):gmatch("(.-)" .. "/") do
@@ -176,7 +176,7 @@ M.bufferlist = function()
 
   vim.g.bufirst = 0
   for _, bufnr in ipairs(vim.t.bufs) do
-    if utils.isBufValid(bufnr) then
+    if isBufValid(bufnr) then
       if ((#buffers + 1) * 21) > available_space then
         if has_current then
           break
