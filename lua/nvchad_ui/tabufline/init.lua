@@ -75,7 +75,7 @@ M.move_buf = function(n)
 
   for i, bufnr in ipairs(bufs) do
     if bufnr == vim.api.nvim_get_current_buf() then
-      if i == 1 or i == #bufs then
+      if n < 0 and i == 1 or n > 0 and i == #bufs then
         bufs[1], bufs[#bufs] = bufs[#bufs], bufs[1]
       else
         bufs[i], bufs[i + n] = bufs[i + n], bufs[i]
