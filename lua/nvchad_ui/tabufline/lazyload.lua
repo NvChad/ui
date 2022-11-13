@@ -51,7 +51,7 @@ return function(opts)
   require("core.utils").load_mappings "tabufline"
 
   if opts.lazyload then
-    vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead", "TabEnter" }, {
+    vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead", "TabEnter", "TermOpen" }, {
       pattern = "*",
       group = vim.api.nvim_create_augroup("TabuflineLazyLoad", {}),
       callback = function()
