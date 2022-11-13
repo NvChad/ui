@@ -1,3 +1,4 @@
+local isBufValid = require("nvchad_ui.tabufline").isBufValid
 return function(opts)
   if not opts.enabled then
     return
@@ -21,6 +22,7 @@ return function(opts)
           and (args.event == "BufEnter" or vim.bo[args.buf].buflisted)
           and (args.event == "BufEnter" or args.buf ~= vim.api.nvim_get_current_buf())
           and args.event ~= "BufAdd"
+          and isBufValid(args.buf)
         then
           table.insert(bufs, args.buf)
           vim.t.bufs = bufs
