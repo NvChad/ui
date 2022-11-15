@@ -1,5 +1,7 @@
 local M = {}
 
+require("base46").load_highlight "nvdash"
+
 local config = require "nvchad_ui.config"
 local headerAscii = config.nvdash.header
 local emmptyLine = string.rep(" ", vim.fn.strwidth(headerAscii[1]))

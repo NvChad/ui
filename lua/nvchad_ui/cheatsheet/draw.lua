@@ -6,6 +6,8 @@ local vim_modes = require "nvchad_ui.statusline.modes"
 local api = vim.api
 local genStr = string.rep
 
+require("base46").load_highlight "nvcheatsheet"
+
 M.draw = function()
   vim.cmd "enew"
   local CenterPoint = api.nvim_win_get_width(0) / 2
