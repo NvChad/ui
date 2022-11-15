@@ -129,4 +129,26 @@ M.toggle = function()
   end
 end
 
+M.init = function()
+  -- dashboard
+  if config.nvdash.load_on_startup then
+    vim.defer_fn(function()
+      require("nvchad_ui.nvdash").open()
+    end, 0)
+  end
+
+  -- redraw dashboard on VimResized event
+  vim.api.nvim_create_autocmd("VimResized", {
+    callback = function()
+      if vim.bo.filetype == "NvDash" then
+        vim.cmd "bd"
+        require("nvchad_ui.nvdash").open()
+      elseif vim.bo.filetype == "NvCheatsheet" then
+        vim.cmd "bd"
+        require("nvchad_ui.cheatsheet.draw").draw()
+      end
+    end,
+  })
+end
+
 return M
