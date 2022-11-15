@@ -11,6 +11,8 @@ headerAscii[#headerAscii + 1] = emmptyLine
 headerAscii[#headerAscii + 1] = emmptyLine
 
 M.open = function()
+  vim.cmd "enew"
+
   -- load dashboard
   if vim.api.nvim_buf_get_name(0) == "" then
     local api = vim.api
