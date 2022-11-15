@@ -118,6 +118,9 @@ M.open = function()
     vim.api.nvim_buf_set_option(0, "modifiable", false)
     vim.api.nvim_buf_set_option(0, "buftype", "nofile")
     vim.api.nvim_buf_set_option(0, "filetype", "NvDash")
+
+    vim.wo.list = false
+    vim.wo.relativenumber = false
   end
 end
 
