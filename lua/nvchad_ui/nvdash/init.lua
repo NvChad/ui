@@ -119,7 +119,8 @@ M.open = function()
   end
 end
 
-M.toggle = function()
+-- Command to toggle NvDash
+vim.api.nvim_create_user_command("Nvdash", function()
   if vim.g.nvdash_displayed then
     vim.g.nvdash_displayed = false
     vim.cmd "bd"
@@ -127,7 +128,7 @@ M.toggle = function()
     vim.g.nvdash_displayed = true
     M.open()
   end
-end
+end, {})
 
 M.init = function()
   -- dashboard
