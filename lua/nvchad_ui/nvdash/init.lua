@@ -13,11 +13,21 @@ table.insert(headerAscii, 2, emmptyLine)
 headerAscii[#headerAscii + 1] = emmptyLine
 headerAscii[#headerAscii + 1] = emmptyLine
 
+vim.api.nvim_create_autocmd("BufWinLeave", {
+  callback = function()
+    if vim.bo.ft == "NvDash" then
+      vim.g.nvdash_displayed = false
+    end
+  end,
+})
+
 M.open = function()
   vim.cmd "enew"
 
   -- load dashboard
   if vim.api.nvim_buf_get_name(0) == "" then
+    vim.g.nvdash_displayed = true
+
     local api = vim.api
     local fn = vim.fn
     local header = headerAscii
@@ -130,10 +140,8 @@ end
 -- Command to toggle NvDash
 vim.api.nvim_create_user_command("Nvdash", function()
   if vim.g.nvdash_displayed then
-    vim.g.nvdash_displayed = false
     vim.cmd "bd"
   else
-    vim.g.nvdash_displayed = true
     M.open()
   end
 end, {})
