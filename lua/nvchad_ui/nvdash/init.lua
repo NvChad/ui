@@ -137,35 +137,14 @@ M.open = function(buf)
   end
 end
 
--- Command to toggle NvDash
-vim.api.nvim_create_user_command("Nvdash", function()
-  if vim.g.nvdash_displayed then
-    vim.cmd "bd"
-  else
-    M.open(vim.api.nvim_create_buf(false, true))
-  end
-end, {})
-
-M.init = function()
-  -- dashboard
-  if config.load_on_startup then
-    vim.defer_fn(function()
+-- redraw dashboard on VimResized event
+vim.api.nvim_create_autocmd("VimResized", {
+  callback = function()
+    if vim.bo.filetype == "NvDash" then
+      vim.cmd "bd"
       require("nvchad_ui.nvdash").open()
-    end, 0)
-  end
-
-  -- redraw dashboard on VimResized event
-  vim.api.nvim_create_autocmd("VimResized", {
-    callback = function()
-      if vim.bo.filetype == "NvDash" then
-        vim.cmd "bd"
-        require("nvchad_ui.nvdash").open()
-      elseif vim.bo.filetype == "NvCheatsheet" then
-        vim.cmd "bd"
-        require("nvchad_ui.cheatsheet.draw").draw()
-      end
-    end,
-  })
-end
+    end
+  end,
+})
 
 return M

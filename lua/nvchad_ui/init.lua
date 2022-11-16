@@ -1,5 +1,7 @@
 local M = {}
-local config = require('core.utils').load_config().ui
+local new_cmd = vim.api.nvim_create_user_command
+
+local config = require("core.utils").load_config().ui
 
 M.statusline = function()
   return require("nvchad_ui.statusline").run(config.statusline)
@@ -15,8 +17,34 @@ M.setup = function()
   -- lazyload tabufline
   require "nvchad_ui.tabufline.lazyload"(config.tabufline)
 
-  require("nvchad_ui.nvdash").init()
-  require("nvchad_ui.cheatsheet").init()
+  -- Command to toggle NvDash
+  new_cmd("Nvdash", function()
+    if vim.g.nvdash_displayed then
+      vim.cmd "bd"
+    else
+      require("nvchad_ui.nvdash").open(vim.api.nvim_create_buf(false, true))
+    end
+  end, {})
+
+  -- load nvdash
+  if config.nvdash.load_on_startup then
+    vim.defer_fn(function()
+      require("nvchad_ui.nvdash").open()
+    end, 0)
+  end
+
+  vim.g.nvcheatsheet_displayed = false
+
+  -- command to toggle cheatsheet
+  new_cmd("NvCheatsheet", function()
+    vim.g.nvcheatsheet_displayed = not vim.g.nvcheatsheet_displayed
+
+    if vim.g.nvcheatsheet_displayed then
+      require("nvchad_ui.cheatsheet").draw()
+    else
+      vim.cmd "bd"
+    end
+  end, {})
 end
 
 return M
