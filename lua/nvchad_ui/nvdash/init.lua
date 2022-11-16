@@ -2,8 +2,9 @@ local M = {}
 
 require("base46").load_highlight "nvdash"
 
-local config = require "nvchad_ui.config"
-local headerAscii = config.nvdash.header
+local config = require("core.utils").load_config().ui.nvdash
+
+local headerAscii = config.header
 local emmptyLine = string.rep(" ", vim.fn.strwidth(headerAscii[1]))
 
 table.insert(headerAscii, 1, emmptyLine)
@@ -20,7 +21,7 @@ M.open = function()
     local api = vim.api
     local fn = vim.fn
     local header = headerAscii
-    local buttons = config.nvdash.buttons
+    local buttons = config.buttons
 
     local function addSpacing_toBtns(txt1, txt2)
       local btn_len = fn.strwidth(txt1) + fn.strwidth(txt2)
@@ -79,7 +80,7 @@ M.open = function()
     local first_btn_line = abc + #header + 2
     local keybind_lineNrs = {}
 
-    for _, _ in ipairs(config.nvdash.buttons) do
+    for _, _ in ipairs(config.buttons) do
       table.insert(keybind_lineNrs, first_btn_line)
       first_btn_line = first_btn_line + 2
     end
@@ -103,7 +104,7 @@ M.open = function()
     vim.keymap.set("n", "<CR>", function()
       for i, val in ipairs(keybind_lineNrs) do
         if val == fn.line "." then
-          local action = config.nvdash.buttons[i][3]
+          local action = config.buttons[i][3]
 
           if type(action) == "string" then
             vim.cmd(action)
@@ -139,7 +140,7 @@ end, {})
 
 M.init = function()
   -- dashboard
-  if config.nvdash.load_on_startup then
+  if config.load_on_startup then
     vim.defer_fn(function()
       require("nvchad_ui.nvdash").open()
     end, 0)

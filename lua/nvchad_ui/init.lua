@@ -1,5 +1,5 @@
 local M = {}
-local config = require "nvchad_ui.config"
+local config = require('core.utils').load_config().ui
 
 M.statusline = function()
   return require("nvchad_ui.statusline").run(config.statusline)
