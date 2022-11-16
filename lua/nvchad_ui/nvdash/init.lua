@@ -1,4 +1,6 @@
 local M = {}
+local api = vim.api
+local fn = vim.fn
 
 require("base46").load_highlight "nvdash"
 
@@ -13,7 +15,7 @@ table.insert(headerAscii, 2, emmptyLine)
 headerAscii[#headerAscii + 1] = emmptyLine
 headerAscii[#headerAscii + 1] = emmptyLine
 
-vim.api.nvim_create_autocmd("BufWinLeave", {
+api.nvim_create_autocmd("BufWinLeave", {
   callback = function()
     if vim.bo.ft == "NvDash" then
       vim.g.nvdash_displayed = false
@@ -23,13 +25,11 @@ vim.api.nvim_create_autocmd("BufWinLeave", {
 
 M.open = function(buf)
   if vim.fn.expand "%" == "" or buf then
-    buf = buf or vim.api.nvim_create_buf(false, true)
-    vim.api.nvim_win_set_buf(vim.api.nvim_get_current_win(), buf)
+    buf = buf or api.nvim_create_buf(false, true)
+    api.nvim_win_set_buf(api.nvim_get_current_win(), buf)
 
     vim.g.nvdash_displayed = true
 
-    local api = vim.api
-    local fn = vim.fn
     local header = headerAscii
     local buttons = config.buttons
 
@@ -55,7 +55,7 @@ M.open = function(buf)
     end
 
     local result = {}
-    local get_win_height = vim.api.nvim_win_get_height
+    local get_win_height = api.nvim_win_get_height
 
     -- make all lines available
     for i = 1, get_win_height(0) do
@@ -73,7 +73,7 @@ M.open = function(buf)
 
     api.nvim_buf_set_lines(buf, 0, -1, false, result)
 
-    local nvdash = vim.api.nvim_create_namespace "nvdash"
+    local nvdash = api.nvim_create_namespace "nvdash"
     local horiz_pad_index = math.floor((api.nvim_win_get_width(0) / 2) - (36 / 2)) - 2
 
     for i = abc, abc + #header - 2 do
@@ -84,7 +84,7 @@ M.open = function(buf)
       api.nvim_buf_add_highlight(buf, nvdash, "NvDashButtons", i, horiz_pad_index, -1)
     end
 
-    vim.api.nvim_win_set_cursor(0, { abc + #header, math.floor(vim.o.columns / 2) - 13 })
+    api.nvim_win_set_cursor(0, { abc + #header, math.floor(vim.o.columns / 2) - 13 })
 
     local first_btn_line = abc + #header + 2
     local keybind_lineNrs = {}
@@ -100,13 +100,13 @@ M.open = function(buf)
     vim.keymap.set("n", "k", function()
       local cur = fn.line "."
       local target_line = vim.tbl_contains(keybind_lineNrs, cur) and cur - 2 or keybind_lineNrs[#keybind_lineNrs]
-      vim.api.nvim_win_set_cursor(0, { target_line, math.floor(vim.o.columns / 2) - 13 })
+      api.nvim_win_set_cursor(0, { target_line, math.floor(vim.o.columns / 2) - 13 })
     end, { buffer = true })
 
     vim.keymap.set("n", "j", function()
       local cur = fn.line "."
       local target_line = vim.tbl_contains(keybind_lineNrs, cur) and cur + 2 or keybind_lineNrs[1]
-      vim.api.nvim_win_set_cursor(0, { target_line, math.floor(vim.o.columns / 2) - 13 })
+      api.nvim_win_set_cursor(0, { target_line, math.floor(vim.o.columns / 2) - 13 })
     end, { buffer = true })
 
     -- pressing enter on
@@ -124,17 +124,16 @@ M.open = function(buf)
       end
     end, { buffer = true })
 
+    api.nvim_set_current_buf(buf)
+
     -- buf only options
-    vim.wo.number = false
-    vim.api.nvim_buf_set_option(buf, "buflisted", false)
-    vim.api.nvim_buf_set_option(buf, "modifiable", false)
-    vim.api.nvim_buf_set_option(buf, "buftype", "nofile")
-    vim.api.nvim_buf_set_option(buf, "filetype", "NvDash")
-
-    vim.wo.list = false
-    vim.wo.relativenumber = false
-
-    vim.cmd("b" .. buf)
+    vim.opt_local.buflisted = false
+    vim.opt_local.modifiable = false
+    vim.opt_local.buftype = "nofile"
+    vim.opt_local.filetype = "NvDash"
+    vim.opt_local.number = false
+    vim.opt_local.list = false
+    vim.opt_local.relativenumber = false
   end
 end
 
