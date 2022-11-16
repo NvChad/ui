@@ -21,11 +21,11 @@ vim.api.nvim_create_autocmd("BufWinLeave", {
   end,
 })
 
-M.open = function()
-  vim.cmd "enew"
+M.open = function(buf)
+  if vim.fn.expand "%" == "" or buf then
+    buf = buf or vim.api.nvim_create_buf(false, true)
+    vim.api.nvim_win_set_buf(vim.api.nvim_get_current_win(), buf)
 
-  -- load dashboard
-  if vim.api.nvim_buf_get_name(0) == "" then
     vim.g.nvdash_displayed = true
 
     local api = vim.api
@@ -54,7 +54,6 @@ M.open = function()
       table.insert(dashboard, header[1] .. " ")
     end
 
-    -- vim.cmd "enew"
     local result = {}
     local get_win_height = vim.api.nvim_win_get_height
 
@@ -72,26 +71,26 @@ M.open = function()
       headerStart_Index = headerStart_Index + 1
     end
 
-    api.nvim_buf_set_lines(0, 0, -1, false, result)
+    api.nvim_buf_set_lines(buf, 0, -1, false, result)
 
     local nvdash = vim.api.nvim_create_namespace "nvdash"
     local horiz_pad_index = math.floor((api.nvim_win_get_width(0) / 2) - (36 / 2)) - 2
 
     for i = abc, abc + #header - 2 do
-      api.nvim_buf_add_highlight(0, nvdash, "NvDashAscii", i, horiz_pad_index, -1)
+      api.nvim_buf_add_highlight(buf, nvdash, "NvDashAscii", i, horiz_pad_index, -1)
     end
 
     for i = abc + #header - 2, abc + #dashboard do
-      api.nvim_buf_add_highlight(0, nvdash, "NvDashButtons", i, horiz_pad_index, -1)
+      api.nvim_buf_add_highlight(buf, nvdash, "NvDashButtons", i, horiz_pad_index, -1)
     end
 
-    vim.api.nvim_win_set_cursor(0, { abc + #header + 2, math.floor(vim.o.columns / 2) - 13 })
+    vim.api.nvim_win_set_cursor(0, { abc + #header, math.floor(vim.o.columns / 2) - 13 })
 
     local first_btn_line = abc + #header + 2
     local keybind_lineNrs = {}
 
     for _, _ in ipairs(config.buttons) do
-      table.insert(keybind_lineNrs, first_btn_line)
+      table.insert(keybind_lineNrs, first_btn_line - 2)
       first_btn_line = first_btn_line + 2
     end
 
@@ -126,14 +125,16 @@ M.open = function()
     end, { buffer = true })
 
     -- buf only options
-    vim.opt_local.number = false
-    vim.api.nvim_buf_set_option(0, "buflisted", false)
-    vim.api.nvim_buf_set_option(0, "modifiable", false)
-    vim.api.nvim_buf_set_option(0, "buftype", "nofile")
-    vim.api.nvim_buf_set_option(0, "filetype", "NvDash")
+    vim.wo.number = false
+    vim.api.nvim_buf_set_option(buf, "buflisted", false)
+    vim.api.nvim_buf_set_option(buf, "modifiable", false)
+    vim.api.nvim_buf_set_option(buf, "buftype", "nofile")
+    vim.api.nvim_buf_set_option(buf, "filetype", "NvDash")
 
     vim.wo.list = false
     vim.wo.relativenumber = false
+
+    vim.cmd("b" .. buf)
   end
 end
 
@@ -142,7 +143,7 @@ vim.api.nvim_create_user_command("Nvdash", function()
   if vim.g.nvdash_displayed then
     vim.cmd "bd"
   else
-    M.open()
+    M.open(vim.api.nvim_create_buf(false, true))
   end
 end, {})
 
