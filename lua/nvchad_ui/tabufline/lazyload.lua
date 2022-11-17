@@ -21,7 +21,6 @@ return function(opts)
           not vim.tbl_contains(bufs, args.buf)
           and (args.event == "BufEnter" or vim.bo[args.buf].buflisted)
           and (args.event == "BufEnter" or args.buf ~= vim.api.nvim_get_current_buf())
-          and args.event ~= "BufAdd"
           and isBufValid(args.buf)
         then
           table.insert(bufs, args.buf)
