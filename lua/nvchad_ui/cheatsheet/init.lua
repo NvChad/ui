@@ -6,7 +6,7 @@ local vim_modes = require "nvchad_ui.statusline.modes"
 local api = vim.api
 local genStr = string.rep
 
-require("base46").load_highlight "nvcheatsheet"
+require "base46_cache.nvcheatsheet"
 
 M.draw = function()
   local buf = api.nvim_create_buf(false, true)
