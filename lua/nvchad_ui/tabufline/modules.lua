@@ -4,7 +4,7 @@ local fn = vim.fn
 local new_cmd = api.nvim_create_user_command
 local isBufValid = require("nvchad_ui.tabufline").isBufValid
 
-require "base46_cache.tbline"
+loadfile(vim.g.base46_cache .. "tbline")()
 
 ---------------------------------------------------------- btn onclick functions ----------------------------------------------
 
