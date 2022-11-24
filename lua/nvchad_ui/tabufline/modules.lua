@@ -2,10 +2,12 @@ local api = vim.api
 local devicons_present, devicons = pcall(require, "nvim-web-devicons")
 local fn = vim.fn
 local new_cmd = api.nvim_create_user_command
-local isBufValid = require("nvchad_ui.tabufline").isBufValid
 
 loadfile(vim.g.base46_cache .. "tbline")()
 
+local isBufValid = function(bufnr)
+  return vim.api.nvim_buf_is_valid(bufnr) and vim.bo[bufnr].buflisted
+end
 ---------------------------------------------------------- btn onclick functions ----------------------------------------------
 
 vim.cmd "function! TbGoToBuf(bufnr,b,c,d) \n execute 'b'..a:bufnr \n endfunction"
