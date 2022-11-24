@@ -1,4 +1,5 @@
 local isBufValid = require("nvchad_ui.tabufline").isBufValid
+
 return function(opts)
   if not opts.enabled then
     return
@@ -56,13 +57,13 @@ return function(opts)
       callback = function()
         if #vim.fn.getbufinfo { buflisted = 1 } >= 2 or #vim.api.nvim_list_tabpages() >= 2 then
           vim.opt.showtabline = 2
-          vim.opt.tabline = "%!v:lua.require('nvchad_ui').tabufline()"
+          vim.opt.tabline = "%!v:lua.require('nvchad_ui.tabufline.modules').run()"
           vim.api.nvim_del_augroup_by_name "TabuflineLazyLoad"
         end
       end,
     })
   else
     vim.opt.showtabline = 2
-    vim.opt.tabline = "%!v:lua.require('nvchad_ui').tabufline()"
+    vim.opt.tabline = "%!v:lua.require('nvchad_ui.tabufline.modules').run()"
   end
 end
