@@ -3,16 +3,12 @@ local new_cmd = vim.api.nvim_create_user_command
 
 local config = require("core.utils").load_config().ui
 
-M.statusline = function()
-  return require("nvchad_ui.statusline").run(config.statusline)
-end
-
 M.tabufline = function()
   return require("nvchad_ui.tabufline").run(config.tabufline)
 end
 
 M.setup = function()
-  vim.opt.statusline = "%!v:lua.require('nvchad_ui').statusline()"
+  vim.opt.statusline = "%!v:lua.require('nvchad_ui.statusline').run()"
 
   -- lazyload tabufline
   require "nvchad_ui.tabufline.lazyload"(config.tabufline)
