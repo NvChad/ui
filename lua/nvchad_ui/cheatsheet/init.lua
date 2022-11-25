@@ -1,7 +1,7 @@
 local M = {}
 
 local mappings_tb = require("core.utils").load_config().mappings -- default & user mappings
-local vim_modes = require "nvchad_ui.statusline.modes"
+local vim_modes = require("nvchad_ui.statusline.default").modes
 
 local api = vim.api
 local genStr = string.rep

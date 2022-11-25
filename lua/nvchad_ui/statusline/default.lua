@@ -158,7 +158,7 @@ M.cursor_position = function()
 end
 
 M.run = function()
-  local modules = require "nvchad_ui.statusline"
+  local modules = require "nvchad_ui.statusline.default"
 
   if config.overriden_modules then
     modules = vim.tbl_deep_extend("force", modules, config.overriden_modules())
