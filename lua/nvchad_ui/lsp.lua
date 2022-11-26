@@ -26,18 +26,6 @@ vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.s
   relative = "cursor",
 })
 
--- suppress error messages from lang servers
-vim.notify = function(msg, log_level)
-  if msg:match "exit code" then
-    return
-  end
-  if log_level == vim.log.levels.ERROR then
-    vim.api.nvim_err_writeln(msg)
-  else
-    vim.api.nvim_echo({ { msg } }, true, {})
-  end
-end
-
 -- Borders for LspInfo winodw
 local win = require "lspconfig.ui.windows"
 local _default_opts = win.default_opts
