@@ -1,3 +1,5 @@
+loadfile(vim.g.base46_cache .. "default_st")()
+
 local fn = vim.fn
 local config = require("core.utils").load_config().ui.statusline
 local sep_style = config.separator_style
