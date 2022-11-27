@@ -63,10 +63,7 @@ M.git = function()
     return ""
   end
 
-  local git_status = vim.b.gitsigns_status_dict
-  local branch_name = "   " .. git_status.head .. " "
-
-  return branch_name .. " "
+  return "  " .. vim.b.gitsigns_status_dict.head .. "  "
 end
 
 M.gitchanges = function()
