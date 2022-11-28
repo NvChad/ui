@@ -1,6 +1,3 @@
--- credits to https://github.com/obliviousofcraps, i liked his statusline theme
--- this bubbly statusline theme's rice is inspired by his statusline theme
-
 loadfile(vim.g.base46_cache .. "minimal_st")()
 
 local fn = vim.fn
@@ -157,33 +154,6 @@ end
 
 M.cursor_position = function() end
 
-vim.cmd "function! TbNewTab(a,b,c,d) \n tabnew \n endfunction"
-vim.cmd "function! TbGotoTab(tabnr,b,c,d) \n execute a:tabnr ..'tabnext' \n endfunction"
-vim.cmd "function! TbTabClose(a,b,c,d) \n lua require('nvchad_ui.tabufline').closeAllBufs('closeTab') \n endfunction"
-vim.cmd "function! TbToggleTabs(a,b,c,d) \n let g:TbTabsToggled = !g:TbTabsToggled | redrawstatus \n endfunction"
-
-vim.g.TbTabsToggled = 1
-
-M.tablist = function()
-  local txt = "%@TbToggleTabs@ Tabs %X"
-
-  for i = 1, fn.tabpagenr "$", 1 do
-    local tab_hl = ((i == fn.tabpagenr()) and "%#TbLineTabOn# ") or "%#TbLineTabOff# "
-    txt = txt .. ("%" .. i .. "@TbGotoTab@" .. tab_hl .. i .. " ")
-    txt = (i == fn.tabpagenr() and txt .. "%#TbLineTabCloseBtn#" .. "%@TbTabClose@ %X") or txt
-  end
-
-  local result = ""
-
-  if vim.g.TbTabsToggled == 0 then
-    result = "%#St_tab_sep#%@TbNewTab@" .. sep_l .. "%X" .. "%#St_tab_bg#%@TbNewTab@ %X%#St_tab_txt#" .. txt .. sep_r
-  else
-    result = gen_block("", "%@TbToggleTabs@Tabs%X", "%#St_tab_sep#", "%#St_tab_bg#", "%#St_tab_txt#")
-  end
-
-  return result
-end
-
 M.run = function()
   local modules = require "nvchad_ui.statusline.minimal"
 
@@ -197,11 +167,10 @@ M.run = function()
     modules.git(),
 
     "%=",
-    modules.tablist(),
+    modules.LSP_progress(),
     "%=",
 
     string.upper(vim.bo.fileencoding) == "" and "" or string.upper(vim.bo.fileencoding) .. "  ",
-    modules.LSP_progress(),
     modules.LSP_Diagnostics(),
     modules.LSP_status() or "",
     modules.cwd(),
