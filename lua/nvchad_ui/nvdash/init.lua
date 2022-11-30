@@ -23,10 +23,17 @@ api.nvim_create_autocmd("BufWinLeave", {
   end,
 })
 
+local max_height = #headerAscii + 4 + (2 * #config.buttons) -- 4  = extra spaces i.e top/bottom
+local get_win_height = api.nvim_win_get_height
+
 M.open = function(buf)
   if vim.fn.expand "%" == "" or buf then
     buf = buf or api.nvim_create_buf(false, true)
     api.nvim_win_set_buf(api.nvim_get_current_win(), buf)
+
+    if get_win_height(0) < max_height then
+      return
+    end
 
     vim.g.nvdash_displayed = true
 
@@ -45,6 +52,7 @@ M.open = function(buf)
     end
 
     local dashboard = {}
+
     for _, val in ipairs(header) do
       table.insert(dashboard, val .. " ")
     end
@@ -55,7 +63,6 @@ M.open = function(buf)
     end
 
     local result = {}
-    local get_win_height = api.nvim_win_get_height
 
     -- make all lines available
     for i = 1, get_win_height(0) do
@@ -141,7 +148,9 @@ end
 vim.api.nvim_create_autocmd("VimResized", {
   callback = function()
     if vim.bo.filetype == "NvDash" then
-      vim.cmd "bd"
+      vim.opt_local.modifiable = true
+      api.nvim_buf_set_lines(0, 0, -1, false, { "" })
+
       require("nvchad_ui.nvdash").open()
     end
   end,
