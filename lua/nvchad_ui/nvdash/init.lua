@@ -17,7 +17,7 @@ headerAscii[#headerAscii + 1] = emmptyLine
 
 api.nvim_create_autocmd("BufWinLeave", {
   callback = function()
-    if vim.bo.ft == "NvDash" then
+    if vim.bo.ft == "nvdash" then
       vim.g.nvdash_displayed = false
     end
   end,
@@ -33,6 +33,17 @@ M.open = function(buf)
 
     if get_win_height(0) < max_height then
       return
+    end
+
+    vim.opt_local.filetype = "nvdash"
+
+    -- close windows i.e splits
+    for _, winnr in ipairs(api.nvim_list_wins()) do
+      local bufnr = api.nvim_win_get_buf(winnr)
+
+      if api.nvim_buf_is_valid(bufnr) and (vim.bo[bufnr]).ft ~= "nvdash" then
+        api.nvim_win_close(winnr, true)
+      end
     end
 
     vim.g.nvdash_displayed = true
@@ -131,26 +142,22 @@ M.open = function(buf)
       end
     end, { buffer = true })
 
-    api.nvim_set_current_buf(buf)
-
     -- buf only options
     vim.opt_local.buflisted = false
     vim.opt_local.modifiable = false
-    vim.opt_local.buftype = "nofile"
-    vim.opt_local.filetype = "NvDash"
     vim.opt_local.number = false
     vim.opt_local.list = false
     vim.opt_local.relativenumber = false
+    vim.opt_local.wrap = false
   end
 end
 
 -- redraw dashboard on VimResized event
 vim.api.nvim_create_autocmd("VimResized", {
   callback = function()
-    if vim.bo.filetype == "NvDash" then
+    if vim.bo.filetype == "nvdash" then
       vim.opt_local.modifiable = true
       api.nvim_buf_set_lines(0, 0, -1, false, { "" })
-
       require("nvchad_ui.nvdash").open()
     end
   end,
