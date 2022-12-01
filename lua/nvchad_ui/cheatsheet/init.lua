@@ -36,7 +36,6 @@ M.draw = function()
 
   local lineNumsDesc = {}
 
-  -- Top padding
   local result = {
     "",
     "                                      ",
@@ -144,20 +143,11 @@ M.draw = function()
   vim.opt_local.buflisted = false
   vim.opt_local.modifiable = false
   vim.opt_local.buftype = "nofile"
-  vim.opt_local.filetype = "NvDash"
+  vim.opt_local.filetype = "nvcheatsheet"
   vim.opt_local.number = false
   vim.opt_local.list = false
+  vim.opt_local.wrap = false
   vim.opt_local.relativenumber = false
 end
-
--- redraw dashboard on VimResized event
-vim.api.nvim_create_autocmd("VimResized", {
-  callback = function()
-    if vim.bo.filetype == "NvCheatsheet" then
-      vim.cmd "bd"
-      M.draw()
-    end
-  end,
-})
 
 return M

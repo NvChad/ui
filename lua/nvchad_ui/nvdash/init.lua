@@ -152,15 +152,4 @@ M.open = function(buf)
   end
 end
 
--- redraw dashboard on VimResized event
-vim.api.nvim_create_autocmd("VimResized", {
-  callback = function()
-    if vim.bo.filetype == "nvdash" then
-      vim.opt_local.modifiable = true
-      api.nvim_buf_set_lines(0, 0, -1, false, { "" })
-      require("nvchad_ui.nvdash").open()
-    end
-  end,
-})
-
 return M
