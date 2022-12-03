@@ -1,5 +1,3 @@
-loadfile(vim.g.base46_cache .. "vscode_colored_st")()
-
 local fn = vim.fn
 local config = require("core.utils").load_config().ui.statusline
 
