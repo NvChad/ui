@@ -90,9 +90,6 @@ local function add_fileInfo(name, bufnr)
       icon, icon_hl = devicons.get_icon "default_icon"
     end
 
-    -- padding around bufname; 24 = bufame length (icon + filename)
-    local padding = (24 - #name - 5) / 2
-
     icon = (
       api.nvim_get_current_buf() == bufnr and new_hl(icon_hl, "TbLineBufOn") .. " " .. icon
       or new_hl(icon_hl, "TbLineBufOff") .. " " .. icon
@@ -128,7 +125,11 @@ local function add_fileInfo(name, bufnr)
       end
     end
 
-    name = (#name > 18 and string.sub(name, 1, 16) .. "..") or name
+    -- padding around bufname; 24 = bufame length (icon + filename)
+    local padding = (24 - #name - 5) / 2
+    local maxname_len = 16
+
+    name = (#name > maxname_len and string.sub(name, 1, 14) .. "..") or name
     name = (api.nvim_get_current_buf() == bufnr and "%#TbLineBufOn# " .. name) or ("%#TbLineBufOff# " .. name)
 
     return string.rep(" ", padding) .. icon .. name .. string.rep(" ", padding)
@@ -136,7 +137,7 @@ local function add_fileInfo(name, bufnr)
 end
 
 local function styleBufferTab(nr)
-  local close_btn = "%" .. nr .. "@TbKillBuf@ %X"
+  local close_btn = "%" .. nr .. "@TbKillBuf@  %X"
   local name = (#api.nvim_buf_get_name(nr) ~= 0) and fn.fnamemodify(api.nvim_buf_get_name(nr), ":t") or " No Name "
   name = "%" .. nr .. "@TbGoToBuf@" .. add_fileInfo(name, nr) .. "%X"
 
