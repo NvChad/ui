@@ -1,5 +1,3 @@
-local M = {}
-
 local mappings_tb = require("core.utils").load_config().mappings -- default & user mappings
 local vim_modes = require("nvchad_ui.statusline.default").modes
 
@@ -8,12 +6,12 @@ local genStr = string.rep
 
 loadfile(vim.g.base46_cache .. "nvcheatsheet")()
 
-M.draw = function()
+return function()
   local buf = api.nvim_create_buf(false, true)
-  local CenterPoint = api.nvim_win_get_width(0) / 2
+  local centerPoint = api.nvim_win_get_width(0) / 2
 
   -- convert "<leader>th" to "<leader> + th"
-  local function prettify(str)
+  local function prettify_Str(str)
     local one, two = str:match "([^,]+)>([^,]+)"
     return one and one .. "> + " .. two or str
   end
@@ -26,8 +24,8 @@ M.draw = function()
       if type(mappings) == "table" then
         for keybind, mappingInfo in pairs(mappings) do
           if mappingInfo[2] then
-            largest_str = largest_str > #mappingInfo[2] + #prettify(keybind) and largest_str
-              or #mappingInfo[2] + #prettify(keybind)
+            largest_str = largest_str > #mappingInfo[2] + #prettify_Str(keybind) and largest_str
+              or #mappingInfo[2] + #prettify_Str(keybind)
           end
         end
       end
@@ -48,7 +46,7 @@ M.draw = function()
   }
 
   for i, val in ipairs(result) do
-    result[i] = genStr(" ", CenterPoint - (vim.fn.strwidth(val) / 2) + 4) .. val .. genStr(" ", 12)
+    result[i] = genStr(" ", centerPoint - (vim.fn.strwidth(val) / 2) + 4) .. val .. genStr(" ", 12)
     lineNumsDesc[#lineNumsDesc + 1] = val == "" and "emptySpace" or "asciiHeader"
   end
 
@@ -67,8 +65,8 @@ M.draw = function()
   for section, modes in pairs(mappings_tb) do
     -- Set section headings
     local heading = addPadding(Capitalize(section))
-    local padded_heading = genStr(" ", CenterPoint - #heading / 2) .. heading -- centered text
-    local padding_chars = genStr(" ", CenterPoint + (#heading / 2) + 2)
+    local padded_heading = genStr(" ", centerPoint - #heading / 2) .. heading -- centered text
+    local padding_chars = genStr(" ", centerPoint + (#heading / 2) + 2)
 
     result[#result + 1] = "  " .. padded_heading
     lineNumsDesc[#lineNumsDesc + 1] = "heading"
@@ -82,7 +80,7 @@ M.draw = function()
         local mode_name = "--| " .. vim_modes[mode][1] .. " Mode |--"
         mode_name = addPadding(mode_name)
 
-        result[#result + 1] = genStr(" ", CenterPoint - #mode_name / 2 + 2) .. mode_name
+        result[#result + 1] = genStr(" ", centerPoint - #mode_name / 2 + 2) .. mode_name
         lineNumsDesc[#lineNumsDesc + 1] = "paddingBlock"
 
         result[#result + 1] = padding_chars
@@ -93,17 +91,17 @@ M.draw = function()
         -- Set section mappings : description & keybinds
         for keybind, mappingInfo in pairs(mappings) do
           if mappingInfo[2] then
-            local emptySpace = largest_str + 30 - #mappingInfo[2] - #prettify(keybind) - 10
-            local map = Capitalize(mappingInfo[2]) .. genStr(" ", emptySpace) .. prettify(keybind)
-            local txt = genStr(" ", CenterPoint - #map / 2) .. map
+            local emptySpace = largest_str + 30 - #mappingInfo[2] - #prettify_Str(keybind) - 10
+            local map = Capitalize(mappingInfo[2]) .. genStr(" ", emptySpace) .. prettify_Str(keybind)
+            local txt = genStr(" ", centerPoint - #map / 2) .. map
 
-            result[#result + 1] = "    " .. txt .. "   "
+            result[#result + 1] = "   " .. txt .. "   "
             lineNumsDesc[#lineNumsDesc + 1] = "mapping"
 
             result[#result + 1] = padding_chars
             lineNumsDesc[#lineNumsDesc + 1] = "paddingBlock"
 
-            horiz_index = horiz_index == 0 and (CenterPoint - math.floor(#map / 2)) or horiz_index
+            horiz_index = horiz_index == 0 and (centerPoint - math.floor(#map / 2)) or horiz_index
           end
         end
       end
@@ -112,10 +110,8 @@ M.draw = function()
     -- add empty lines after a section
     result[#result + 1] = "  "
     result[#result + 1] = "  "
-    result[#result + 1] = "  "
 
     lineNumsDesc[#lineNumsDesc + 1] = "paddingBlock"
-    lineNumsDesc[#lineNumsDesc + 1] = "emptySpace"
     lineNumsDesc[#lineNumsDesc + 1] = "emptySpace"
   end
 
@@ -149,5 +145,3 @@ M.draw = function()
   vim.opt_local.wrap = false
   vim.opt_local.relativenumber = false
 end
-
-return M
