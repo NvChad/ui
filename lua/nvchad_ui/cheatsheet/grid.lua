@@ -117,22 +117,30 @@ return function()
     end
   end
 
-  local first_card = vim.tbl_keys(cards)[3]
-  columns[1][1] = first_card
+  local cards_headings_sorted = vim.tbl_keys(cards)
 
-  append_table(columns[1], cards[first_card])
+  table.sort(cards_headings_sorted, function(first, second)
+    return first:gsub("%s*", "") < second:gsub("%s*", "")
+  end)
+
+  columns[1][1] = cards_headings_sorted[1]
+  append_table(columns[1], cards[cards_headings_sorted[1]])
 
   -- imitate masonry layout
-  for key, value in pairs(cards) do
+  for _, heading in pairs(cards_headings_sorted) do
     for column, mappings in ipairs(columns) do
       if column == 1 and getColumn_height(mappings) < getColumn_height(columns[#columns]) then
-        columns[column][#columns[column] + 1] = key
-        append_table(columns[column], value)
+        columns[column][#columns[column] + 1] = heading
+        append_table(columns[column], cards[heading])
+        break
+      elseif column == 1 and getColumn_height(mappings) == getColumn_height(columns[#columns]) then
+        columns[column][#columns[column] + 1] = heading
+        append_table(columns[column], cards[heading])
         break
       elseif column ~= 1 and (getColumn_height(columns[column - 1]) > getColumn_height(mappings)) then
-        if not vim.tbl_contains(columns[1], key) then
-          columns[column][#columns[column] + 1] = key
-          append_table(columns[column], value)
+        if not vim.tbl_contains(columns[1], heading) then
+          columns[column][#columns[column] + 1] = heading
+          append_table(columns[column], cards[heading])
         end
         break
       end
