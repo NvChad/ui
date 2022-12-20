@@ -1,5 +1,4 @@
 local mappings_tb = require("core.utils").load_config().mappings -- default & user mappings
-local vim_modes = require("nvchad_ui.statusline.default").modes
 
 vim.opt.laststatus = 0
 
@@ -21,8 +20,16 @@ return function()
   -- Find largest string i.e mapping desc among all mappings
   local largest_str = 0
 
-  for _, modes in pairs(mappings_tb) do
-    for _, mappings in pairs(modes) do
+  local cards = {}
+
+  for heading, modes in pairs(mappings_tb) do
+    modes.plugin = nil
+
+    for mode, mappings in pairs(modes) do
+      local card_header = mode == "n" and heading or heading .. string.format(" ( %s ) ", mode)
+
+      cards[card_header] = mappings
+
       if type(mappings) == "table" then
         for keybind, mappingInfo in pairs(mappings) do
           if mappingInfo[2] then
@@ -65,10 +72,16 @@ return function()
 
   local mapping_txt_endIndex = 0
 
+  -- sort table
+  local sorted_tb_keys = vim.tbl_keys(cards)
+  table.sort(sorted_tb_keys, function(a, b)
+    return a > b
+  end)
+
   -- Store content in a table in a formatted way
-  for section, modes in pairs(mappings_tb) do
+  for _, card_name in pairs(sorted_tb_keys) do
     -- Set section headings
-    local heading = addPadding(Capitalize(section))
+    local heading = addPadding(Capitalize(card_name))
     local padded_heading = genStr(" ", centerPoint - #heading / 2) .. heading -- centered text
     local padding_chars = genStr(" ", centerPoint + (#heading / 2) + 2)
 
@@ -78,43 +91,27 @@ return function()
     result[#result + 1] = padding_chars
     lineNumsDesc[#lineNumsDesc + 1] = "paddingBlock"
 
-    for mode, mappings in pairs(modes) do
-      -- Show Mode heading if its not normal
-      if mode ~= "plugin" and mode ~= "n" then
-        local mode_name = "--| " .. vim_modes[mode][1] .. " Mode |--"
-        mode_name = addPadding(mode_name)
+    -- Set section mappings : description & keybinds
+    for keybind, mappingInfo in pairs(cards[card_name]) do
+      if mappingInfo[2] then
+        local emptySpace = largest_str + 30 - #mappingInfo[2] - #prettify_Str(keybind) - 10
 
-        result[#result + 1] = genStr(" ", centerPoint - #mode_name / 2 + 2) .. mode_name
-        lineNumsDesc[#lineNumsDesc + 1] = "paddingBlock"
+        local map = Capitalize(mappingInfo[2]) .. genStr(" ", emptySpace) .. prettify_Str(keybind)
+        local txt = genStr(" ", centerPoint - #map / 2) .. map
+
+        result[#result + 1] = "   " .. txt .. "   "
+
+        if mapping_txt_endIndex == 0 then
+          mapping_txt_endIndex = #result[#result]
+        end
+
+        lineNumsDesc[#lineNumsDesc + 1] = "mapping"
 
         result[#result + 1] = padding_chars
         lineNumsDesc[#lineNumsDesc + 1] = "paddingBlock"
-      end
 
-      if type(mappings) == "table" then
-        -- Set section mappings : description & keybinds
-        for keybind, mappingInfo in pairs(mappings) do
-          if mappingInfo[2] then
-            local emptySpace = largest_str + 30 - #mappingInfo[2] - #prettify_Str(keybind) - 10
-
-            local map = Capitalize(mappingInfo[2]) .. genStr(" ", emptySpace) .. prettify_Str(keybind)
-            local txt = genStr(" ", centerPoint - #map / 2) .. map
-
-            result[#result + 1] = "   " .. txt .. "   "
-
-            if mapping_txt_endIndex == 0 then
-              mapping_txt_endIndex = #result[#result]
-            end
-
-            lineNumsDesc[#lineNumsDesc + 1] = "mapping"
-
-            result[#result + 1] = padding_chars
-            lineNumsDesc[#lineNumsDesc + 1] = "paddingBlock"
-
-            if horiz_index == 0 then
-              horiz_index = math.floor(centerPoint - math.floor(#map / 2))
-            end
-          end
+        if horiz_index == 0 then
+          horiz_index = math.floor(centerPoint - math.floor(#map / 2))
         end
       end
     end
