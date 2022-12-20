@@ -1,11 +1,13 @@
 loadfile(vim.g.base46_cache .. "nvcheatsheet")()
 local nvcheatsheet = vim.api.nvim_create_namespace "nvcheatsheet"
+local mappings_tb = require("core.utils").load_config().mappings
 
 vim.opt.laststatus = 0
 
 -- cheatsheet header!
 local ascii = {
-  "                                      ",
+  "                                       ",
+  "                                       ",
   "█▀▀ █░█ █▀▀ ▄▀█ ▀█▀ █▀ █░█ █▀▀ █▀▀ ▀█▀",
   "█▄▄ █▀█ ██▄ █▀█ ░█░ ▄█ █▀█ ██▄ ██▄ ░█░",
   "                                      ",
@@ -14,6 +16,8 @@ local ascii = {
 
 -- basically the draw function
 return function()
+  local buf = vim.api.nvim_create_buf(false, true)
+
   -- add left padding (strs) to ascii so it looks centered
   local ascii_header = vim.tbl_values(ascii)
   local ascii_padding = (vim.api.nvim_win_get_width(0) / 2) - (#ascii_header[1] / 2)
@@ -22,9 +26,8 @@ return function()
     ascii_header[i] = string.rep(" ", ascii_padding) .. str
   end
 
-  local mappings_tb = require("core.utils").load_config().mappings
-
-  local buf = vim.api.nvim_create_buf(false, true)
+  -- set ascii
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, ascii_header)
 
   -- convert "<leader>th" to "<leader> + th"
   local function prettify_Str(str)
@@ -53,7 +56,7 @@ return function()
   -- 10 = space between mapping txt , 4 = 2 & 2 space around mapping txt
   column_width = column_width + 10 + 4
 
-  local win_width = vim.api.nvim_win_get_width(0) - 9
+  local win_width = vim.api.nvim_win_get_width(0) - vim.fn.getwininfo(vim.api.nvim_get_current_win())[1].textoff - 4
   local columns_qty = math.floor(win_width / column_width)
 
   column_width = math.floor((win_width - (column_width * columns_qty)) / columns_qty) + column_width
@@ -123,13 +126,14 @@ return function()
     return first:gsub("%s*", "") < second:gsub("%s*", "")
   end)
 
-  columns[1][1] = cards_headings_sorted[1]
-  append_table(columns[1], cards[cards_headings_sorted[1]])
-
   -- imitate masonry layout
   for _, heading in pairs(cards_headings_sorted) do
     for column, mappings in ipairs(columns) do
-      if column == 1 and getColumn_height(mappings) < getColumn_height(columns[#columns]) then
+      if column == 1 and getColumn_height(columns[1]) == 0 then
+        columns[1][1] = cards_headings_sorted[1]
+        append_table(columns[1], cards[cards_headings_sorted[1]])
+        break
+      elseif column == 1 and getColumn_height(mappings) < getColumn_height(columns[#columns]) then
         columns[column][#columns[column] + 1] = heading
         append_table(columns[column], cards[heading])
         break
@@ -152,17 +156,6 @@ return function()
   for _, value in ipairs(columns) do
     longest_column = longest_column > #value and longest_column or #value
   end
-
-  local whitespaces = {}
-
-  for i = 1, longest_column, 1 do
-    whitespaces[i] = string.rep(" ", win_width)
-  end
-
-  vim.opt_local.number = false
-
-  vim.api.nvim_buf_set_lines(buf, 0, -1, false, whitespaces)
-  vim.api.nvim_buf_set_lines(buf, 0, -1, false, ascii_header)
 
   local max_col_height = 0
 
