@@ -16,7 +16,7 @@ local ascii = {
 return function()
   -- add left padding (strs) to ascii so it looks centered
   local ascii_header = vim.tbl_values(ascii)
-  local ascii_padding = (vim.api.nvim_win_get_width(0) - 5 - (#ascii_header[1] / 2)) / 2
+  local ascii_padding = (vim.api.nvim_win_get_width(0) / 2) - (#ascii_header[1] / 2)
 
   for i, str in ipairs(ascii_header) do
     ascii_header[i] = string.rep(" ", ascii_padding) .. str
