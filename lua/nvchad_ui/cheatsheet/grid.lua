@@ -1,6 +1,8 @@
 loadfile(vim.g.base46_cache .. "nvcheatsheet")()
 local nvcheatsheet = vim.api.nvim_create_namespace "nvcheatsheet"
 
+vim.opt.laststatus = 0
+
 -- cheatsheet header!
 local ascii = {
   "                                      ",

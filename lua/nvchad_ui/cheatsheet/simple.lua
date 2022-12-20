@@ -1,6 +1,8 @@
 local mappings_tb = require("core.utils").load_config().mappings -- default & user mappings
 local vim_modes = require("nvchad_ui.statusline.default").modes
 
+vim.opt.laststatus = 0
+
 local api = vim.api
 local genStr = string.rep
 
@@ -61,6 +63,8 @@ return function()
     return genStr(" ", padding / 2) .. Capitalize(str) .. genStr(" ", padding / 2)
   end
 
+  local mapping_txt_endIndex = 0
+
   -- Store content in a table in a formatted way
   for section, modes in pairs(mappings_tb) do
     -- Set section headings
@@ -92,16 +96,24 @@ return function()
         for keybind, mappingInfo in pairs(mappings) do
           if mappingInfo[2] then
             local emptySpace = largest_str + 30 - #mappingInfo[2] - #prettify_Str(keybind) - 10
+
             local map = Capitalize(mappingInfo[2]) .. genStr(" ", emptySpace) .. prettify_Str(keybind)
             local txt = genStr(" ", centerPoint - #map / 2) .. map
 
             result[#result + 1] = "   " .. txt .. "   "
+
+            if mapping_txt_endIndex == 0 then
+              mapping_txt_endIndex = #result[#result]
+            end
+
             lineNumsDesc[#lineNumsDesc + 1] = "mapping"
 
             result[#result + 1] = padding_chars
             lineNumsDesc[#lineNumsDesc + 1] = "paddingBlock"
 
-            horiz_index = horiz_index == 0 and (centerPoint - math.floor(#map / 2)) or horiz_index
+            if horiz_index == 0 then
+              horiz_index = math.floor(centerPoint - math.floor(#map / 2))
+            end
           end
         end
       end
@@ -130,7 +142,14 @@ return function()
   }
 
   for i, val in ipairs(lineNumsDesc) do
-    api.nvim_buf_add_highlight(buf, nvcheatsheet, hlgroups_types[val], i, math.floor(horiz_index), -1)
+    api.nvim_buf_add_highlight(
+      buf,
+      nvcheatsheet,
+      hlgroups_types[val],
+      i,
+      horiz_index,
+      val == "asciiHeader" and -1 or mapping_txt_endIndex
+    )
   end
 
   api.nvim_set_current_buf(buf)

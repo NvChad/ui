@@ -149,6 +149,7 @@ M.open = function(buf)
     vim.opt_local.list = false
     vim.opt_local.relativenumber = false
     vim.opt_local.wrap = false
+    vim.opt.laststatus = 0
   end
 end
 
