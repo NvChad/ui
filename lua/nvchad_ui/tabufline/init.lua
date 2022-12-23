@@ -70,6 +70,22 @@ M.closeAllBufs = function(action)
   end
 end
 
+-- closes tab + all other buffers except the current one
+M.closeOtherBufs = function(action)
+  local bufs = vim.t.bufs
+
+  if action == "closeTab" then
+    vim.cmd "tabclose"
+  end
+
+  local currbuf = api.nvim_get_current_buf()
+  for _, buf in ipairs(bufs) do
+    if buf ~= currbuf then
+      M.close_buffer(buf)
+    end
+  end
+end
+
 M.move_buf = function(n)
   local bufs = vim.t.bufs
 
