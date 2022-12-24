@@ -30,16 +30,14 @@ new_cmd("TbufPick", function()
   vim.g.tbufpick_showNums = true
   vim.cmd "redrawtabline"
 
-  api.nvim_echo({ { "Enter Num ", "Question" } }, false, {})
+  local key = vim.fn.input "Enter number : "
+  local bufid = type(tonumber(key)) == "number" and vim.t.bufs[(key and key or 0) + vim.g.bufirst] or false
 
-  local key = tonumber(fn.nr2char(fn.getchar()))
-  local bufid = vim.t.bufs[(key and key or 0) + vim.g.bufirst]
-  if key and bufid then
+  vim.cmd "redraw|echo''"
+
+  if bufid then
     vim.cmd("b" .. bufid)
-    api.nvim_echo({ { "" } }, false, {})
-    vim.cmd "redraw"
   else
-    vim.cmd "redraw"
     print "bufpick cancelled, press a number key!"
   end
 
