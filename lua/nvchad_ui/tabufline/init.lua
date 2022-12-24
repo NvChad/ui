@@ -72,16 +72,13 @@ end
 
 -- closes tab + all other buffers except the current one
 M.closeOtherBufs = function(action)
-  local bufs = vim.t.bufs
-
   if action == "closeTab" then
     vim.cmd "tabclose"
   end
 
-  local currbuf = api.nvim_get_current_buf()
-  for _, buf in ipairs(bufs) do
-    if buf ~= currbuf then
-      M.close_buffer(buf)
+  for _, buf in ipairs(vim.t.bufs) do
+    if buf ~= api.nvim_get_current_buf() then
+      vim.cmd("bd " .. buf)
     end
   end
 end
