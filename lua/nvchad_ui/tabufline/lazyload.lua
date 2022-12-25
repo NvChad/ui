@@ -49,7 +49,7 @@ return function(opts)
 
   require("core.utils").load_mappings "tabufline"
 
-  if opts.lazyload then
+  if opts.lazyload and #vim.fn.getbufinfo { buflisted = 1 } < 2 then
     vim.api.nvim_create_autocmd({ "BufNew", "BufNewFile", "BufRead", "TabEnter", "TermOpen" }, {
       pattern = "*",
       group = vim.api.nvim_create_augroup("TabuflineLazyLoad", {}),
