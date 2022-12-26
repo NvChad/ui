@@ -110,7 +110,7 @@ M.devicons = {
   },
 
   kt = {
-    icon = "󱈙",
+    icon = "",
     name = "kt",
   },
 
