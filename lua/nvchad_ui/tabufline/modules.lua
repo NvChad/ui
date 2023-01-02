@@ -58,8 +58,9 @@ end, {})
 local function new_hl(group1, group2)
   local fg = fn.synIDattr(fn.synIDtrans(fn.hlID(group1)), "fg#")
   local bg = fn.synIDattr(fn.synIDtrans(fn.hlID(group2)), "bg#")
-  api.nvim_set_hl(0, "Tbline" .. group1 .. group2, { fg = fg, bg = bg })
-  return "%#" .. "Tbline" .. group1 .. group2 .. "#"
+  local cgroup = (group1 and group1 or "") .. (group2 and group2 or "")
+  api.nvim_set_hl(0, "Tbline" .. cgroup, { fg = fg, bg = bg })
+  return "%#" .. "Tbline" .. cgroup .. "#"
 end
 
 local function getNvimTreeWidth()
@@ -92,8 +93,8 @@ local function add_fileInfo(name, bufnr)
     local padding = (24 - #name - 5) / 2
 
     icon = (
-      api.nvim_get_current_buf() == bufnr and new_hl(icon_hl, "TbLineBufOn") .. " " .. icon
-      or new_hl(icon_hl, "TbLineBufOff") .. " " .. icon
+      api.nvim_get_current_buf() == bufnr and new_hl(icon_hl, "TbLineBufOn") .. " " .. (icon and icon or "")
+      or new_hl(icon_hl, "TbLineBufOff") .. " " .. (icon and icon or "")
     )
 
     -- check for same buffer names under different dirs
