@@ -33,15 +33,6 @@ new_cmd("NvCheatsheet", function()
   end
 end, {})
 
-vim.api.nvim_create_autocmd("Bufleave", {
-  group = vim.api.nvim_create_augroup("HideStatusline", {}),
-  callback = function()
-    if vim.bo.filetype == "nvcheatsheet" or vim.bo.filetype == "nvdash" then
-      vim.opt.laststatus = 3
-    end
-  end,
-})
-
 -- redraw dashboard on VimResized event
 vim.api.nvim_create_autocmd("VimResized", {
   callback = function()

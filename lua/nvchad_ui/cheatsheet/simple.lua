@@ -1,7 +1,5 @@
 local mappings_tb = require("core.utils").load_config().mappings -- default & user mappings
 
-vim.opt.laststatus = 0
-
 local api = vim.api
 local genStr = string.rep
 

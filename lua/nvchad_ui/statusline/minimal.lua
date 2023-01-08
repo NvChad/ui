@@ -2,6 +2,8 @@ local fn = vim.fn
 local config = require("core.utils").load_config().ui.statusline
 local sep_style = config.separator_style
 
+sep_style = (sep_style ~= "round" and sep_style ~= "block" ) and "block" or sep_style
+
 local default_sep_icons = {
   round = { left = "", right = "" },
   block = { left = "█", right = "█" },
