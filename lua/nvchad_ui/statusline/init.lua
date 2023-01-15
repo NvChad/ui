@@ -10,6 +10,7 @@ return {
 
     return table.concat {
       modules.mode(),
+      modules.spell(),
       modules.fileInfo(),
       modules.git(),
 
