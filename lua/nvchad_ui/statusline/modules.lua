@@ -147,4 +147,16 @@ M.cursor_position = function()
   return left_sep .. "%#St_pos_text#" .. " " .. text .. " "
 end
 
+M.spell = function()
+  local spell = vim.api.nvim_get_option_value("spell", {})
+  local spelllang = vim.api.nvim_get_option_value("spelllang", {})
+
+  if not spell then
+    return ""
+  end
+
+  return "%#St_file_info#" .. "Spell: " .. spelllang .. " " .. "%#St_file_sep#" .. sep_r
+
+end
+
 return M
