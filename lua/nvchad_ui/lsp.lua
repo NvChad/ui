@@ -39,11 +39,4 @@ vim.notify = function(msg, log_level)
 end
 
 -- Borders for LspInfo winodw
-local win = require "lspconfig.ui.windows"
-local _default_opts = win.default_opts
-
-win.default_opts = function(options)
-  local opts = _default_opts(options)
-  opts.border = "single"
-  return opts
-end
+require('lspconfig.ui.windows').default_options.border = 'single'
