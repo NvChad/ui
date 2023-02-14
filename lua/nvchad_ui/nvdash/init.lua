@@ -23,6 +23,8 @@ api.nvim_create_autocmd("BufWinLeave", {
   end,
 })
 
+local nvdashWidth = #headerAscii[1] + 3
+
 local max_height = #headerAscii + 4 + (2 * #config.buttons) -- 4  = extra spaces i.e top/bottom
 local get_win_height = api.nvim_win_get_height
 
@@ -92,9 +94,9 @@ M.open = function(buf)
     api.nvim_buf_set_lines(buf, 0, -1, false, result)
 
     local nvdash = api.nvim_create_namespace "nvdash"
-    local horiz_pad_index = math.floor((api.nvim_win_get_width(0) / 2) - (36 / 2)) - 2
+    local horiz_pad_index = math.floor((api.nvim_win_get_width(0) / 2) - (nvdashWidth / 2)) - 2
 
-    for i = abc, abc + #header - 2 do
+    for i = abc, abc + #header do
       api.nvim_buf_add_highlight(buf, nvdash, "NvDashAscii", i, horiz_pad_index, -1)
     end
 
