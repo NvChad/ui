@@ -3,7 +3,7 @@ local mappings_tb = require("core.utils").load_config().mappings -- default & us
 local api = vim.api
 local genStr = string.rep
 
-loadfile(vim.g.base46_cache .. "nvcheatsheet")()
+dofile(vim.g.base46_cache .. "nvcheatsheet")
 
 return function()
   local buf = api.nvim_create_buf(false, true)

@@ -3,7 +3,7 @@ local devicons_present, devicons = pcall(require, "nvim-web-devicons")
 local fn = vim.fn
 local new_cmd = api.nvim_create_user_command
 
-loadfile(vim.g.base46_cache .. "tbline")()
+dofile(vim.g.base46_cache .. "tbline")
 
 local isBufValid = function(bufnr)
   return vim.api.nvim_buf_is_valid(bufnr) and vim.bo[bufnr].buflisted

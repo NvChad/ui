@@ -2,7 +2,7 @@ local M = {}
 local api = vim.api
 local fn = vim.fn
 
-loadfile(vim.g.base46_cache .. "nvdash")()
+dofile(vim.g.base46_cache .. "nvdash")
 
 local config = require("core.utils").load_config().ui.nvdash
 
