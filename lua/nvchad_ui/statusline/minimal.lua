@@ -2,7 +2,7 @@ local fn = vim.fn
 local config = require("core.utils").load_config().ui.statusline
 local sep_style = config.separator_style
 
-sep_style = (sep_style ~= "round" and sep_style ~= "block" ) and "block" or sep_style
+sep_style = (sep_style ~= "round" and sep_style ~= "block") and "block" or sep_style
 
 local default_sep_icons = {
   round = { left = "", right = "" },
@@ -108,7 +108,7 @@ M.LSP_progress = function()
   local msg = Lsp.message or ""
   local percentage = Lsp.percentage or 0
   local title = Lsp.title or ""
-  local spinners = { "", "" }
+  local spinners = { "", "󰪞", "󰪟", "󰪠", "󰪢", "󰪣", "󰪤", "󰪥" }
   local ms = vim.loop.hrtime() / 1000000
   local frame = math.floor(ms / 120) % #spinners
   local content = string.format(" %%<%s %s %s (%s%%%%) ", spinners[frame + 1], title, msg, percentage)
