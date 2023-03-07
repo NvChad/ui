@@ -85,7 +85,8 @@ local function add_fileInfo(name, bufnr)
     local icon, icon_hl = devicons.get_icon(name, string.match(name, "%a+$"))
 
     if not icon then
-      icon, icon_hl = devicons.get_icon "default_icon"
+      icon = ""
+      icon_hl = "DevIconDefault"
     end
 
     icon = (
