@@ -21,6 +21,18 @@ vim.api.nvim_create_autocmd({ "BufAdd", "BufEnter", "tabnew" }, {
         and vim.bo[args.buf].buflisted
       then
         table.insert(bufs, args.buf)
+
+        -- remove unnamed buffer which isnt current buf & modified
+        for index, bufnr in ipairs(bufs) do
+          if
+            #vim.api.nvim_buf_get_name(bufnr) == 0
+            and vim.api.nvim_get_current_buf() ~= bufnr
+            and not vim.api.nvim_buf_get_option(bufnr, "modified")
+          then
+            table.remove(bufs, index)
+          end
+        end
+
         vim.t.bufs = bufs
       end
     end
