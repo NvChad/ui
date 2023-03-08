@@ -26,7 +26,7 @@ vim.api.nvim_create_autocmd({ "BufAdd", "BufEnter", "tabnew" }, {
         for index, bufnr in ipairs(bufs) do
           if
             #vim.api.nvim_buf_get_name(bufnr) == 0
-            and vim.api.nvim_get_current_buf() ~= bufnr
+            and (vim.api.nvim_get_current_buf() ~= bufnr or bufs[index + 1])
             and not vim.api.nvim_buf_get_option(bufnr, "modified")
           then
             table.remove(bufs, index)
