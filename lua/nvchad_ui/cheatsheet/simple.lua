@@ -5,6 +5,14 @@ local genStr = string.rep
 
 dofile(vim.g.base46_cache .. "nvcheatsheet")
 
+vim.api.nvim_create_autocmd("BufWinLeave", {
+  callback = function()
+    if vim.bo.ft == "nvcheatsheet" then
+      vim.g.nvdash_displayed = false
+    end
+  end,
+})
+
 return function()
   local buf = api.nvim_create_buf(false, true)
   local centerPoint = api.nvim_win_get_width(0) / 2

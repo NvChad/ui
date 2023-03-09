@@ -3,6 +3,14 @@ dofile(vim.g.base46_cache .. "nvcheatsheet")
 local nvcheatsheet = vim.api.nvim_create_namespace "nvcheatsheet"
 local mappings_tb = require("core.utils").load_config().mappings
 
+vim.api.nvim_create_autocmd("BufWinLeave", {
+  callback = function()
+    if vim.bo.ft == "nvcheatsheet" then
+      vim.g.nvdash_displayed = false
+    end
+  end,
+})
+
 -- cheatsheet header!
 local ascii = {
   "                                       ",
