@@ -13,10 +13,12 @@ vim.api.nvim_create_autocmd("BufWinLeave", {
 
 -- cheatsheet header!
 local ascii = {
-  "                                       ",
-  "                                       ",
+  "                                      ",
+  "                                      ",
+  "                                      ",
   "█▀▀ █░█ █▀▀ ▄▀█ ▀█▀ █▀ █░█ █▀▀ █▀▀ ▀█▀",
   "█▄▄ █▀█ ██▄ █▀█ ░█░ ▄█ █▀█ ██▄ ██▄ ░█░",
+  "                                      ",
   "                                      ",
   "                                      ",
 }
