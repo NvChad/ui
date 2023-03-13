@@ -1,7 +1,6 @@
 local api = vim.api
 local devicons_present, devicons = pcall(require, "nvim-web-devicons")
 local fn = vim.fn
-local new_cmd = api.nvim_create_user_command
 
 dofile(vim.g.base46_cache .. "tbline")
 
@@ -24,35 +23,6 @@ vim.cmd "function! TbCloseAllBufs(a,b,c,d) \n lua require('nvchad_ui.tabufline')
 vim.cmd "function! TbToggle_theme(a,b,c,d) \n lua require('base46').toggle_theme() \n endfunction"
 vim.cmd "function! TbToggleTabs(a,b,c,d) \n let g:TbTabsToggled = !g:TbTabsToggled | redrawtabline \n endfunction"
 
----------------------------------------------------------- commands ------------------------------------------------------------
-
-new_cmd("TbufPick", function()
-  vim.g.tbufpick_showNums = true
-  vim.cmd "redrawtabline"
-
-  local key = vim.fn.input "Enter number : "
-  local bufid = type(tonumber(key)) == "number" and vim.t.bufs[(key and key or 0) + vim.g.bufirst] or false
-
-  vim.cmd "redraw|echo''"
-
-  if bufid then
-    vim.cmd("b" .. bufid)
-  else
-    print "bufpick cancelled, press a number key!"
-  end
-
-  vim.g.tbufpick_showNums = false
-  vim.cmd "redrawtabline"
-end, {})
-
--- move buffers left / right
-new_cmd("TbufLeft", function()
-  require("nvchad_ui.tabufline").move_buf(-1)
-end, {})
-
-new_cmd("TbufRight", function()
-  require("nvchad_ui.tabufline").move_buf(1)
-end, {})
 -------------------------------------------------------- functions ------------------------------------------------------------
 
 local function new_hl(group1, group2)
