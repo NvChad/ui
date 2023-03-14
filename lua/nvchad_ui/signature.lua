@@ -1,3 +1,5 @@
+local config = require("core.utils").load_config().ui.lsp.signature 
+
 -- thx to https://gitlab.com/ranjithshegde/dotbare/-/blob/master/.config/nvim/lua/lsp/init.lua
 local M = {}
 
@@ -74,12 +76,16 @@ local open_signature = function()
       vim.lsp.with(M.signature_window, {
         border = "single",
         focusable = false,
+        silent = config.silent,
       })
     )
   end
 end
 
 M.setup = function(client)
+  if config.disabled then
+    return
+  end
   table.insert(clients, client)
   local group = augroup("LspSignature", { clear = false })
   vim.api.nvim_clear_autocmds { group = group, pattern = "<buffer>" }
