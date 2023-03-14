@@ -1,4 +1,5 @@
-local config = require("core.utils").load_config().ui.signature or {}
+local config = require("core.utils").load_config().ui.lsp.signature 
+
 -- thx to https://gitlab.com/ranjithshegde/dotbare/-/blob/master/.config/nvim/lua/lsp/init.lua
 local M = {}
 
