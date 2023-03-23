@@ -113,6 +113,10 @@ M.LSP_progress = function()
   local frame = math.floor(ms / 120) % #spinners
   local content = string.format(" %%<%s %s %s (%s%%%%) ", spinners[frame + 1], title, msg, percentage)
 
+  if config.lsprogress_len then
+    content = string.sub(content, 1, config.lsprogress_len)
+  end
+
   return ("%#St_LspProgress#" .. content) or ""
 end
 
