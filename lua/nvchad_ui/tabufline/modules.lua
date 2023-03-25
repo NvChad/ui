@@ -69,12 +69,12 @@ local function add_fileInfo(name, bufnr)
       if isBufValid(value) then
         if name == fn.fnamemodify(api.nvim_buf_get_name(value), ":t") and value ~= bufnr then
           local other = {}
-          for match in (api.nvim_buf_get_name(value) .. "/"):gmatch("(.-)" .. "/") do
+          for match in (vim.fs.normalize(api.nvim_buf_get_name(value)) .. "/"):gmatch("(.-)" .. "/") do
             table.insert(other, match)
           end
 
           local current = {}
-          for match in (api.nvim_buf_get_name(bufnr) .. "/"):gmatch("(.-)" .. "/") do
+          for match in (vim.fs.normalize(api.nvim_buf_get_name(bufnr)) .. "/"):gmatch("(.-)" .. "/") do
             table.insert(current, match)
           end
 
@@ -85,7 +85,11 @@ local function add_fileInfo(name, bufnr)
             local other_current = other[i]
 
             if value_current ~= other_current then
-              name = value_current .. "/../" .. name
+              if (#current - i) < 2 then
+                name = value_current .. "/" .. name
+              else
+                name = value_current .. "/../" .. name
+              end
               break
             end
           end
