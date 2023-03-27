@@ -156,8 +156,6 @@ M.cwd = function()
   ) or ""
 end
 
-M.cursor_position = function() end
-
 M.run = function()
   local modules = require "nvchad_ui.statusline.minimal"
 
