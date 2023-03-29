@@ -119,13 +119,13 @@ M.open = function(buf)
 
     vim.keymap.set("n", "k", function()
       local cur = fn.line "."
-      local target_line = vim.tbl_contains(keybind_lineNrs, cur) and cur - 2 or keybind_lineNrs[#keybind_lineNrs]
+      local target_line = cur == keybind_lineNrs[1] and keybind_lineNrs[#keybind_lineNrs] or cur - 2
       api.nvim_win_set_cursor(0, { target_line, math.floor(vim.o.columns / 2) - 13 })
     end, { buffer = true })
 
     vim.keymap.set("n", "j", function()
       local cur = fn.line "."
-      local target_line = vim.tbl_contains(keybind_lineNrs, cur) and cur + 2 or keybind_lineNrs[1]
+      local target_line = cur == keybind_lineNrs[#keybind_lineNrs] and keybind_lineNrs[1] or cur + 2
       api.nvim_win_set_cursor(0, { target_line, math.floor(vim.o.columns / 2) - 13 })
     end, { buffer = true })
 
