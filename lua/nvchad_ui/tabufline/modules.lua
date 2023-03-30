@@ -1,6 +1,7 @@
 local api = vim.api
 local devicons_present, devicons = pcall(require, "nvim-web-devicons")
 local fn = vim.fn
+local tabufline_config = require("core.utils").load_config().ui.tabufline
 
 dofile(vim.g.base46_cache .. "tbline")
 
@@ -24,7 +25,6 @@ vim.cmd "function! TbToggle_theme(a,b,c,d) \n lua require('base46').toggle_theme
 vim.cmd "function! TbToggleTabs(a,b,c,d) \n let g:TbTabsToggled = !g:TbTabsToggled | redrawtabline \n endfunction"
 
 -------------------------------------------------------- functions ------------------------------------------------------------
-
 local function new_hl(group1, group2)
   local fg = fn.synIDattr(fn.synIDtrans(fn.hlID(group1)), "fg#")
   local bg = fn.synIDattr(fn.synIDtrans(fn.hlID(group2)), "bg#")
@@ -114,13 +114,23 @@ local function styleBufferTab(nr)
   local name = (#api.nvim_buf_get_name(nr) ~= 0) and fn.fnamemodify(api.nvim_buf_get_name(nr), ":t") or " No Name "
   name = "%" .. nr .. "@TbGoToBuf@" .. add_fileInfo(name, nr) .. "%X"
 
+  -- add numbers to each tab in tabufline
+  if tabufline_config.show_numbers then
+    for index, value in ipairs(vim.t.bufs) do
+      if nr == value then
+        name = name .. index
+        break
+      end
+    end
+  end
+
   -- color close btn for focused / hidden  buffers
   if nr == api.nvim_get_current_buf() then
-    close_btn = (vim.bo[0].modified and "%" .. nr .. "@TbKillBuf@%#TbLineBufOnModified# ")
+    close_btn = (vim.bo[0].modified and "%" .. nr .. "@TbKillBuf@%#TbLineBufOnModified#  ")
       or ("%#TbLineBufOnClose#" .. close_btn)
     name = "%#TbLineBufOn#" .. name .. close_btn
   else
-    close_btn = (vim.bo[nr].modified and "%" .. nr .. "@TbKillBuf@%#TbBufLineBufOffModified# ")
+    close_btn = (vim.bo[nr].modified and "%" .. nr .. "@TbKillBuf@%#TbBufLineBufOffModified#  ")
       or ("%#TbLineBufOffClose#" .. close_btn)
     name = "%#TbLineBufOff#" .. name .. close_btn
   end
@@ -190,14 +200,14 @@ end
 
 M.run = function()
   local modules = require "nvchad_ui.tabufline.modules"
-  local opts = require("core.utils").load_config().ui.tabufline
 
   -- merge user modules :D
-  if opts.overriden_modules then
-    modules = vim.tbl_deep_extend("force", modules, opts.overriden_modules())
+  if tabufline_config.overriden_modules then
+    modules = vim.tbl_deep_extend("force", modules, tabufline_config.overriden_modules())
   end
 
   local result = modules.bufferlist() .. (modules.tablist() or "") .. modules.buttons()
   return (vim.g.nvimtree_side == "left") and modules.CoverNvimTree() .. result or result .. modules.CoverNvimTree()
 end
+
 return M
