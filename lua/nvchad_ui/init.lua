@@ -7,6 +7,10 @@ if config.tabufline.enabled then
   require "nvchad_ui.tabufline.lazyload"
 end
 
+if config.statusline.enabled then
+  vim.opt.statusline = "%!v:lua.require('nvchad_ui.statusline." .. config.statusline.theme .. "').run()"
+end
+
 -- Command to toggle NvDash
 new_cmd("Nvdash", function()
   if vim.g.nvdash_displayed then
