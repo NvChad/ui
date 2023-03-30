@@ -85,23 +85,4 @@ M.move_buf = function(n)
   vim.cmd "redrawtabline"
 end
 
-M.tbufpick = function()
-  vim.g.tbufpick_showNums = true
-  vim.cmd "redrawtabline"
-
-  local key = vim.fn.input "Enter number : "
-  local bufid = type(tonumber(key)) == "number" and vim.t.bufs[(key and key or 0) + vim.g.bufirst] or false
-
-  vim.cmd "redraw|echo''"
-
-  if bufid then
-    vim.cmd("b" .. bufid)
-  else
-    print "bufpick cancelled, press a number key!"
-  end
-
-  vim.g.tbufpick_showNums = false
-  vim.cmd "redrawtabline"
-end
-
 return M

@@ -141,15 +141,6 @@ M.bufferlist = function()
   local current_buf = api.nvim_get_current_buf()
   local has_current = false -- have we seen current buffer yet?
 
-  -- show buffer index numbers
-  if vim.g.tbufpick_showNums then
-    for index, value in ipairs(vim.g.visibuffers) do
-      local name = value:gsub("", "(" .. index .. ")")
-      table.insert(buffers, name)
-    end
-    return table.concat(buffers) .. "%#TblineFill#" .. "%=" -- buffers + empty space
-  end
-
   vim.g.bufirst = 0
   for _, bufnr in ipairs(vim.t.bufs) do
     if isBufValid(bufnr) then
