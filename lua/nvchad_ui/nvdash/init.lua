@@ -31,19 +31,21 @@ local get_win_height = api.nvim_win_get_height
 M.open = function(buf)
   if vim.fn.expand "%" == "" or buf then
     buf = buf or api.nvim_create_buf(false, true)
-    api.nvim_win_set_buf(api.nvim_get_current_win(), buf)
-
-    vim.opt_local.filetype = "nvdash"
+    local win = nil
 
     -- close windows i.e splits
     for _, winnr in ipairs(api.nvim_list_wins()) do
+      if win == nil and api.nvim_win_get_config(winnr).relative == "" then
+        win = winnr
+        api.nvim_win_set_buf(win, buf)
+      end
       local bufnr = api.nvim_win_get_buf(winnr)
-
-      if api.nvim_buf_is_valid(bufnr) and (vim.bo[bufnr]).ft ~= "nvdash" then
-        api.nvim_win_close(winnr, true)
+      if api.nvim_buf_is_valid(bufnr) and win ~= winnr then
+        api.nvim_win_close(winnr, api.nvim_win_get_config(winnr).relative == "")
       end
     end
 
+    vim.opt_local.filetype = "nvdash"
     vim.g.nvdash_displayed = true
 
     local header = headerAscii
@@ -56,7 +58,7 @@ M.open = function(buf)
     end
 
     local function addPadding_toHeader(str)
-      local pad = (api.nvim_win_get_width(0) - fn.strwidth(str)) / 2
+      local pad = (api.nvim_win_get_width(win) - fn.strwidth(str)) / 2
       return string.rep(" ", math.floor(pad)) .. str .. " "
     end
 
@@ -74,12 +76,12 @@ M.open = function(buf)
     local result = {}
 
     -- make all lines available
-    for i = 1, math.max(get_win_height(0), max_height) do
+    for i = 1, math.max(get_win_height(win), max_height) do
       result[i] = ""
     end
 
-    local headerStart_Index = math.abs(math.floor((get_win_height(0) / 2) - (#dashboard / 2))) + 1 -- 1 = To handle zero case
-    local abc = math.abs(math.floor((get_win_height(0) / 2) - (#dashboard / 2))) + 1 -- 1 = To handle zero case
+    local headerStart_Index = math.abs(math.floor((get_win_height(win) / 2) - (#dashboard / 2))) + 1 -- 1 = To handle zero case
+    local abc = math.abs(math.floor((get_win_height(win) / 2) - (#dashboard / 2))) + 1 -- 1 = To handle zero case
 
     -- set ascii
     for _, val in ipairs(dashboard) do
@@ -90,7 +92,7 @@ M.open = function(buf)
     api.nvim_buf_set_lines(buf, 0, -1, false, result)
 
     local nvdash = api.nvim_create_namespace "nvdash"
-    local horiz_pad_index = math.floor((api.nvim_win_get_width(0) / 2) - (nvdashWidth / 2)) - 2
+    local horiz_pad_index = math.floor((api.nvim_win_get_width(win) / 2) - (nvdashWidth / 2)) - 2
 
     for i = abc, abc + #header do
       api.nvim_buf_add_highlight(buf, nvdash, "NvDashAscii", i, horiz_pad_index, -1)
@@ -100,7 +102,7 @@ M.open = function(buf)
       api.nvim_buf_add_highlight(buf, nvdash, "NvDashButtons", i, horiz_pad_index, -1)
     end
 
-    api.nvim_win_set_cursor(0, { abc + #header, math.floor(vim.o.columns / 2) - 13 })
+    api.nvim_win_set_cursor(win, { abc + #header, math.floor(vim.o.columns / 2) - 13 })
 
     local first_btn_line = abc + #header + 2
     local keybind_lineNrs = {}
@@ -120,13 +122,13 @@ M.open = function(buf)
     vim.keymap.set("n", "k", function()
       local cur = fn.line "."
       local target_line = cur == keybind_lineNrs[1] and keybind_lineNrs[#keybind_lineNrs] or cur - 2
-      api.nvim_win_set_cursor(0, { target_line, math.floor(vim.o.columns / 2) - 13 })
+      api.nvim_win_set_cursor(win, { target_line, math.floor(vim.o.columns / 2) - 13 })
     end, { buffer = true })
 
     vim.keymap.set("n", "j", function()
       local cur = fn.line "."
       local target_line = cur == keybind_lineNrs[#keybind_lineNrs] and keybind_lineNrs[1] or cur + 2
-      api.nvim_win_set_cursor(0, { target_line, math.floor(vim.o.columns / 2) - 13 })
+      api.nvim_win_set_cursor(win, { target_line, math.floor(vim.o.columns / 2) - 13 })
     end, { buffer = true })
 
     -- pressing enter on
