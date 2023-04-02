@@ -156,6 +156,11 @@ M.cwd = function()
   ) or ""
 end
 
+
+M.cursor_position = function()
+    gen_block("", "%l/%c", "%#St_Pos_sep#", "%#St_Pos_bg#", "%#St_Pos_txt#")
+end
+
 M.run = function()
   local modules = require "nvchad_ui.statusline.minimal"
 
@@ -176,7 +181,7 @@ M.run = function()
     modules.LSP_Diagnostics(),
     modules.LSP_status() or "",
     modules.cwd(),
-    gen_block("", "%l/%c", "%#St_Pos_sep#", "%#St_Pos_bg#", "%#St_Pos_txt#"),
+    modules.cursor_position()
   }
 end
 
