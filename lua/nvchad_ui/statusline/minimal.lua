@@ -140,12 +140,18 @@ end
 
 M.LSP_status = function()
   if rawget(vim, "lsp") then
+    local clients = {}
+
     for _, client in ipairs(vim.lsp.get_active_clients()) do
       if client.attached_buffers[vim.api.nvim_get_current_buf()] then
-        return (vim.o.columns > 100 and gen_block("", client.name, "%#St_lsp_sep#", "%#St_lsp_bg#", "%#St_lsp_txt#"))
-          or "  LSP "
+        table.insert(clients, client.name)
       end
     end
+
+    return (
+      vim.o.columns > 100
+      and gen_block("", table.concat(clients, ", "), "%#St_lsp_sep#", "%#St_lsp_bg#", "%#St_lsp_txt#")
+    ) or "  LSP "
   end
 end
 
@@ -156,9 +162,8 @@ M.cwd = function()
   ) or ""
 end
 
-
 M.cursor_position = function()
-    gen_block("", "%l/%c", "%#St_Pos_sep#", "%#St_Pos_bg#", "%#St_Pos_txt#")
+  gen_block("", "%l/%c", "%#St_Pos_sep#", "%#St_Pos_bg#", "%#St_Pos_txt#")
 end
 
 M.run = function()
@@ -181,7 +186,7 @@ M.run = function()
     modules.LSP_Diagnostics(),
     modules.LSP_status() or "",
     modules.cwd(),
-    modules.cursor_position()
+    modules.cursor_position(),
   }
 end
 
