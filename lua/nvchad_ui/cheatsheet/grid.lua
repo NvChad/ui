@@ -224,7 +224,10 @@ return function()
             "NvChSection",
             i + #ascii_header - 1,
             vim.fn.byteidx(lines[1], col_start),
-            vim.fn.byteidx(lines[1], col_start) + column_width
+            vim.fn.byteidx(lines[1], col_start)
+              + column_width
+              + vim.fn.strlen(columns[column_i][i])
+              - vim.fn.strdisplaywidth(columns[column_i][i])
           )
           -- highlight card heading & randomize hl groups for colorful colors
           vim.api.nvim_buf_add_highlight(
