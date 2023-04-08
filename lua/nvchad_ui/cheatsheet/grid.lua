@@ -54,8 +54,9 @@ return function()
       if type(mappings) == "table" then
         for keybind, mappingInfo in pairs(mappings) do
           if mappingInfo[2] then
-            column_width = column_width > #mappingInfo[2] + #prettify_Str(keybind) and column_width
-              or #mappingInfo[2] + #prettify_Str(keybind)
+            column_width = column_width > vim.fn.strdisplaywidth(mappingInfo[2] .. prettify_Str(keybind))
+                and column_width
+              or vim.fn.strdisplaywidth(mappingInfo[2] .. prettify_Str(keybind))
           end
         end
       end
@@ -78,12 +79,12 @@ return function()
     for mode, modeMappings in pairs(section) do
       local mode_suffix = (mode == "n" or mode == "plugin") and "" or string.format(" (%s) ", mode)
       local card_name = name .. mode_suffix
-      local padding_left = math.floor((column_width - #card_name) / 2)
+      local padding_left = math.floor((column_width - vim.fn.strdisplaywidth(card_name)) / 2)
 
       -- center the heading
       card_name = string.rep(" ", padding_left)
         .. card_name
-        .. string.rep(" ", column_width - #card_name - padding_left)
+        .. string.rep(" ", column_width - vim.fn.strdisplaywidth(card_name) - padding_left)
 
       card_headings[#card_headings + 1] = card_name
 
@@ -93,7 +94,7 @@ return function()
       if type(modeMappings) == "table" then
         for keystroke, mapping_info in pairs(modeMappings) do
           if mapping_info[2] then
-            local whitespace_len = column_width - 4 - #(prettify_Str(keystroke) .. mapping_info[2])
+            local whitespace_len = column_width - 4 - vim.fn.strdisplaywidth(prettify_Str(keystroke) .. mapping_info[2])
             local pretty_mapping = mapping_info[2] .. string.rep(" ", whitespace_len) .. prettify_Str(keystroke)
 
             cards[card_name][#cards[card_name] + 1] = "  " .. pretty_mapping .. "  "
@@ -214,36 +215,59 @@ return function()
       if columns[column_i][i] then
         -- highlight headings & one line after it
         if vim.tbl_contains(card_headings, columns[column_i][i]) then
-          local heading_index = 0
-          local heading_end = 0
-
-          -- find index of starting/ending letter
-          for char_i = 1, #columns[column_i][i], 1 do
-            if columns[column_i][i]:sub(char_i, char_i) ~= " " and heading_index == 0 then
-              heading_index = char_i
-            elseif columns[column_i][i]:sub(char_i, char_i) ~= " " then
-              heading_end = char_i
-            end
-          end
+          local lines = vim.api.nvim_buf_get_lines(buf, i + #ascii_header - 1, i + #ascii_header + 1, false)
 
           -- highlight area around card heading
-          vim.api.nvim_buf_add_highlight(buf, nvcheatsheet, "NvChSection", i + #ascii_header - 1, col_start, col_end)
-
+          vim.api.nvim_buf_add_highlight(
+            buf,
+            nvcheatsheet,
+            "NvChSection",
+            i + #ascii_header - 1,
+            vim.fn.byteidx(lines[1], col_start),
+            vim.fn.byteidx(lines[1], col_start)
+              + column_width
+              + vim.fn.strlen(columns[column_i][i])
+              - vim.fn.strdisplaywidth(columns[column_i][i])
+          )
           -- highlight card heading & randomize hl groups for colorful colors
           vim.api.nvim_buf_add_highlight(
             buf,
             nvcheatsheet,
             highlight_groups[math.random(1, #highlight_groups)],
             i + #ascii_header - 1,
-            col_start + heading_index - 2,
-            col_start + heading_end + 1
+            vim.fn.stridx(lines[1], vim.trim(columns[column_i][i]), col_start) - 1,
+            vim.fn.stridx(lines[1], vim.trim(columns[column_i][i]), col_start)
+              + vim.fn.strlen(vim.trim(columns[column_i][i]))
+              + 1
           )
-          vim.api.nvim_buf_add_highlight(buf, nvcheatsheet, "NvChSection", i + #ascii_header, col_start, col_end)
+          vim.api.nvim_buf_add_highlight(
+            buf,
+            nvcheatsheet,
+            "NvChSection",
+            i + #ascii_header,
+            vim.fn.byteidx(lines[2], col_start),
+            vim.fn.byteidx(lines[2], col_start) + column_width
+          )
 
         -- highlight mappings & one line after it
         elseif string.match(columns[column_i][i], "%s+") ~= columns[column_i][i] then
-          vim.api.nvim_buf_add_highlight(buf, nvcheatsheet, "NvChSection", i + #ascii_header - 1, col_start, col_end)
-          vim.api.nvim_buf_add_highlight(buf, nvcheatsheet, "NvChSection", i + #ascii_header, col_start, col_end)
+          local lines = vim.api.nvim_buf_get_lines(buf, i + #ascii_header - 1, i + #ascii_header + 1, false)
+          vim.api.nvim_buf_add_highlight(
+            buf,
+            nvcheatsheet,
+            "NvChSection",
+            i + #ascii_header - 1,
+            vim.fn.stridx(lines[1], columns[column_i][i], col_start),
+            vim.fn.stridx(lines[1], columns[column_i][i], col_start) + vim.fn.strlen(columns[column_i][i])
+          )
+          vim.api.nvim_buf_add_highlight(
+            buf,
+            nvcheatsheet,
+            "NvChSection",
+            i + #ascii_header,
+            vim.fn.byteidx(lines[2], col_start),
+            vim.fn.byteidx(lines[2], col_start) + column_width
+          )
         end
       end
     end
