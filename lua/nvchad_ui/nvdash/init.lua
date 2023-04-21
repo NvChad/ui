@@ -29,7 +29,7 @@ local max_height = #headerAscii + 4 + (2 * #config.buttons) -- 4  = extra spaces
 local get_win_height = api.nvim_win_get_height
 
 M.open = function(buf)
-  if vim.fn.expand "%" == "" or buf then
+  if (vim.api.nvim_buf_get_name(0) == "" and vim.bo.buflisted) or buf then
     buf = buf or api.nvim_create_buf(false, true)
     local win = nil
 
