@@ -5,21 +5,35 @@ local M = {}
 
 M.modes = {
   ["n"] = { "NORMAL", "St_NormalMode" },
+  ["no"] = { "NORMAL (no)", "St_NormalMode" },
+  ["nov"] = { "NORMAL (nov)", "St_NormalMode" },
+  ["noV"] = { "NORMAL (noV)", "St_NormalMode" },
+  ["noCTRL-V"] = { "NORMAL", "St_NormalMode" },
   ["niI"] = { "NORMAL i", "St_NormalMode" },
   ["niR"] = { "NORMAL r", "St_NormalMode" },
   ["niV"] = { "NORMAL v", "St_NormalMode" },
-  ["no"] = { "N-PENDING", "St_NormalMode" },
+  ["nt"] = { "NTERMINAL", "St_NTerminalMode" },
+  ["ntT"] = { "NTERMINAL (ntT)", "St_NTerminalMode" },
+
+  ["v"] = { "VISUAL", "St_VisualMode" },
+  ["vs"] = { "V-CHAR (Ctrl O)", "St_VisualMode" },
+  ["V"] = { "V-LINE", "St_VisualMode" },
+  ["Vs"] = { "V-LINE", "St_VisualMode" },
+  [""] = { "V-BLOCK", "St_VisualMode" },
+
   ["i"] = { "INSERT", "St_InsertMode" },
   ["ic"] = { "INSERT (completion)", "St_InsertMode" },
   ["ix"] = { "INSERT completion", "St_InsertMode" },
+
   ["t"] = { "TERMINAL", "St_TerminalMode" },
-  ["nt"] = { "NTERMINAL", "St_NTerminalMode" },
-  ["v"] = { "VISUAL", "St_VisualMode" },
-  ["V"] = { "V-LINE", "St_VisualMode" },
-  ["Vs"] = { "V-LINE (Ctrl O)", "St_VisualMode" },
-  [""] = { "V-BLOCK", "St_VisualMode" },
+
   ["R"] = { "REPLACE", "St_ReplaceMode" },
+  ["Rc"] = { "REPLACE (Rc)", "St_ReplaceMode" },
+  ["Rx"] = { "REPLACEa (Rx)", "St_ReplaceMode" },
   ["Rv"] = { "V-REPLACE", "St_ReplaceMode" },
+  ["Rvc"] = { "V-REPLACE (Rvc)", "St_ReplaceMode" },
+  ["Rvx"] = { "V-REPLACE (Rvx)", "St_ReplaceMode" },
+
   ["s"] = { "SELECT", "St_SelectMode" },
   ["S"] = { "S-LINE", "St_SelectMode" },
   [""] = { "S-BLOCK", "St_SelectMode" },

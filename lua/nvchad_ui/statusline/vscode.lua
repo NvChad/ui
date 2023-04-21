@@ -5,21 +5,35 @@ local M = {}
 
 M.modes = {
   ["n"] = "NORMAL",
+  ["no"] = "NORMAL (no)",
+  ["nov"] = "NORMAL (nov)",
+  ["noV"] = "NORMAL (noV)",
+  ["noCTRL-V"] = "NORMAL",
   ["niI"] = "NORMAL i",
   ["niR"] = "NORMAL r",
   ["niV"] = "NORMAL v",
-  ["no"] = "N-PENDING",
+  ["nt"] = "NTERMINAL",
+  ["ntT"] = "NTERMINAL (ntT)",
+
+  ["v"] = "VISUAL",
+  ["vs"] = "V-CHAR (Ctrl O)",
+  ["V"] = "V-LINE",
+  ["Vs"] = "V-LINE",
+  [""] = "V-BLOCK",
+
   ["i"] = "INSERT",
   ["ic"] = "INSERT (completion)",
   ["ix"] = "INSERT completion",
+
   ["t"] = "TERMINAL",
-  ["nt"] = "NTERMINAL",
-  ["v"] = "VISUAL",
-  ["V"] = "V-LINE",
-  ["Vs"] = "V-LINE (Ctrl O)",
-  [""] = "V-BLOCK",
+
   ["R"] = "REPLACE",
+  ["Rc"] = "REPLACE (Rc)",
+  ["Rx"] = "REPLACEa (Rx)",
   ["Rv"] = "V-REPLACE",
+  ["Rvc"] = "V-REPLACE (Rvc)",
+  ["Rvx"] = "V-REPLACE (Rvx)",
+
   ["s"] = "SELECT",
   ["S"] = "S-LINE",
   [""] = "S-BLOCK",
