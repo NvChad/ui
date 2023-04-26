@@ -2,9 +2,30 @@ local M = {}
 local api = vim.api
 local fn = vim.fn
 
-dofile(vim.g.base46_cache .. "nvdash")
+local config = {
+    load_on_startup = true,
 
-local config = require("core.utils").load_config().ui.nvdash
+    header = {
+        "           ▄ ▄                   ",
+        "       ▄   ▄▄▄     ▄ ▄▄▄ ▄ ▄     ",
+        "       █ ▄ █▄█ ▄▄▄ █ █▄█ █ █     ",
+        "    ▄▄ █▄█▄▄▄█ █▄█▄█▄▄█▄▄█ █     ",
+        "  ▄ █▄▄█ ▄ ▄▄ ▄█ ▄▄▄▄▄▄▄▄▄▄▄▄▄▄  ",
+        "  █▄▄▄▄ ▄▄▄ █ ▄ ▄▄▄ ▄ ▄▄▄ ▄ ▄ █ ▄",
+        "▄ █ █▄█ █▄█ █ █ █▄█ █ █▄█ ▄▄▄ █ █",
+        "█▄█ ▄ █▄▄█▄▄█ █ ▄▄█ █ ▄ █ █▄█▄█ █",
+        "    █▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█ █▄█▄▄▄█    ",
+    },
+
+    buttons = {
+        { "  Find File", "Spc f f", "Telescope find_files" },
+        { "  Recent Files", "Spc f o", "Telescope oldfiles" },
+        { "  Find Word", "Spc f w", "Telescope live_grep" },
+        { "  Bookmarks", "Spc b m", "Telescope marks" },
+        { "  Themes", "Spc t h", "Telescope themes" },
+        { "  Mappings", "Spc c h", "NvCheatsheet" },
+    },
+}
 
 local headerAscii = config.header
 local emmptyLine = string.rep(" ", vim.fn.strwidth(headerAscii[1]))
@@ -17,13 +38,13 @@ headerAscii[#headerAscii + 1] = emmptyLine
 
 api.nvim_create_autocmd("BufWinLeave", {
   callback = function()
-    if vim.bo.ft == "nvdash" then
-      vim.g.nvdash_displayed = false
+    if vim.bo.ft == "dash" then
+      vim.g.dash_displayed = false
     end
   end,
 })
 
-local nvdashWidth = #headerAscii[1] + 3
+local dashWidth = #headerAscii[1] + 3
 
 local max_height = #headerAscii + 4 + (2 * #config.buttons) -- 4  = extra spaces i.e top/bottom
 local get_win_height = api.nvim_win_get_height
@@ -33,7 +54,6 @@ M.open = function(buf)
     buf = buf or api.nvim_create_buf(false, true)
     local win = nil
 
-    -- close windows i.e splits
     for _, winnr in ipairs(api.nvim_list_wins()) do
       if win == nil and api.nvim_win_get_config(winnr).relative == "" then
         win = winnr
@@ -45,8 +65,8 @@ M.open = function(buf)
       end
     end
 
-    vim.opt_local.filetype = "nvdash"
-    vim.g.nvdash_displayed = true
+    vim.opt_local.filetype = "dash"
+    vim.g.dash_displayed = true
 
     local header = headerAscii
     local buttons = config.buttons
@@ -75,7 +95,6 @@ M.open = function(buf)
 
     local result = {}
 
-    -- make all lines available
     for i = 1, math.max(get_win_height(win), max_height) do
       result[i] = ""
     end
@@ -91,15 +110,15 @@ M.open = function(buf)
 
     api.nvim_buf_set_lines(buf, 0, -1, false, result)
 
-    local nvdash = api.nvim_create_namespace "nvdash"
-    local horiz_pad_index = math.floor((api.nvim_win_get_width(win) / 2) - (nvdashWidth / 2)) - 2
+    local dash = api.nvim_create_namespace "dash"
+    local horiz_pad_index = math.floor((api.nvim_win_get_width(win) / 2) - (dashWidth / 2)) - 2
 
     for i = abc, abc + #header do
-      api.nvim_buf_add_highlight(buf, nvdash, "NvDashAscii", i, horiz_pad_index, -1)
+      api.nvim_buf_add_highlight(buf, dash, "DashAscii", i, horiz_pad_index, -1)
     end
 
     for i = abc + #header - 2, abc + #dashboard do
-      api.nvim_buf_add_highlight(buf, nvdash, "NvDashButtons", i, horiz_pad_index, -1)
+      api.nvim_buf_add_highlight(buf, dash, "DashButtons", i, horiz_pad_index, -1)
     end
 
     api.nvim_win_set_cursor(win, { abc + #header, math.floor(vim.o.columns / 2) - 13 })
@@ -119,19 +138,34 @@ M.open = function(buf)
     vim.keymap.set("n", "<Up>", "", { buffer = true })
     vim.keymap.set("n", "<Down>", "", { buffer = true })
 
-    vim.keymap.set("n", "k", function()
-      local cur = fn.line "."
-      local target_line = cur == keybind_lineNrs[1] and keybind_lineNrs[#keybind_lineNrs] or cur - 2
-      api.nvim_win_set_cursor(win, { target_line, math.floor(vim.o.columns / 2) - 13 })
-    end, { buffer = true })
+        function MoveCursorUp()
+            local cur = fn.line "."
+            local target_line = cur == keybind_lineNrs[0] and keybind_lineNrs[#keybind_lineNrs] or cur - 2
+            api.nvim_win_set_cursor(win, { target_line, math.floor(vim.o.columns / 1) - 13 })
+        end
 
-    vim.keymap.set("n", "j", function()
-      local cur = fn.line "."
-      local target_line = cur == keybind_lineNrs[#keybind_lineNrs] and keybind_lineNrs[1] or cur + 2
-      api.nvim_win_set_cursor(win, { target_line, math.floor(vim.o.columns / 2) - 13 })
-    end, { buffer = true })
+        function MoveCursorDown()
+            local cur = fn.line "."
+            local target_line = cur == keybind_lineNrs[#keybind_lineNrs] and keybind_lineNrs[0] or cur + 2
+            api.nvim_win_set_cursor(win, { target_line, math.floor(vim.o.columns / 1) - 13 })
+        end
 
-    -- pressing enter on
+        vim.keymap.set("n", "<Up>", function()
+            MoveCursorUp()
+        end, { buffer = true })
+
+        vim.keymap.set("n", "<Down>", function()
+            MoveCursorDown()
+        end, { buffer = true })
+
+        vim.keymap.set("n", "k", function()
+            MoveCursorUp()
+        end, { buffer = true })
+
+        vim.keymap.set("n", "j", function()
+            MoveCursorDown()
+        end, { buffer = true })
+
     vim.keymap.set("n", "<CR>", function()
       for i, val in ipairs(keybind_lineNrs) do
         if val == fn.line "." then
