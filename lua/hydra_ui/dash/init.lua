@@ -54,6 +54,7 @@ M.open = function(buf)
     buf = buf or api.nvim_create_buf(false, true)
     local win = nil
 
+    -- close windows i.e splits
     for _, winnr in ipairs(api.nvim_list_wins()) do
       if win == nil and api.nvim_win_get_config(winnr).relative == "" then
         win = winnr
@@ -95,6 +96,7 @@ M.open = function(buf)
 
     local result = {}
 
+    -- make all lines available
     for i = 1, math.max(get_win_height(win), max_height) do
       result[i] = ""
     end
@@ -138,34 +140,19 @@ M.open = function(buf)
     vim.keymap.set("n", "<Up>", "", { buffer = true })
     vim.keymap.set("n", "<Down>", "", { buffer = true })
 
-        function MoveCursorUp()
-            local cur = fn.line "."
-            local target_line = cur == keybind_lineNrs[0] and keybind_lineNrs[#keybind_lineNrs] or cur - 2
-            api.nvim_win_set_cursor(win, { target_line, math.floor(vim.o.columns / 1) - 13 })
-        end
+    vim.keymap.set("n", "k", function()
+      local cur = fn.line "."
+      local target_line = cur == keybind_lineNrs[1] and keybind_lineNrs[#keybind_lineNrs] or cur - 2
+      api.nvim_win_set_cursor(win, { target_line, math.floor(vim.o.columns / 2) - 13 })
+    end, { buffer = true })
 
-        function MoveCursorDown()
-            local cur = fn.line "."
-            local target_line = cur == keybind_lineNrs[#keybind_lineNrs] and keybind_lineNrs[0] or cur + 2
-            api.nvim_win_set_cursor(win, { target_line, math.floor(vim.o.columns / 1) - 13 })
-        end
+    vim.keymap.set("n", "j", function()
+      local cur = fn.line "."
+      local target_line = cur == keybind_lineNrs[#keybind_lineNrs] and keybind_lineNrs[1] or cur + 2
+      api.nvim_win_set_cursor(win, { target_line, math.floor(vim.o.columns / 2) - 13 })
+    end, { buffer = true })
 
-        vim.keymap.set("n", "<Up>", function()
-            MoveCursorUp()
-        end, { buffer = true })
-
-        vim.keymap.set("n", "<Down>", function()
-            MoveCursorDown()
-        end, { buffer = true })
-
-        vim.keymap.set("n", "k", function()
-            MoveCursorUp()
-        end, { buffer = true })
-
-        vim.keymap.set("n", "j", function()
-            MoveCursorDown()
-        end, { buffer = true })
-
+    -- pressing enter on
     vim.keymap.set("n", "<CR>", function()
       for i, val in ipairs(keybind_lineNrs) do
         if val == fn.line "." then
