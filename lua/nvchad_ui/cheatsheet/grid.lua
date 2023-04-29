@@ -6,7 +6,7 @@ local mappings_tb = require("core.utils").load_config().mappings
 vim.api.nvim_create_autocmd("BufWinLeave", {
   callback = function()
     if vim.bo.ft == "nvcheatsheet" then
-      vim.g.nvdash_displayed = false
+      vim.g.nvcheatsheet_displayed = false
     end
   end,
 })
@@ -56,7 +56,7 @@ return function()
           if mappingInfo[2] then
             column_width = column_width > vim.fn.strdisplaywidth(mappingInfo[2] .. prettify_Str(keybind))
                 and column_width
-              or vim.fn.strdisplaywidth(mappingInfo[2] .. prettify_Str(keybind))
+                or vim.fn.strdisplaywidth(mappingInfo[2] .. prettify_Str(keybind))
           end
         end
       end
@@ -83,8 +83,8 @@ return function()
 
       -- center the heading
       card_name = string.rep(" ", padding_left)
-        .. card_name
-        .. string.rep(" ", column_width - vim.fn.strdisplaywidth(card_name) - padding_left)
+          .. card_name
+          .. string.rep(" ", column_width - vim.fn.strdisplaywidth(card_name) - padding_left)
 
       card_headings[#card_headings + 1] = card_name
 
@@ -225,9 +225,9 @@ return function()
             i + #ascii_header - 1,
             vim.fn.byteidx(lines[1], col_start),
             vim.fn.byteidx(lines[1], col_start)
-              + column_width
-              + vim.fn.strlen(columns[column_i][i])
-              - vim.fn.strdisplaywidth(columns[column_i][i])
+            + column_width
+            + vim.fn.strlen(columns[column_i][i])
+            - vim.fn.strdisplaywidth(columns[column_i][i])
           )
           -- highlight card heading & randomize hl groups for colorful colors
           vim.api.nvim_buf_add_highlight(
@@ -237,8 +237,8 @@ return function()
             i + #ascii_header - 1,
             vim.fn.stridx(lines[1], vim.trim(columns[column_i][i]), col_start) - 1,
             vim.fn.stridx(lines[1], vim.trim(columns[column_i][i]), col_start)
-              + vim.fn.strlen(vim.trim(columns[column_i][i]))
-              + 1
+            + vim.fn.strlen(vim.trim(columns[column_i][i]))
+            + 1
           )
           vim.api.nvim_buf_add_highlight(
             buf,
@@ -249,7 +249,7 @@ return function()
             vim.fn.byteidx(lines[2], col_start) + column_width
           )
 
-        -- highlight mappings & one line after it
+          -- highlight mappings & one line after it
         elseif string.match(columns[column_i][i], "%s+") ~= columns[column_i][i] then
           local lines = vim.api.nvim_buf_get_lines(buf, i + #ascii_header - 1, i + #ascii_header + 1, false)
           vim.api.nvim_buf_add_highlight(
@@ -290,6 +290,7 @@ return function()
   vim.opt_local.wrap = false
   vim.opt_local.relativenumber = false
   vim.opt_local.cul = false
+  vim.g.nvcheatsheet_displayed = true
 
   vim.keymap.set("n", "<ESC>", ":bw<CR>", { buffer = buf }) -- use ESC to close
 end

@@ -25,12 +25,10 @@ end
 
 -- command to toggle cheatsheet
 new_cmd("NvCheatsheet", function()
-  vim.g.nvcheatsheet_displayed = not vim.g.nvcheatsheet_displayed
-
   if vim.g.nvcheatsheet_displayed then
-    require("nvchad_ui.cheatsheet." .. config.cheatsheet.theme)()
-  else
     vim.cmd "bd"
+  else
+    require("nvchad_ui.cheatsheet." .. config.cheatsheet.theme)()
   end
 end, {})
 

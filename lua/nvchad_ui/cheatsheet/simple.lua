@@ -8,7 +8,7 @@ dofile(vim.g.base46_cache .. "nvcheatsheet")
 vim.api.nvim_create_autocmd("BufWinLeave", {
   callback = function()
     if vim.bo.ft == "nvcheatsheet" then
-      vim.g.nvdash_displayed = false
+      vim.g.nvcheatsheet_displayed = false
     end
   end,
 })
@@ -40,7 +40,7 @@ return function()
         for keybind, mappingInfo in pairs(mappings) do
           if mappingInfo[2] then
             largest_str = largest_str > #mappingInfo[2] + #prettify_Str(keybind) and largest_str
-              or #mappingInfo[2] + #prettify_Str(keybind)
+                or #mappingInfo[2] + #prettify_Str(keybind)
           end
         end
       end
@@ -167,4 +167,7 @@ return function()
   vim.opt_local.wrap = false
   vim.opt_local.relativenumber = false
   vim.opt_local.cul = false
+  vim.g.nvcheatsheet_displayed = true
+
+  vim.keymap.set("n", "<ESC>", ":bw<CR>", { buffer = buf }) -- use ESC to close
 end
