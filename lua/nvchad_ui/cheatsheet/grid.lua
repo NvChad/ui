@@ -290,4 +290,6 @@ return function()
   vim.opt_local.wrap = false
   vim.opt_local.relativenumber = false
   vim.opt_local.cul = false
+
+  vim.keymap.set("n", "<ESC>", ":bw<CR>", { buffer = buf }) -- use ESC to close
 end
