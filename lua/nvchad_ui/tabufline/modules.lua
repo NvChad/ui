@@ -55,7 +55,7 @@ local function add_fileInfo(name, bufnr)
     local icon, icon_hl = devicons.get_icon(name, string.match(name, "%a+$"))
 
     if not icon then
-      icon = ""
+      icon = "󰈚"
       icon_hl = "DevIconDefault"
     end
 
@@ -110,7 +110,7 @@ local function add_fileInfo(name, bufnr)
 end
 
 local function styleBufferTab(nr)
-  local close_btn = "%" .. nr .. "@TbKillBuf@  %X"
+  local close_btn = "%" .. nr .. "@TbKillBuf@ 󰅖 %X"
   local name = (#api.nvim_buf_get_name(nr) ~= 0) and fn.fnamemodify(api.nvim_buf_get_name(nr), ":t") or " No Name "
   name = "%" .. nr .. "@TbGoToBuf@" .. add_fileInfo(name, nr) .. "%X"
 
@@ -181,7 +181,7 @@ M.tablist = function()
     for i = 1, number_of_tabs, 1 do
       local tab_hl = ((i == fn.tabpagenr()) and "%#TbLineTabOn# ") or "%#TbLineTabOff# "
       result = result .. ("%" .. i .. "@TbGotoTab@" .. tab_hl .. i .. " ")
-      result = (i == fn.tabpagenr() and result .. "%#TbLineTabCloseBtn#" .. "%@TbTabClose@ %X") or result
+      result = (i == fn.tabpagenr() and result .. "%#TbLineTabCloseBtn#" .. "%@TbTabClose@󰅙 %X") or result
     end
 
     local new_tabtn = "%#TblineTabNewBtn#" .. "%@TbNewTab@  %X"
@@ -194,7 +194,7 @@ end
 
 M.buttons = function()
   local toggle_themeBtn = "%@TbToggle_theme@%#TbLineThemeToggleBtn#" .. vim.g.toggle_theme_icon .. "%X"
-  local CloseAllBufsBtn = "%@TbCloseAllBufs@%#TbLineCloseAllBufsBtn#" .. "  " .. "%X"
+  local CloseAllBufsBtn = "%@TbCloseAllBufs@%#TbLineCloseAllBufsBtn#" .. " 󰅖 " .. "%X"
   return toggle_themeBtn .. CloseAllBufsBtn
 end
 

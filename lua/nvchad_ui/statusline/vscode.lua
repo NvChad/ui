@@ -53,7 +53,7 @@ M.mode = function()
 end
 
 M.fileInfo = function()
-  local icon = "  "
+  local icon = " 󰈚 "
   local filename = (fn.expand "%" == "" and "Empty ") or fn.expand "%:t"
 
   if filename ~= "Empty " then
@@ -121,7 +121,7 @@ end
 
 M.LSP_Diagnostics = function()
   if not rawget(vim, "lsp") then
-    return "  0  0"
+    return " 󰅚 0  0"
   end
 
   local errors = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
@@ -129,9 +129,9 @@ M.LSP_Diagnostics = function()
   local hints = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT })
   local info = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO })
 
-  errors = (errors and errors > 0) and (" " .. errors .. " ") or " 0 "
+  errors = (errors and errors > 0) and ("󰅚 " .. errors .. " ") or "󰅚 0 "
   warnings = (warnings and warnings > 0) and (" " .. warnings .. " ") or " 0 "
-  hints = (hints and hints > 0) and ("ﯧ " .. hints .. " ") or ""
+  hints = (hints and hints > 0) and ("󰛩 " .. hints .. " ") or ""
   info = (info and info > 0) and (" " .. info .. " ") or ""
 
   return vim.o.columns > 140 and errors .. warnings .. hints .. info or ""
@@ -145,14 +145,14 @@ M.LSP_status = function()
   if rawget(vim, "lsp") then
     for _, client in ipairs(vim.lsp.get_active_clients()) do
       if client.attached_buffers[vim.api.nvim_get_current_buf()] and client.name ~= "null-ls" then
-        return (vim.o.columns > 100 and "   " .. client.name .. "  ") or "   LSP  "
+        return (vim.o.columns > 100 and " 󰄭  " .. client.name .. "  ") or " 󰄭  LSP  "
       end
     end
   end
 end
 
 M.cwd = function()
-  local dir_name = "%#St_Mode#  " .. fn.fnamemodify(fn.getcwd(), ":t") .. " "
+  local dir_name = "%#St_Mode# 󰉖 " .. fn.fnamemodify(fn.getcwd(), ":t") .. " "
   return (vim.o.columns > 85 and dir_name) or ""
 end
 
