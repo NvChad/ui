@@ -22,10 +22,11 @@ local config = {
 
     buttons = {
         { "  Find File", "Spc f f", "Telescope find_files" },
-        { "  Recent", "Spc f o", "Telescope oldfiles" },
+        { "  Recent", "Spc f o", "Telescope oldfiles" },
+        { "  New file" , "Spc n f", "ene"},
         { "  Find Word", "Spc f w", "Telescope live_grep" },
         { "  Bookmarks", "Spc b m", "Telescope marks" },
-        { "  Settings", "Spc t s", "ex $MYVIMRC | :cd %:p:h | :HydraVimCloseEmptyBuffers" },
+        { "  Settings", "Spc t s", "ex $MYVIMRC | :HydraVimCloseEmptyBuffers" },
     },
 }
 
