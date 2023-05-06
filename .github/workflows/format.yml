@@ -1,0 +1,39 @@
+name: Stylua Action
+
+on: [push, pull_request]
+
+jobs:
+  stylua_job:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Install Git and Stylua
+        run: brew install git stylua
+
+      - name: Format Lua files
+        run: stylua .
+
+      - name: Set up env var
+        run: |
+          echo "FILES_MODIFIED=$(git status --porcelain)" >> $GITHUB_ENV
+          echo $FILES_MODIFIED
+
+      - name: Commit files
+        if: ${{ env.FILES_MODIFIED != '' }}
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -a -m "style: format Lua files - $(TZ=America/Sao_Paulo date '+%Y-%m-%d %H:%M')"
+
+      - name: Push changes
+        if: ${{ env.FILES_MODIFIED != '' }}
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          branch: ${{ github.ref }}
