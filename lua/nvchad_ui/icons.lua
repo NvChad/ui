@@ -40,6 +40,7 @@ M.lspkind = {
   Package = "",
   Copilot = "",
   Codeium = "",
+  TabNine = "",
 }
 
 M.devicons = {
