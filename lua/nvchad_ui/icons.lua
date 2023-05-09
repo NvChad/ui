@@ -39,6 +39,7 @@ M.lspkind = {
   Watch = "󰥔",
   Package = "",
   Copilot = "",
+  Codeium = "",
 }
 
 M.devicons = {
