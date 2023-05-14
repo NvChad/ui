@@ -147,24 +147,27 @@ end
 
 M.bufferlist = function()
   local buffers = {} -- buffersults
+  local current_buffers = vim.t.bufs
   local available_space = vim.o.columns - getNvimTreeWidth() - getBtnsWidth()
   local current_buf = api.nvim_get_current_buf()
   local has_current = false -- have we seen current buffer yet?
 
   vim.g.bufirst = 0
-  for _, bufnr in ipairs(vim.t.bufs) do
-    if isBufValid(bufnr) then
-      if ((#buffers + 1) * 21) > available_space then
-        if has_current then
-          break
+  if current_buffers then
+    for _, bufnr in ipairs(current_buffers) do
+      if isBufValid(bufnr) then
+        if ((#buffers + 1) * 21) > available_space then
+          if has_current then
+            break
+          end
+
+          vim.g.bufirst = vim.g.bufirst + 1
+          table.remove(buffers, 1)
         end
 
-        vim.g.bufirst = vim.g.bufirst + 1
-        table.remove(buffers, 1)
+        has_current = (bufnr == current_buf and true) or has_current
+        table.insert(buffers, styleBufferTab(bufnr))
       end
-
-      has_current = (bufnr == current_buf and true) or has_current
-      table.insert(buffers, styleBufferTab(bufnr))
     end
   end
 
