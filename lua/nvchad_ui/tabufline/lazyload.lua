@@ -18,6 +18,9 @@ vim.t.bufs = listed_bufs
 vim.api.nvim_create_autocmd({ "BufAdd", "BufEnter", "tabnew" }, {
   callback = function(args)
     local bufs = vim.t.bufs
+    if not bufs then
+      bufs = {}
+    end
 
     -- check for duplicates
     if
