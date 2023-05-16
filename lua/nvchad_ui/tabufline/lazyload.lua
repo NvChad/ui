@@ -17,7 +17,7 @@ vim.t.bufs = listed_bufs
 -- thx to https://github.com/ii14 & stores buffer per tab -> table
 vim.api.nvim_create_autocmd({ "BufAdd", "BufEnter", "tabnew" }, {
   callback = function(args)
-    local bufs = vim.t.bufs
+    local bufs = vim.t.bufs or {}
 
     -- check for duplicates
     if

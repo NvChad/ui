@@ -151,7 +151,6 @@ M.bufferlist = function()
   local current_buf = api.nvim_get_current_buf()
   local has_current = false -- have we seen current buffer yet?
 
-  vim.g.bufirst = 0
   for _, bufnr in ipairs(vim.t.bufs) do
     if isBufValid(bufnr) then
       if ((#buffers + 1) * 21) > available_space then
@@ -159,7 +158,6 @@ M.bufferlist = function()
           break
         end
 
-        vim.g.bufirst = vim.g.bufirst + 1
         table.remove(buffers, 1)
       end
 
