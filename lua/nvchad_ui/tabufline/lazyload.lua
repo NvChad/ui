@@ -17,29 +17,33 @@ vim.t.bufs = listed_bufs
 -- thx to https://github.com/ii14 & stores buffer per tab -> table
 vim.api.nvim_create_autocmd({ "BufAdd", "BufEnter", "tabnew" }, {
   callback = function(args)
-    local bufs = vim.t.bufs or {}
+    local bufs = vim.t.bufs
 
-    -- check for duplicates
-    if
-      not vim.tbl_contains(bufs, args.buf)
-      and (args.event == "BufEnter" or vim.bo[args.buf].buflisted or args.buf ~= vim.api.nvim_get_current_buf())
-      and vim.api.nvim_buf_is_valid(args.buf)
-      and vim.bo[args.buf].buflisted
-    then
-      table.insert(bufs, args.buf)
+    if vim.t.bufs == nil then
+      vim.t.bufs = vim.api.nvim_get_current_buf() == args.buf and {} or { args.buf }
+    else
+      -- check for duplicates
+      if
+        not vim.tbl_contains(bufs, args.buf)
+        and (args.event == "BufEnter" or vim.bo[args.buf].buflisted or args.buf ~= vim.api.nvim_get_current_buf())
+        and vim.api.nvim_buf_is_valid(args.buf)
+        and vim.bo[args.buf].buflisted
+      then
+        table.insert(bufs, args.buf)
 
-      -- remove unnamed buffer which isnt current buf & modified
-      for index, bufnr in ipairs(bufs) do
-        if
-          #vim.api.nvim_buf_get_name(bufnr) == 0
-          and (vim.api.nvim_get_current_buf() ~= bufnr or bufs[index + 1])
-          and not vim.api.nvim_buf_get_option(bufnr, "modified")
-        then
-          table.remove(bufs, index)
+        -- remove unnamed buffer which isnt current buf & modified
+        for index, bufnr in ipairs(bufs) do
+          if
+            #vim.api.nvim_buf_get_name(bufnr) == 0
+            and (vim.api.nvim_get_current_buf() ~= bufnr or bufs[index + 1])
+            and not vim.api.nvim_buf_get_option(bufnr, "modified")
+          then
+            table.remove(bufs, index)
+          end
         end
-      end
 
-      vim.t.bufs = bufs
+        vim.t.bufs = bufs
+      end
     end
   end,
 })
@@ -64,7 +68,7 @@ vim.api.nvim_create_autocmd("BufDelete", {
 require("core.utils").load_mappings "tabufline"
 
 if opts.lazyload then
-  vim.api.nvim_create_autocmd({"BufNew", "BufNewFile", "BufRead", "TabEnter", "TermOpen" }, {
+  vim.api.nvim_create_autocmd({ "BufNew", "BufNewFile", "BufRead", "TabEnter", "TermOpen" }, {
     pattern = "*",
     group = vim.api.nvim_create_augroup("TabuflineLazyLoad", {}),
     callback = function()
