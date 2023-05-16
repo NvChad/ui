@@ -29,7 +29,11 @@ return function()
 
   -- add left padding (strs) to ascii so it looks centered
   local ascii_header = vim.tbl_values(ascii)
-  local ascii_padding = (vim.api.nvim_win_get_width(0) / 2) - (#ascii_header[1] / 2)
+
+  local win = require("nvchad_ui.cheatsheet").getLargestWin()
+  vim.api.nvim_set_current_win(win)
+
+  local ascii_padding = (vim.api.nvim_win_get_width(win) / 2) - (#ascii_header[1] / 2)
 
   for i, str in ipairs(ascii_header) do
     ascii_header[i] = string.rep(" ", ascii_padding) .. str
@@ -56,7 +60,7 @@ return function()
           if mappingInfo[2] then
             column_width = column_width > vim.fn.strdisplaywidth(mappingInfo[2] .. prettify_Str(keybind))
                 and column_width
-                or vim.fn.strdisplaywidth(mappingInfo[2] .. prettify_Str(keybind))
+              or vim.fn.strdisplaywidth(mappingInfo[2] .. prettify_Str(keybind))
           end
         end
       end
@@ -66,7 +70,7 @@ return function()
   -- 10 = space between mapping txt , 4 = 2 & 2 space around mapping txt
   column_width = column_width + 10 + 4
 
-  local win_width = vim.api.nvim_win_get_width(0) - vim.fn.getwininfo(vim.api.nvim_get_current_win())[1].textoff - 4
+  local win_width = vim.api.nvim_win_get_width(win) - vim.fn.getwininfo(vim.api.nvim_get_current_win())[1].textoff - 4
   local columns_qty = math.floor(win_width / column_width)
 
   column_width = math.floor((win_width - (column_width * columns_qty)) / columns_qty) + column_width
@@ -83,8 +87,8 @@ return function()
 
       -- center the heading
       card_name = string.rep(" ", padding_left)
-          .. card_name
-          .. string.rep(" ", column_width - vim.fn.strdisplaywidth(card_name) - padding_left)
+        .. card_name
+        .. string.rep(" ", column_width - vim.fn.strdisplaywidth(card_name) - padding_left)
 
       card_headings[#card_headings + 1] = card_name
 
@@ -225,9 +229,9 @@ return function()
             i + #ascii_header - 1,
             vim.fn.byteidx(lines[1], col_start),
             vim.fn.byteidx(lines[1], col_start)
-            + column_width
-            + vim.fn.strlen(columns[column_i][i])
-            - vim.fn.strdisplaywidth(columns[column_i][i])
+              + column_width
+              + vim.fn.strlen(columns[column_i][i])
+              - vim.fn.strdisplaywidth(columns[column_i][i])
           )
           -- highlight card heading & randomize hl groups for colorful colors
           vim.api.nvim_buf_add_highlight(
@@ -237,8 +241,8 @@ return function()
             i + #ascii_header - 1,
             vim.fn.stridx(lines[1], vim.trim(columns[column_i][i]), col_start) - 1,
             vim.fn.stridx(lines[1], vim.trim(columns[column_i][i]), col_start)
-            + vim.fn.strlen(vim.trim(columns[column_i][i]))
-            + 1
+              + vim.fn.strlen(vim.trim(columns[column_i][i]))
+              + 1
           )
           vim.api.nvim_buf_add_highlight(
             buf,

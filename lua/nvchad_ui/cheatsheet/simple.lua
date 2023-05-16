@@ -15,7 +15,11 @@ vim.api.nvim_create_autocmd("BufWinLeave", {
 
 return function()
   local buf = api.nvim_create_buf(false, true)
-  local centerPoint = api.nvim_win_get_width(0) / 2
+
+  local win = require("nvchad_ui.cheatsheet").getLargestWin()
+  vim.api.nvim_set_current_win(win)
+
+  local centerPoint = api.nvim_win_get_width(win) / 2
 
   -- convert "<leader>th" to "<leader> + th"
   local function prettify_Str(str)
@@ -40,7 +44,7 @@ return function()
         for keybind, mappingInfo in pairs(mappings) do
           if mappingInfo[2] then
             largest_str = largest_str > #mappingInfo[2] + #prettify_Str(keybind) and largest_str
-                or #mappingInfo[2] + #prettify_Str(keybind)
+              or #mappingInfo[2] + #prettify_Str(keybind)
           end
         end
       end
