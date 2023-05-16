@@ -66,6 +66,17 @@ M.closeAllBufs = function(action)
   end
 end
 
+-- closes all bufs except current one
+M.closeOtherBufs = function()
+  for _, buf in ipairs(vim.t.bufs) do
+    if buf ~= api.nvim_get_current_buf() then
+      vim.api.nvim_buf_delete(buf, {})
+    end
+  end
+
+ vim.cmd "redrawtabline"
+end
+
 M.move_buf = function(n)
   local bufs = vim.t.bufs
 
