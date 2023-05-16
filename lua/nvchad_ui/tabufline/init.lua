@@ -1,10 +1,6 @@
 local M = {}
 local api = vim.api
 
-M.isBufValid = function(bufnr)
-  return vim.api.nvim_buf_is_valid(bufnr) and vim.bo[bufnr].buflisted
-end
-
 M.bufilter = function()
   local bufs = vim.t.bufs or nil
 
@@ -13,7 +9,7 @@ M.bufilter = function()
   end
 
   for i = #bufs, 1, -1 do
-    if not M.isBufValid(bufs[i]) then
+    if not vim.api.nvim_buf_is_valid(bufs[i]) and vim.bo[bufs[i]].buflisted then
       table.remove(bufs, i)
     end
   end
@@ -98,18 +94,6 @@ M.move_buf = function(n)
 
   vim.t.bufs = bufs
   vim.cmd "redrawtabline"
-end
-
-M.run = function(opts)
-  local modules = require "nvchad_ui.tabufline.modules"
-
-  -- merge user modules :D
-  if opts.overriden_modules then
-    modules = vim.tbl_deep_extend("force", modules, opts.overriden_modules())
-  end
-
-  local result = modules.bufferlist() .. (modules.tablist() or "") .. modules.buttons()
-  return (vim.g.nvimtree_side == "left") and modules.CoverNvimTree() .. result or result .. modules.CoverNvimTree()
 end
 
 return M

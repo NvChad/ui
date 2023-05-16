@@ -1,11 +1,13 @@
 local api = vim.api
 local devicons_present, devicons = pcall(require, "nvim-web-devicons")
 local fn = vim.fn
-local new_cmd = api.nvim_create_user_command
-local isBufValid = require("nvchad_ui.tabufline").isBufValid
+local tabufline_config = require("core.utils").load_config().ui.tabufline
 
-require("base46").load_highlight "tbline"
+dofile(vim.g.base46_cache .. "tbline")
 
+local isBufValid = function(bufnr)
+  return vim.api.nvim_buf_is_valid(bufnr) and vim.bo[bufnr].buflisted
+end
 ---------------------------------------------------------- btn onclick functions ----------------------------------------------
 
 vim.cmd "function! TbGoToBuf(bufnr,b,c,d) \n execute 'b'..a:bufnr \n endfunction"
@@ -22,39 +24,7 @@ vim.cmd "function! TbCloseAllBufs(a,b,c,d) \n lua require('nvchad_ui.tabufline')
 vim.cmd "function! TbToggle_theme(a,b,c,d) \n lua require('base46').toggle_theme() \n endfunction"
 vim.cmd "function! TbToggleTabs(a,b,c,d) \n let g:TbTabsToggled = !g:TbTabsToggled | redrawtabline \n endfunction"
 
----------------------------------------------------------- commands ------------------------------------------------------------
-
-new_cmd("TbufPick", function()
-  vim.g.tbufpick_showNums = true
-  vim.cmd "redrawtabline"
-
-  api.nvim_echo({ { "Enter Num ", "Question" } }, false, {})
-
-  local key = tonumber(fn.nr2char(fn.getchar()))
-  local bufid = vim.t.bufs[(key and key or 0) + vim.g.bufirst]
-  if key and bufid then
-    vim.cmd("b" .. bufid)
-    api.nvim_echo({ { "" } }, false, {})
-    vim.cmd "redraw"
-  else
-    vim.cmd "redraw"
-    print "bufpick cancelled, press a number key!"
-  end
-
-  vim.g.tbufpick_showNums = false
-  vim.cmd "redrawtabline"
-end, {})
-
--- move buffers left / right
-new_cmd("TbufLeft", function()
-  require("nvchad_ui.tabufline").move_buf(-1)
-end, {})
-
-new_cmd("TbufRight", function()
-  require("nvchad_ui.tabufline").move_buf(1)
-end, {})
 -------------------------------------------------------- functions ------------------------------------------------------------
-
 local function new_hl(group1, group2)
   local fg = fn.synIDattr(fn.synIDtrans(fn.hlID(group1)), "fg#")
   local bg = fn.synIDattr(fn.synIDtrans(fn.hlID(group2)), "bg#")
@@ -85,11 +55,9 @@ local function add_fileInfo(name, bufnr)
     local icon, icon_hl = devicons.get_icon(name, string.match(name, "%a+$"))
 
     if not icon then
-      icon, icon_hl = devicons.get_icon "default_icon"
+      icon = "󰈚"
+      icon_hl = "DevIconDefault"
     end
-
-    -- padding around bufname; 24 = bufame length (icon + filename)
-    local padding = (24 - #name - 5) / 2
 
     icon = (
       api.nvim_get_current_buf() == bufnr and new_hl(icon_hl, "TbLineBufOn") .. " " .. icon
@@ -101,12 +69,12 @@ local function add_fileInfo(name, bufnr)
       if isBufValid(value) then
         if name == fn.fnamemodify(api.nvim_buf_get_name(value), ":t") and value ~= bufnr then
           local other = {}
-          for match in (api.nvim_buf_get_name(value) .. "/"):gmatch("(.-)" .. "/") do
+          for match in (vim.fs.normalize(api.nvim_buf_get_name(value)) .. "/"):gmatch("(.-)" .. "/") do
             table.insert(other, match)
           end
 
           local current = {}
-          for match in (api.nvim_buf_get_name(bufnr) .. "/"):gmatch("(.-)" .. "/") do
+          for match in (vim.fs.normalize(api.nvim_buf_get_name(bufnr)) .. "/"):gmatch("(.-)" .. "/") do
             table.insert(current, match)
           end
 
@@ -117,7 +85,11 @@ local function add_fileInfo(name, bufnr)
             local other_current = other[i]
 
             if value_current ~= other_current then
-              name = value_current .. "/../" .. name
+              if (#current - i) < 2 then
+                name = value_current .. "/" .. name
+              else
+                name = value_current .. "/../" .. name
+              end
               break
             end
           end
@@ -126,7 +98,11 @@ local function add_fileInfo(name, bufnr)
       end
     end
 
-    name = (#name > 18 and string.sub(name, 1, 16) .. "..") or name
+    -- padding around bufname; 24 = bufame length (icon + filename)
+    local padding = (24 - #name - 5) / 2
+    local maxname_len = 16
+
+    name = (#name > maxname_len and string.sub(name, 1, 14) .. "..") or name
     name = (api.nvim_get_current_buf() == bufnr and "%#TbLineBufOn# " .. name) or ("%#TbLineBufOff# " .. name)
 
     return string.rep(" ", padding) .. icon .. name .. string.rep(" ", padding)
@@ -134,17 +110,27 @@ local function add_fileInfo(name, bufnr)
 end
 
 local function styleBufferTab(nr)
-  local close_btn = "%" .. nr .. "@TbKillBuf@ %X"
+  local close_btn = "%" .. nr .. "@TbKillBuf@ 󰅖 %X"
   local name = (#api.nvim_buf_get_name(nr) ~= 0) and fn.fnamemodify(api.nvim_buf_get_name(nr), ":t") or " No Name "
   name = "%" .. nr .. "@TbGoToBuf@" .. add_fileInfo(name, nr) .. "%X"
 
+  -- add numbers to each tab in tabufline
+  if tabufline_config.show_numbers then
+    for index, value in ipairs(vim.t.bufs) do
+      if nr == value then
+        name = name .. index
+        break
+      end
+    end
+  end
+
   -- color close btn for focused / hidden  buffers
   if nr == api.nvim_get_current_buf() then
-    close_btn = (vim.bo[0].modified and "%" .. nr .. "@TbKillBuf@%#TbLineBufOnModified# ")
+    close_btn = (vim.bo[0].modified and "%" .. nr .. "@TbKillBuf@%#TbLineBufOnModified#  ")
       or ("%#TbLineBufOnClose#" .. close_btn)
     name = "%#TbLineBufOn#" .. name .. close_btn
   else
-    close_btn = (vim.bo[nr].modified and "%" .. nr .. "@TbKillBuf@%#TbBufLineBufOffModified# ")
+    close_btn = (vim.bo[nr].modified and "%" .. nr .. "@TbKillBuf@%#TbBufLineBufOffModified#  ")
       or ("%#TbLineBufOffClose#" .. close_btn)
     name = "%#TbLineBufOff#" .. name .. close_btn
   end
@@ -165,16 +151,6 @@ M.bufferlist = function()
   local current_buf = api.nvim_get_current_buf()
   local has_current = false -- have we seen current buffer yet?
 
-  -- show buffer index numbers
-  if vim.g.tbufpick_showNums then
-    for index, value in ipairs(vim.g.visibuffers) do
-      local name = value:gsub("", "(" .. index .. ")")
-      table.insert(buffers, name)
-    end
-    return table.concat(buffers) .. "%#TblineFill#" .. "%=" -- buffers + empty space
-  end
-
-  vim.g.bufirst = 0
   for _, bufnr in ipairs(vim.t.bufs) do
     if isBufValid(bufnr) then
       if ((#buffers + 1) * 21) > available_space then
@@ -182,7 +158,6 @@ M.bufferlist = function()
           break
         end
 
-        vim.g.bufirst = vim.g.bufirst + 1
         table.remove(buffers, 1)
       end
 
@@ -204,7 +179,7 @@ M.tablist = function()
     for i = 1, number_of_tabs, 1 do
       local tab_hl = ((i == fn.tabpagenr()) and "%#TbLineTabOn# ") or "%#TbLineTabOff# "
       result = result .. ("%" .. i .. "@TbGotoTab@" .. tab_hl .. i .. " ")
-      result = (i == fn.tabpagenr() and result .. "%#TbLineTabCloseBtn#" .. "%@TbTabClose@ %X") or result
+      result = (i == fn.tabpagenr() and result .. "%#TbLineTabCloseBtn#" .. "%@TbTabClose@󰅙 %X") or result
     end
 
     local new_tabtn = "%#TblineTabNewBtn#" .. "%@TbNewTab@  %X"
@@ -217,8 +192,20 @@ end
 
 M.buttons = function()
   local toggle_themeBtn = "%@TbToggle_theme@%#TbLineThemeToggleBtn#" .. vim.g.toggle_theme_icon .. "%X"
-  local CloseAllBufsBtn = "%@TbCloseAllBufs@%#TbLineCloseAllBufsBtn#" .. "  " .. "%X"
+  local CloseAllBufsBtn = "%@TbCloseAllBufs@%#TbLineCloseAllBufsBtn#" .. " 󰅖 " .. "%X"
   return toggle_themeBtn .. CloseAllBufsBtn
+end
+
+M.run = function()
+  local modules = require "nvchad_ui.tabufline.modules"
+
+  -- merge user modules :D
+  if tabufline_config.overriden_modules then
+    modules = vim.tbl_deep_extend("force", modules, tabufline_config.overriden_modules())
+  end
+
+  local result = modules.bufferlist() .. (modules.tablist() or "") .. modules.buttons()
+  return (vim.g.nvimtree_side == "left") and modules.CoverNvimTree() .. result or result .. modules.CoverNvimTree()
 end
 
 return M
