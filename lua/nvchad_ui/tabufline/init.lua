@@ -70,17 +70,15 @@ M.closeAllBufs = function(action)
   end
 end
 
--- closes tab + all other buffers except the current one
-M.closeOtherBufs = function(action)
-  if action == "closeTab" then
-    vim.cmd "tabclose"
-  end
-
+-- closes all bufs except current one
+M.closeOtherBufs = function()
   for _, buf in ipairs(vim.t.bufs) do
     if buf ~= api.nvim_get_current_buf() then
-      vim.cmd("bd " .. buf)
+      vim.api.nvim_buf_delete(buf, {})
     end
   end
+
+ vim.cmd "redrawtabline"
 end
 
 M.move_buf = function(n)
