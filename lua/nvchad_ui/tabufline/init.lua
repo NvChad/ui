@@ -39,12 +39,26 @@ M.tabuflinePrev = function()
   end
 end
 
+M.getCurBufIndex = function()
+  for i, value in ipairs(vim.t.bufs) do
+    if value == vim.api.nvim_get_current_buf() then
+      return i
+    end
+  end
+end
+
 M.close_buffer = function(bufnr)
   if vim.bo.buftype == "terminal" then
     vim.cmd(vim.bo.buflisted and "set nobl | enew" or "hide")
   else
     bufnr = bufnr or api.nvim_get_current_buf()
-    require("nvchad_ui.tabufline").tabuflinePrev()
+    local curBufIndex = M.getCurBufIndex()
+
+    if curBufIndex == #vim.t.bufs then
+      require("nvchad_ui.tabufline").tabuflinePrev()
+    else
+      require("nvchad_ui.tabufline").tabuflineNext()
+    end
     vim.cmd("confirm bd" .. bufnr)
   end
 end
@@ -74,7 +88,7 @@ M.closeOtherBufs = function()
     end
   end
 
- vim.cmd "redrawtabline"
+  vim.cmd "redrawtabline"
 end
 
 M.move_buf = function(n)
