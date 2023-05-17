@@ -17,34 +17,24 @@ M.bufilter = function()
   return bufs
 end
 
-M.tabuflineNext = function()
-  local bufs = M.bufilter() or {}
-
-  for i, v in ipairs(bufs) do
-    if api.nvim_get_current_buf() == v then
-      vim.cmd(i == #bufs and "b" .. bufs[1] or "b" .. bufs[i + 1])
-      break
+M.getBufIndex = function(bufnr)
+  for i, value in ipairs(vim.t.bufs) do
+    if value == bufnr then
+      return i
     end
   end
+end
+
+M.tabuflineNext = function()
+  local bufs = M.bufilter() or {}
+  local curbufIndex = M.getBufIndex(api.nvim_get_current_buf())
+  vim.cmd(curbufIndex == #bufs and "b" .. bufs[1] or "b" .. bufs[curbufIndex + 1])
 end
 
 M.tabuflinePrev = function()
   local bufs = M.bufilter() or {}
-
-  for i, v in ipairs(bufs) do
-    if api.nvim_get_current_buf() == v then
-      vim.cmd(i == 1 and "b" .. bufs[#bufs] or "b" .. bufs[i - 1])
-      break
-    end
-  end
-end
-
-M.getCurBufIndex = function()
-  for i, value in ipairs(vim.t.bufs) do
-    if value == vim.api.nvim_get_current_buf() then
-      return i
-    end
-  end
+  local curbufIndex = M.getBufIndex(api.nvim_get_current_buf())
+  vim.cmd(curbufIndex == 1 and "b" .. bufs[#bufs] or "b" .. bufs[curbufIndex - 1])
 end
 
 M.close_buffer = function(bufnr)
@@ -52,15 +42,21 @@ M.close_buffer = function(bufnr)
     vim.cmd(vim.bo.buflisted and "set nobl | enew" or "hide")
   else
     bufnr = bufnr or api.nvim_get_current_buf()
-    local curBufIndex = M.getCurBufIndex()
+    local curBufIndex = M.getBufIndex(bufnr)
 
-    if curBufIndex == #vim.t.bufs then
-      require("nvchad_ui.tabufline").tabuflinePrev()
+    if curBufIndex and #vim.t.bufs > 1 then
+      local newBufIndex = curBufIndex == #vim.t.bufs and -1 or 1
+      vim.cmd("b" .. vim.t.bufs[curBufIndex + newBufIndex])
+    elseif not vim.bo.buflisted then
+      vim.cmd("b" .. vim.t.bufs[1])
     else
-      require("nvchad_ui.tabufline").tabuflineNext()
+      vim.cmd "enew"
     end
+
     vim.cmd("confirm bd" .. bufnr)
   end
+
+  vim.cmd "redrawtabline"
 end
 
 -- closes tab + all of its buffers
