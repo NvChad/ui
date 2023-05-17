@@ -41,23 +41,19 @@ M.close_buffer = function(bufnr)
   if vim.bo.buftype == "terminal" then
     vim.cmd(vim.bo.buflisted and "set nobl | enew" or "hide")
   else
-    bufnr = bufnr or api.nvim_get_current_buf()
-    local curBufIndex = M.getBufIndex(bufnr)
-
-    if curBufIndex and #vim.t.bufs > 1 then
-      local newBufIndex = curBufIndex == #vim.t.bufs and -1 or 1
-      vim.cmd("b" .. vim.t.bufs[curBufIndex + newBufIndex])
-    elseif not vim.bo.buflisted then
-      vim.cmd("b" .. vim.t.bufs[1])
+    bufnr = bufnr or vim.api.nvim_get_current_buf()
+    -- Attempt to delete the buffer using pcall
+    local status, err = pcall(function() vim.cmd("confirm bd" .. bufnr) end)
+    if status then
+      -- Buffer deletion successful, proceed with UI update
+      require("nvchad_ui.tabufline").tabuflinePrev()
     else
-      vim.cmd "enew"
+      -- Buffer deletion failed, print or handle the error message
+      print("Failed to delete buffer: " .. err)
     end
-
-    vim.cmd("confirm bd" .. bufnr)
   end
-
-  vim.cmd "redrawtabline"
 end
+
 
 -- closes tab + all of its buffers
 M.closeAllBufs = function(action)
