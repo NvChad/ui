@@ -28,12 +28,24 @@ end
 M.tabuflineNext = function()
   local bufs = M.bufilter() or {}
   local curbufIndex = M.getBufIndex(api.nvim_get_current_buf())
+
+  if not curbufIndex then
+    vim.cmd("b" .. vim.t.bufs[1])
+    return
+  end
+
   vim.cmd(curbufIndex == #bufs and "b" .. bufs[1] or "b" .. bufs[curbufIndex + 1])
 end
 
 M.tabuflinePrev = function()
   local bufs = M.bufilter() or {}
   local curbufIndex = M.getBufIndex(api.nvim_get_current_buf())
+
+  if not curbufIndex then
+    vim.cmd("b" .. vim.t.bufs[1])
+    return
+  end
+
   vim.cmd(curbufIndex == 1 and "b" .. bufs[#bufs] or "b" .. bufs[curbufIndex - 1])
 end
 
