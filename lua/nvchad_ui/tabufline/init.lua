@@ -48,7 +48,8 @@ M.close_buffer = function(bufnr)
       local newBufIndex = curBufIndex == #vim.t.bufs and -1 or 1
       vim.cmd("b" .. vim.t.bufs[curBufIndex + newBufIndex])
     elseif not vim.bo.buflisted then
-      vim.cmd("b" .. vim.t.bufs[1])
+      vim.cmd("bw" .. bufnr .. " | b" .. vim.t.bufs[1])
+      return
     else
       vim.cmd "enew"
     end
