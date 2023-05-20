@@ -17,7 +17,7 @@ new_cmd("Nvdash", function()
 end, {})
 
 -- load nvdash
-if config.nvdash.load_on_startup then
+if config.nvdash.load_on_startup and not config.cheatsheet.load_on_startup then
   vim.defer_fn(function()
     require("nvchad_ui.nvdash").open()
   end, 0)
@@ -31,6 +31,13 @@ new_cmd("NvCheatsheet", function()
     require("nvchad_ui.cheatsheet." .. config.cheatsheet.theme)()
   end
 end, {})
+
+-- load cheatsheet
+if config.cheatsheet.load_on_startup and not config.nvdash.load_on_startup then
+  vim.defer_fn(function ()
+    require("nvchad_ui.cheatsheet." ..config.cheatsheet.theme)()
+  end, 0)
+end
 
 -- redraw dashboard on VimResized event
 vim.api.nvim_create_autocmd("VimResized", {
