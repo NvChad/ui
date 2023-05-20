@@ -171,7 +171,8 @@ return function()
   vim.opt_local.wrap = false
   vim.opt_local.relativenumber = false
   vim.opt_local.cul = false
-  vim.g.nvcheatsheet_displayed = true
 
-  vim.keymap.set("n", "<ESC>", ":bw<CR>", { buffer = buf }) -- use ESC to close
+  vim.keymap.set("n", "<ESC>", function()
+    require("nvchad_ui.tabufline").close_buffer(buf)
+  end, { buffer = buf }) -- use ESC to close
 end
