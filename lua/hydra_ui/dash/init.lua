@@ -22,11 +22,11 @@ local config = {
 
   buttons = {
     { "  Find File", "Spc f f", "Telescope find_files" },
-    { "  Recent",    "Spc f o", "Telescope oldfiles" },
-    { "  New file",  "Spc n f", "ene" },
+    { "  Recent", "Spc f o", "Telescope oldfiles" },
+    { "  New file", "Spc n f", "ene" },
     { "  Find Word", "Spc f w", "Telescope live_grep" },
     { "  Bookmarks", "Spc b m", "Telescope marks" },
-    { "  Settings",  "Spc t s", "ex $MYVIMRC | :HydraVimCloseEmptyBuffers" },
+    { "  Settings", "Spc t s", "ex $MYVIMRC | :HydraVimCloseEmptyBuffers" },
   },
 }
 
@@ -104,9 +104,8 @@ M.open = function(buf)
       result[i] = ""
     end
 
-    local headerStart_Index = math.abs(math.floor((get_win_height(win) / 2) - (#dashboard / 2))) +
-    1                                                                                              -- 1 = To handle zero case
-    local abc = math.abs(math.floor((get_win_height(win) / 2) - (#dashboard / 2))) + 1             -- 1 = To handle zero case
+    local headerStart_Index = math.abs(math.floor((get_win_height(win) / 2) - (#dashboard / 2))) + 1 -- 1 = To handle zero case
+    local abc = math.abs(math.floor((get_win_height(win) / 2) - (#dashboard / 2))) + 1 -- 1 = To handle zero case
 
     -- set ascii
     for _, val in ipairs(dashboard) do
@@ -116,7 +115,7 @@ M.open = function(buf)
 
     api.nvim_buf_set_lines(buf, 0, -1, false, result)
 
-    local dash = api.nvim_create_namespace("dash")
+    local dash = api.nvim_create_namespace "dash"
     local horiz_pad_index = math.floor((api.nvim_win_get_width(win) / 2) - (dashWidth / 2)) - 2
 
     for i = abc, abc + #header do
@@ -145,7 +144,7 @@ M.open = function(buf)
     vim.keymap.set("n", "<Down>", "", { buffer = true })
 
     local function move_cursor(direction)
-      local cur = fn.line(".")
+      local cur = fn.line "."
       local target_line
 
       if direction == "up" then
@@ -158,25 +157,25 @@ M.open = function(buf)
     end
 
     vim.keymap.set("n", "<Up>", function()
-      move_cursor("up")
+      move_cursor "up"
     end, { buffer = true })
 
     vim.keymap.set("n", "<Down>", function()
-      move_cursor("down")
+      move_cursor "down"
     end, { buffer = true })
 
     vim.keymap.set("n", "k", function()
-      move_cursor("up")
+      move_cursor "up"
     end, { buffer = true })
 
     vim.keymap.set("n", "j", function()
-      move_cursor("down")
+      move_cursor "down"
     end, { buffer = true })
 
     -- pressing enter on
     vim.keymap.set("n", "<CR>", function()
       for i, val in ipairs(keybind_lineNrs) do
-        if val == fn.line(".") then
+        if val == fn.line "." then
           local action = config.buttons[i][3]
 
           if type(action) == "string" then
