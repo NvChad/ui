@@ -2,12 +2,9 @@ name: Stylua Action
 
 on:
   push:
-    paths:
-      - '**.lua'
+    branches:
       - main
   pull_request:
-    paths:
-      - '**.lua'
     branches:
       - main
 
