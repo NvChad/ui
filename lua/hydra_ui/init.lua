@@ -14,7 +14,7 @@ if vim.g.hydravim_dash then
   end, 0)
 end
 
-  vim.api.nvim_create_autocmd("VimResized", {
+vim.api.nvim_create_autocmd("VimResized", {
   callback = function()
     if vim.bo.filetype == "dash" then
       vim.cmd "HydraVimDash"
