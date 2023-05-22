@@ -2,9 +2,13 @@ name: Stylua Action
 
 on:
   push:
+    paths:
+      - '**.lua'
     branches:
       - main
   pull_request:
+    paths:
+      - '**.lua'
     branches:
       - main
 
@@ -19,12 +23,12 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
 
-      - name: Install Git Stylua
+      - name: Install Stylua
         run: brew install stylua
 
       - name: Format Lua files
         run: stylua .
-
+        
       - name: Commit files
         run: |
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
