@@ -74,7 +74,9 @@ M.close_buffer = function(bufnr)
       vim.cmd "enew"
     end
 
-    vim.cmd("confirm bd" .. bufnr)
+    if not (vim.bo.bufhidden == "delete") then
+      vim.cmd("confirm bd" .. bufnr)
+    end
   end
 
   vim.cmd "redrawtabline"
