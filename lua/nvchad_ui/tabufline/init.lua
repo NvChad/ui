@@ -55,6 +55,7 @@ M.close_buffer = function(bufnr)
   else
     bufnr = bufnr or api.nvim_get_current_buf()
     local curBufIndex = M.getBufIndex(bufnr)
+    local bufhidden = vim.bo.bufhidden
 
     -- force close floating wins
     if vim.api.nvim_win_get_config(0).zindex then
@@ -74,7 +75,7 @@ M.close_buffer = function(bufnr)
       vim.cmd "enew"
     end
 
-    if not (vim.bo.bufhidden == "delete") then
+    if not (bufhidden == "delete") then
       vim.cmd("confirm bd" .. bufnr)
     end
   end
