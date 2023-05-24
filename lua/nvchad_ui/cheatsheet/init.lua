@@ -16,4 +16,16 @@ M.getLargestWin = function()
   return largest_win_id
 end
 
+M.isValid_mapping_TB = function(tbl)
+  local isEmpty = true
+
+  for _, value in pairs(tbl) do
+    if type(value) == "table" and #vim.tbl_keys(value) == 0 then
+      isEmpty = false
+    end
+  end
+
+  return isEmpty
+end
+
 return M
