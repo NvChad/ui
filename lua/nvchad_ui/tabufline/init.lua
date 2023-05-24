@@ -56,9 +56,17 @@ M.close_buffer = function(bufnr)
     bufnr = bufnr or api.nvim_get_current_buf()
     local curBufIndex = M.getBufIndex(bufnr)
 
-    if curBufIndex and #vim.t.bufs > 1 then
+    -- force close floating wins
+    if vim.api.nvim_win_get_config(0).zindex then
+      vim.cmd "bw"
+      return
+
+      -- handle listed bufs
+    elseif curBufIndex and #vim.t.bufs > 1 then
       local newBufIndex = curBufIndex == #vim.t.bufs and -1 or 1
       vim.cmd("b" .. vim.t.bufs[curBufIndex + newBufIndex])
+
+    -- handle unlisted
     elseif not vim.bo.buflisted then
       vim.cmd("b" .. vim.t.bufs[1] .. " | bw" .. bufnr)
       return
