@@ -112,7 +112,7 @@ M.closeOtherBufs = function()
 end
 
 -- closes all other buffers to the right
-M.closeBufsToTheRight = function(action)
+M.closeBufsToTheRight = function()
   local close = false
   
   for _, buf in ipairs(vim.t.bufs) do
