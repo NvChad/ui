@@ -111,6 +111,22 @@ M.closeOtherBufs = function()
   vim.cmd "redrawtabline"
 end
 
+-- closes all other buffers to the right
+M.closeBufsToTheRight = function(action)
+  local close = false
+  
+  for _, buf in ipairs(vim.t.bufs) do
+    if close then
+      vim.cmd("bd " .. buf)
+    end
+    if buf == api.nvim_get_current_buf() then
+      close = true
+    end
+  end
+  
+  vim.cmd "redrawtabline"
+end
+
 M.move_buf = function(n)
   local bufs = vim.t.bufs
 
