@@ -174,6 +174,10 @@ M.cursor_position = function()
   return gen_block("", "%l/%c", "%#St_Pos_sep#", "%#St_Pos_bg#", "%#St_Pos_txt#")
 end
 
+M.file_encoding = function()
+  return string.upper(vim.bo.fileencoding) == "" and "" or string.upper(vim.bo.fileencoding) .. "  "
+end
+
 M.run = function()
   local modules = require "nvchad_ui.statusline.minimal"
 
@@ -190,7 +194,7 @@ M.run = function()
     modules.LSP_progress(),
     "%=",
 
-    string.upper(vim.bo.fileencoding) == "" and "" or string.upper(vim.bo.fileencoding) .. "  ",
+    modules.file_encoding(),
     modules.LSP_Diagnostics(),
     modules.LSP_status() or "",
     modules.cwd(),

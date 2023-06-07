@@ -151,6 +151,14 @@ M.LSP_status = function()
   end
 end
 
+M.cursor_position = function()
+  return vim.o.columns > 140 and "%#StText# Ln %l, Col %c  " or ""
+end
+
+M.file_encoding = function()
+  return string.upper(vim.bo.fileencoding) == "" and "" or "%#St_encode#" .. string.upper(vim.bo.fileencoding) .. "  "
+end
+
 M.cwd = function()
   local dir_name = "%#St_Mode# 󰉖 " .. fn.fnamemodify(fn.getcwd(), ":t") .. " "
   return (vim.o.columns > 85 and dir_name) or ""
@@ -174,8 +182,8 @@ M.run = function()
     "%=",
 
     modules.gitchanges(),
-    vim.o.columns > 140 and "Ln %l, Col %c  " or "",
-    string.upper(vim.bo.fileencoding) == "" and "" or string.upper(vim.bo.fileencoding) .. "  ",
+    modules.cursor_position(),
+    modules.file_encoding(),
     modules.filetype(),
     modules.LSP_status() or "",
     modules.cwd(),
