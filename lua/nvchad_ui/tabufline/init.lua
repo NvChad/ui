@@ -69,6 +69,10 @@ M.close_buffer = function(bufnr)
 
     -- handle unlisted
     elseif not vim.bo.buflisted then
+      if not vim.t.bufs[1] then
+        vim.cmd "enew"
+        return
+      end
       vim.cmd("b" .. vim.t.bufs[1] .. " | bw" .. bufnr)
       return
     else
