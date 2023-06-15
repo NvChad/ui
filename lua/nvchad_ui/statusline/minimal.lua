@@ -109,16 +109,11 @@ end
 
 -- LSP STUFF
 M.LSP_progress = function()
-  if not rawget(vim, "lsp") then
+  if not rawget(vim, "lsp") or vim.lsp.status then
     return ""
   end
 
-  local Lsp
-  if vim.lsp.status then
-    Lsp = vim.lsp.status()
-  else
-    Lsp = vim.lsp.util.get_progress_messages()[1]
-  end
+  local Lsp = vim.lsp.util.get_progress_messages()[1]
 
   if vim.o.columns < 120 or not Lsp then
     return ""
