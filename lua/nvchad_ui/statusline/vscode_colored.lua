@@ -98,7 +98,7 @@ end
 
 -- LSP STUFF
 M.LSP_progress = function()
-  if not rawget(vim, "lsp") then
+  if not rawget(vim, "lsp") or vim.lsp.status then
     return ""
   end
 
@@ -159,7 +159,7 @@ M.cursor_position = function()
   return vim.o.columns > 140 and "%#StText# Ln %l, Col %c  " or ""
 end
 
-M.file_encoding = function ()
+M.file_encoding = function()
   return string.upper(vim.bo.fileencoding) == "" and "" or "%#St_encode#" .. string.upper(vim.bo.fileencoding) .. "  "
 end
 

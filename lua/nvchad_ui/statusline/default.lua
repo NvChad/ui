@@ -103,7 +103,7 @@ end
 
 -- LSP STUFF
 M.LSP_progress = function()
-  if not rawget(vim, "lsp") then
+  if not rawget(vim, "lsp") or vim.lsp.status then
     return ""
   end
 
