@@ -32,8 +32,9 @@ M.open = function()
   local buf = vim.api.nvim_create_buf(false, true)
   local win = api.nvim_get_current_win()
 
-  if api.nvim_win_get_config(win).relative == "" and not vim.g.nvdash_displayed then
-    vim.cmd "enew"
+  -- switch to larger win if cur win is small
+  if nvdashWidth + 6 > api.nvim_win_get_width(0) then
+    vim.api.nvim_set_current_win(api.nvim_list_wins()[2])
     win = api.nvim_get_current_win()
   end
 
