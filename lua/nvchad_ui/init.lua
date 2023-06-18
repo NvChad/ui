@@ -12,14 +12,16 @@ new_cmd("Nvdash", function()
   if vim.g.nvdash_displayed then
     vim.cmd "bd"
   else
-    require("nvchad_ui.nvdash").open(vim.api.nvim_create_buf(false, true))
+    require("nvchad_ui.nvdash").open()
   end
 end, {})
 
 -- load nvdash
 if config.nvdash.load_on_startup then
   vim.defer_fn(function()
-    require("nvchad_ui.nvdash").open()
+    if #vim.v.argv == 2 then
+      require("nvchad_ui.nvdash").open()
+    end
   end, 0)
 end
 
