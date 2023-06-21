@@ -168,25 +168,47 @@ M.run = function()
   local modules = require "nvchad_ui.statusline.vscode"
 
   if config.overriden_modules then
-    modules = vim.tbl_deep_extend("force", modules, config.overriden_modules())
+    modules = vim.tbl_deep_extend("force", modules, config.overriden_modules(modules))
+  end
+
+  local segments = {
+    left = {
+      modules.mode,
+      modules.fileInfo,
+      modules.git,
+      modules.LSP_Diagnostics,
+    },
+
+    mid = {
+      modules.LSP_progress,
+    },
+
+    right = {
+      modules.gitchanges,
+      modules.cursor_position,
+      modules.file_encoding,
+      modules.filetype,
+      modules.LSP_status,
+      modules.cwd,
+    },
+  }
+
+  if config.user_modules then
+    segments = vim.tbl_deep_extend("force", segments, config.user_modules(segments))
+  end
+
+  for i, value in pairs(segments) do
+    for j, func in ipairs(value) do
+      segments[i][j] = func() or ""
+    end
   end
 
   return table.concat {
-    modules.mode(),
-    modules.fileInfo(),
-    modules.git(),
-    modules.LSP_Diagnostics(),
-
+    table.concat(segments.left),
     "%=",
-    modules.LSP_progress(),
+    table.concat(segments.mid),
     "%=",
-
-    modules.gitchanges(),
-    modules.cursor_position(),
-    modules.file_encoding(),
-    modules.filetype(),
-    modules.LSP_status() or "",
-    modules.cwd(),
+    table.concat(segments.right),
   }
 end
 
