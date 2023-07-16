@@ -177,26 +177,26 @@ M.cursor_position = function()
 end
 
 M.run = function()
-  local modules = require "nvchad_ui.statusline.default"
+  local modules = {
+    M.mode(),
+    M.fileInfo(),
+    M.git(),
+
+    "%=",
+    M.LSP_progress(),
+    "%=",
+
+    M.LSP_Diagnostics(),
+    M.LSP_status() or "",
+    M.cwd(),
+    M.cursor_position(),
+  }
 
   if config.overriden_modules then
-    modules = vim.tbl_deep_extend("force", modules, config.overriden_modules())
+    config.overriden_modules(modules)
   end
 
-  return table.concat {
-    modules.mode(),
-    modules.fileInfo(),
-    modules.git(),
-
-    "%=",
-    modules.LSP_progress(),
-    "%=",
-
-    modules.LSP_Diagnostics(),
-    modules.LSP_status() or "",
-    modules.cwd(),
-    modules.cursor_position(),
-  }
+  return table.concat(modules)
 end
 
 return M
