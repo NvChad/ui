@@ -175,29 +175,29 @@ M.cwd = function()
 end
 
 M.run = function()
-  local modules = require "nvchad_ui.statusline.vscode_colored"
+  local modules = {
+    M.mode(),
+    M.fileInfo(),
+    M.git(),
+    M.LSP_Diagnostics(),
+
+    "%=",
+    M.LSP_progress(),
+    "%=",
+
+    M.gitchanges(),
+    M.cursor_position(),
+    M.file_encoding(),
+    M.filetype(),
+    M.LSP_status() or "",
+    M.cwd(),
+  }
 
   if config.overriden_modules then
-    modules = vim.tbl_deep_extend("force", modules, config.overriden_modules())
+    config.overriden_modules(modules)
   end
 
-  return table.concat {
-    modules.mode(),
-    modules.fileInfo(),
-    modules.git(),
-    modules.LSP_Diagnostics(),
-
-    "%=",
-    modules.LSP_progress(),
-    "%=",
-
-    modules.gitchanges(),
-    modules.cursor_position(),
-    modules.file_encoding(),
-    modules.filetype(),
-    modules.LSP_status() or "",
-    modules.cwd(),
-  }
+  return table.concat(modules)
 end
 
 return M
