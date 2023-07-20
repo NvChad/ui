@@ -8,17 +8,18 @@ M.bufilter = function()
     return {}
   end
 
-  for i = #bufs, 1, -1 do
-    if not vim.api.nvim_buf_is_valid(bufs[i]) and vim.bo[bufs[i]].buflisted then
+  for i, nr in ipairs(bufs) do
+    if not vim.api.nvim_buf_is_valid(nr) then
       table.remove(bufs, i)
     end
   end
 
+  vim.t.bufs = bufs
   return bufs
 end
 
 M.getBufIndex = function(bufnr)
-  for i, value in ipairs(vim.t.bufs) do
+  for i, value in ipairs(M.bufilter()) do
     if value == bufnr then
       return i
     end
