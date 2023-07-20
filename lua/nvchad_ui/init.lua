@@ -19,7 +19,7 @@ end, {})
 -- load nvdash
 if config.nvdash.load_on_startup then
   vim.defer_fn(function()
-    if #vim.fn.argv() == 0 then
+    if #vim.fn.argv() == 0 and (#vim.t.bufs == 1 and vim.t.bufs[1] == 1) then
       require("nvchad_ui.nvdash").open()
     end
   end, 0)
