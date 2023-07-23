@@ -70,7 +70,13 @@ M.close_buffer = function(bufnr)
 
     -- handle unlisted
     elseif not vim.bo.buflisted then
-      vim.cmd("b" .. vim.t.bufs[1] .. " | bw" .. bufnr)
+      local tmpbufnr = vim.t.bufs[1]
+
+      if vim.g.nv_previous_buf and vim.api.nvim_buf_is_valid(vim.g.nv_previous_buf) then
+        tmpbufnr = vim.g.nv_previous_buf
+      end
+
+      vim.cmd("b" .. tmpbufnr .. " | bw" .. bufnr)
       return
     else
       vim.cmd "enew"

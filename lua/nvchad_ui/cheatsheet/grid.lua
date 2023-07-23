@@ -33,6 +33,7 @@ local ascii = {
 
 -- basically the draw function
 return function()
+  vim.g.nv_previous_buf = vim.api.nvim_get_current_buf()
   local buf = vim.api.nvim_create_buf(false, true)
 
   -- add left padding (strs) to ascii so it looks centered
