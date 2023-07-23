@@ -108,6 +108,12 @@ M.LSP_progress = function()
     return ""
   end
 
+  if Lsp.done then
+    vim.defer_fn(function()
+      vim.cmd.redrawstatus()
+    end, 1000)
+  end
+
   local msg = Lsp.message or ""
   local percentage = Lsp.percentage or 0
   local title = Lsp.title or ""
