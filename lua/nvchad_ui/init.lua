@@ -10,7 +10,7 @@ end
 -- Command to toggle NvDash
 new_cmd("Nvdash", function()
   if vim.g.nvdash_displayed then
-    vim.cmd "bd"
+    require("nvchad_ui.tabufline").close_buffer()
   else
     require("nvchad_ui.nvdash").open()
   end
@@ -28,7 +28,7 @@ end
 -- command to toggle cheatsheet
 new_cmd("NvCheatsheet", function()
   if vim.g.nvcheatsheet_displayed then
-    vim.cmd "bd"
+    require("nvchad_ui.tabufline").close_buffer()
   else
     require("nvchad_ui.cheatsheet." .. config.cheatsheet.theme)()
   end

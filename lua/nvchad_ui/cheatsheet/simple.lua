@@ -22,6 +22,7 @@ vim.api.nvim_create_autocmd("BufWinLeave", {
 })
 
 return function()
+  vim.g.nv_previous_buf = vim.api.nvim_get_current_buf()
   local buf = api.nvim_create_buf(false, true)
 
   local win = require("nvchad_ui.cheatsheet").getLargestWin()
