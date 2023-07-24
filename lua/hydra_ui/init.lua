@@ -8,7 +8,7 @@ new_cmd("HydraVimDash", function()
   end
 end, {})
 
-if hydravim.opts.ui.dash.on_startup then
+if vim.g.hydravim.ui.dash then
   vim.defer_fn(function()
     require("hydra_ui.dash").open()
   end, 0)
