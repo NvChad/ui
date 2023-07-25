@@ -18,13 +18,6 @@ jobs:
           ./stylua .
           rm stylua stylua-linux-x86_64.zip
 
-      - name: Format YML files
-        run: |
-          curl -L -o yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
-          chmod +x yq
-          find . -type f -name "*.yml" -exec ./yq eval -i '{}' \;
-          rm yq
-
       - name: Format Markdown files
         run: |
           npm install -g prettier
