@@ -16,6 +16,9 @@ jobs:
   stylua_job:
     runs-on: macos-latest
 
+    permissions:
+      actions: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
