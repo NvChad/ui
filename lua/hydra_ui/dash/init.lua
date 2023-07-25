@@ -56,7 +56,7 @@ M.setup = function(opts)
   })
 end
 
-M.biuld = function()
+M.build = function()
   if vim.g.hydravim_dash then
     vim.cmd "HydraVimDash"
   end
