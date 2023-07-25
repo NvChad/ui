@@ -1,38 +1,37 @@
-name: Stylua Action
-
+name: ci
 on:
   push:
-    paths:
-      - '**.lua'
-    branches:
-      - main
-  pull_request:
-    paths:
-      - '**.lua'
-    branches:
-      - main
 
 jobs:
-  stylua_job:
-    runs-on: macos-latest
-
+  format:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          persist-credentials: false
-          fetch-depth: 0
-
-      - name: Install Stylua
-        run: brew install stylua
-
+        uses: actions/checkout@v3
       - name: Format Lua files
-        run: stylua .
-        
+        run: |
+          curl -O -L https://github.com/JohnnyMorganz/StyLua/releases/download/v0.17.1/stylua-linux-x86_64.zip
+          unzip stylua-linux-x86_64.zip
+          chmod +x stylua
+          ./stylua .
+          rm stylua stylua-linux-x86_64.zip
+
+      - name: Format YML files
+        run: |
+          curl -L -o yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          chmod +x yq
+          find . -type f -name "*.yml" -exec ./yq eval -i '{}' \;
+          rm yq
+
+      - name: Format Markdown files
+        run: |
+          npm install -g prettier
+          prettier --write "**/*.md"
+          
       - name: Commit files
         run: |
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
           git remote set-url origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git
           git add .
-          git diff --quiet && git diff --staged --quiet || (git commit -a -m "style: format Lua files [action]"; git push origin HEAD:${GITHUB_REF})
+          git diff --quiet && git diff --staged --quiet || (git commit -a -m "style: format files [action]"; git push origin HEAD:${GITHUB_REF})
