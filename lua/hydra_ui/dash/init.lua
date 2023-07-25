@@ -136,9 +136,8 @@ M.open = function(buf)
       result[i] = ""
     end
 
-    local headerStart_Index = math.abs(math.floor((get_win_height(win) / 2) - (#dashboard / 2))) +
-    1                                                                                                -- 1 = To handle zero case
-    local abc = math.abs(math.floor((get_win_height(win) / 2) - (#dashboard / 2))) + 1               -- 1 = To handle zero case
+    local headerStart_Index = math.abs(math.floor((get_win_height(win) / 2) - (#dashboard / 2))) + 1 -- 1 = To handle zero case
+    local abc = math.abs(math.floor((get_win_height(win) / 2) - (#dashboard / 2))) + 1 -- 1 = To handle zero case
 
     -- set ascii
     for _, val in ipairs(dashboard) do
