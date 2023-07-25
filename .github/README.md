@@ -23,12 +23,13 @@ This is the set of plugins for HydraVim Default config.
 ## ⚙ Options
 
 ### Dash
+
 ```lua
 {
   --- Header: Represents an ASCII art.
   -- @field header The header text in ASCII art.
   header = {
-    " ------ ", 
+    " ------ ",
     " ------ "
     " ------ "
   },
@@ -43,4 +44,4 @@ This is the set of plugins for HydraVim Default config.
     { "  Bookmarks", "Spc b m", "Telescope marks" },
   },
 }
-````
+```
