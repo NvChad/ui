@@ -2,8 +2,8 @@ local M = {}
 local api = vim.api
 local fn = vim.fn
 
-local config = {
-  load_on_startup = true,
+M.opts = {
+  -- load_on_startup = true,
 
   header = {
     "   ⣴⣶⣤⡤⠦⣤⣀⣤⠆     ⣈⣭⣭⣿⣶⣿⣦⣼⣆         ",
@@ -30,7 +30,39 @@ local config = {
   },
 }
 
-local headerAscii = config.header
+M.setup = function(opts)
+  M.opts = vim.tbl_deep_extend("force", M.opts, opts or {})
+
+  vim.api.nvim_create_user_command("HydraVimDash", function()
+    if vim.g.nvdash_displayed then
+      vim.cmd "bd"
+    else
+      require("hydra_ui.dash").open(vim.api.nvim_create_buf(false, true))
+    end
+  end, {})
+
+  if vim.g.hydravim.ui.dash then
+    vim.defer_fn(function()
+      require("hydra_ui.dash").open()
+    end, 0)
+  end
+
+  vim.api.nvim_create_autocmd("VimResized", {
+    callback = function()
+      if vim.bo.filetype == "dash" then
+        vim.cmd "HydraVimDash"
+      end
+    end,
+  })
+end
+
+M.biuld = function()
+  if vim.g.hydravim_dash then
+    vim.cmd "HydraVimDash"
+  end
+end
+
+local headerAscii = M.opts.header
 local emmptyLine = string.rep(" ", vim.fn.strwidth(headerAscii[1]))
 
 table.insert(headerAscii, 1, emmptyLine)
@@ -49,7 +81,7 @@ api.nvim_create_autocmd("BufWinLeave", {
 
 local dashWidth = #headerAscii[1] + 3
 
-local max_height = #headerAscii + 4 + (2 * #config.buttons) -- 4  = extra spaces i.e top/bottom
+local max_height = #headerAscii + 4 + (2 * #M.opts.buttons) -- 4  = extra spaces i.e top/bottom
 local get_win_height = api.nvim_win_get_height
 
 M.open = function(buf)
@@ -73,7 +105,7 @@ M.open = function(buf)
     vim.g.dash_displayed = true
 
     local header = headerAscii
-    local buttons = config.buttons
+    local buttons = M.opts.buttons
 
     local function addSpacing_toBtns(txt1, txt2)
       local btn_len = fn.strwidth(txt1) + fn.strwidth(txt2)
@@ -104,8 +136,9 @@ M.open = function(buf)
       result[i] = ""
     end
 
-    local headerStart_Index = math.abs(math.floor((get_win_height(win) / 2) - (#dashboard / 2))) + 1 -- 1 = To handle zero case
-    local abc = math.abs(math.floor((get_win_height(win) / 2) - (#dashboard / 2))) + 1 -- 1 = To handle zero case
+    local headerStart_Index = math.abs(math.floor((get_win_height(win) / 2) - (#dashboard / 2))) +
+    1                                                                                                -- 1 = To handle zero case
+    local abc = math.abs(math.floor((get_win_height(win) / 2) - (#dashboard / 2))) + 1               -- 1 = To handle zero case
 
     -- set ascii
     for _, val in ipairs(dashboard) do
@@ -131,7 +164,7 @@ M.open = function(buf)
     local first_btn_line = abc + #header + 2
     local keybind_lineNrs = {}
 
-    for _, _ in ipairs(config.buttons) do
+    for _, _ in ipairs(M.opts.buttons) do
       table.insert(keybind_lineNrs, first_btn_line - 2)
       first_btn_line = first_btn_line + 2
     end
@@ -176,7 +209,7 @@ M.open = function(buf)
     vim.keymap.set("n", "<CR>", function()
       for i, val in ipairs(keybind_lineNrs) do
         if val == fn.line "." then
-          local action = config.buttons[i][3]
+          local action = M.opts.buttons[i][3]
 
           if type(action) == "string" then
             vim.cmd(action)
