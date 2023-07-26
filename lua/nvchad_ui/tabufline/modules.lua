@@ -141,7 +141,7 @@ end
 ---------------------------------------------------------- components ------------------------------------------------------------
 local M = {}
 
-M.CoverNvimTree = function()
+M.NvimTreeOverlay = function()
   return "%#NvimTreeNormal#" .. (vim.g.nvimtree_side == "right" and "" or string.rep(" ", getNvimTreeWidth()))
 end
 
@@ -188,6 +188,8 @@ M.tablist = function()
     return vim.g.TbTabsToggled == 1 and tabstoggleBtn:gsub("()", { [36] = " " })
       or new_tabtn .. tabstoggleBtn .. result
   end
+
+  return ""
 end
 
 M.buttons = function()
@@ -197,15 +199,21 @@ M.buttons = function()
 end
 
 M.run = function()
-  local modules = require "nvchad_ui.tabufline.modules"
+  local modules = {
+    M.NvimTreeOverlay(),
+    M.bufferlist(),
+    M.tablist(),
+    M.buttons(),
+  }
 
-  -- merge user modules :D
   if tabufline_config.overriden_modules then
-    modules = vim.tbl_deep_extend("force", modules, tabufline_config.overriden_modules())
+    tabufline_config.overriden_modules(modules)
   end
 
-  local result = modules.bufferlist() .. (modules.tablist() or "") .. modules.buttons()
-  return (vim.g.nvimtree_side == "left") and modules.CoverNvimTree() .. result or result .. modules.CoverNvimTree()
+  return table.concat(modules)
 end
+
+-- Credits to Lucario387  https://github.com/NvChad/ui/pull/21/files
+-- For simplyfing the syntax
 
 return M
