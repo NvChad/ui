@@ -34,7 +34,7 @@ M.setup = function(opts)
   M.opts = vim.tbl_deep_extend("force", M.opts, opts or {})
 
   vim.api.nvim_create_user_command("HydraVimDash", function()
-    if vim.g.nvdash_displayed then
+    if vim.g.dash_displayed then
       vim.cmd "bd"
     else
       require("hydra_ui.dash").open(vim.api.nvim_create_buf(false, true))
