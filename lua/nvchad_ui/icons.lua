@@ -59,6 +59,11 @@ M.devicons = {
     name = "css",
   },
 
+  dart = {
+    icon = '',
+    name = 'dart'
+  },
+
   deb = {
     icon = "",
     name = "deb",
