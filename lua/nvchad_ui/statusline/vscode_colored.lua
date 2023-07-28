@@ -159,6 +159,8 @@ M.LSP_status = function()
       end
     end
   end
+
+  return ""
 end
 
 M.cursor_position = function()
@@ -189,7 +191,7 @@ M.run = function()
     M.cursor_position(),
     M.file_encoding(),
     M.filetype(),
-    M.LSP_status() or "",
+    M.LSP_status(),
     M.cwd(),
   }
 
