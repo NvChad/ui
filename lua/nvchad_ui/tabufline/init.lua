@@ -54,6 +54,11 @@ M.close_buffer = function(bufnr)
   if vim.bo.buftype == "terminal" then
     vim.cmd(vim.bo.buflisted and "set nobl | enew" or "hide")
   else
+    if not vim.t.bufs then
+      vim.cmd "bd"
+      return
+    end
+
     bufnr = bufnr or api.nvim_get_current_buf()
     local curBufIndex = M.getBufIndex(bufnr)
     local bufhidden = vim.bo.bufhidden
