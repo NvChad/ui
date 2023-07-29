@@ -130,7 +130,7 @@ local function styleBufferTab(nr)
       or ("%#TbLineBufOnClose#" .. close_btn)
     name = "%#TbLineBufOn#" .. name .. close_btn
   else
-    close_btn = (vim.bo[nr].modified and "%" .. nr .. "@TbKillBuf@%#TbBufLineBufOffModified#  ")
+    close_btn = (vim.bo[nr].modified and "%" .. nr .. "@TbKillBuf@%#TbLineBufOffModified#  ")
       or ("%#TbLineBufOffClose#" .. close_btn)
     name = "%#TbLineBufOff#" .. name .. close_btn
   end
