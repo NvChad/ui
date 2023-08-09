@@ -1,49 +1,4 @@
-local M = {}
-
-M.lspkind = {
-  Namespace = "󰌗",
-  Text = "󰉿",
-  Method = "󰆧",
-  Function = "󰆧",
-  Constructor = "",
-  Field = "󰜢",
-  Variable = "󰀫",
-  Class = "󰠱",
-  Interface = "",
-  Module = "",
-  Property = "󰜢",
-  Unit = "󰑭",
-  Value = "󰎠",
-  Enum = "",
-  Keyword = "󰌋",
-  Snippet = "",
-  Color = "󰏘",
-  File = "󰈚",
-  Reference = "󰈇",
-  Folder = "󰉋",
-  EnumMember = "",
-  Constant = "󰏿",
-  Struct = "󰙅",
-  Event = "",
-  Operator = "󰆕",
-  TypeParameter = "󰊄",
-  Table = "",
-  Object = "󰅩",
-  Tag = "",
-  Array = "[]",
-  Boolean = "",
-  Number = "",
-  Null = "󰟢",
-  String = "󰉿",
-  Calendar = "",
-  Watch = "󰥔",
-  Package = "",
-  Copilot = "",
-  Codeium = "",
-  TabNine = "",
-}
-
-M.devicons = {
+return {
   default_icon = {
     icon = "󰈚",
     name = "Default",
@@ -60,8 +15,8 @@ M.devicons = {
   },
 
   dart = {
-    icon = '',
-    name = 'dart'
+    icon = "",
+    name = "dart",
   },
 
   deb = {
@@ -189,5 +144,3 @@ M.devicons = {
     name = "zip",
   },
 }
-
-return M
