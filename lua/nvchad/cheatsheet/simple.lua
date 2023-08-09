@@ -1,5 +1,5 @@
 local mappings_tb = require("core.utils").load_config().mappings -- default & user mappings
-local isValid_mapping_TB = require("nvchad_ui.cheatsheet").isValid_mapping_TB
+local isValid_mapping_TB = require("nvchad.cheatsheet").isValid_mapping_TB
 
 -- filter mappings_tb i.e remove tb which have empty fields
 for title, val in pairs(mappings_tb) do
@@ -25,7 +25,7 @@ return function()
   vim.g.nv_previous_buf = vim.api.nvim_get_current_buf()
   local buf = api.nvim_create_buf(false, true)
 
-  local win = require("nvchad_ui.cheatsheet").getLargestWin()
+  local win = require("nvchad.cheatsheet").getLargestWin()
   vim.api.nvim_set_current_win(win)
 
   local centerPoint = api.nvim_win_get_width(win) / 2
@@ -183,6 +183,6 @@ return function()
   vim.opt_local.cul = false
 
   vim.keymap.set("n", "<ESC>", function()
-    require("nvchad_ui.tabufline").close_buffer(buf)
+    require("nvchad.tabufline").close_buffer(buf)
   end, { buffer = buf }) -- use ESC to close
 end
