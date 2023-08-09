@@ -2,7 +2,7 @@ dofile(vim.g.base46_cache .. "nvcheatsheet")
 
 local nvcheatsheet = vim.api.nvim_create_namespace "nvcheatsheet"
 local mappings_tb = require("core.utils").load_config().mappings
-local isValid_mapping_TB = require("nvchad_ui.cheatsheet").isValid_mapping_TB
+local isValid_mapping_TB = require("nvchad.cheatsheet").isValid_mapping_TB
 
 -- filter mappings_tb i.e remove tb which have empty fields
 for title, val in pairs(mappings_tb) do
@@ -39,7 +39,7 @@ return function()
   -- add left padding (strs) to ascii so it looks centered
   local ascii_header = vim.tbl_values(ascii)
 
-  local win = require("nvchad_ui.cheatsheet").getLargestWin()
+  local win = require("nvchad.cheatsheet").getLargestWin()
   vim.api.nvim_set_current_win(win)
 
   local ascii_padding = (vim.api.nvim_win_get_width(win) / 2) - (#ascii_header[1] / 2)
@@ -307,6 +307,6 @@ return function()
   vim.g.nvcheatsheet_displayed = true
 
   vim.keymap.set("n", "<ESC>", function()
-    require("nvchad_ui.tabufline").close_buffer(buf)
+    require("nvchad.tabufline").close_buffer(buf)
   end, { buffer = buf }) -- use ESC to close
 end

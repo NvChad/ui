@@ -35,7 +35,7 @@ local function switcher()
     prompt_title = "󱥚 Set NvChad Theme",
     previewer = previewer,
     finder = finders.new_table {
-      results = require("nvchad").list_themes(),
+      results = require("nvchad.utils").list_themes(),
     },
     sorter = conf.generic_sorter(),
 
@@ -77,7 +77,7 @@ local function switcher()
         if action_state.get_selected_entry() then
           actions.close(prompt_bufnr)
           local current_theme = require("core.utils").load_config().ui.theme
-          require("nvchad").replace_word(current_theme, action_state.get_selected_entry()[1])
+          require("nvchad.utils").replace_word(current_theme, action_state.get_selected_entry()[1])
         end
       end)
       return true
