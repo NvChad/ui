@@ -20,7 +20,7 @@ M.save_term_info = function(opts)
 end
 
 M.get_toggled_bufnr = function(id)
-  for bufnr, val in ipairs(vim.g.nvchad_terms) do
+  for bufnr, val in pairs(vim.g.nvchad_terms) do
     if val.id == id then
       return bufnr
     end
@@ -28,24 +28,26 @@ M.get_toggled_bufnr = function(id)
 end
 
 M.new = function(opts)
-  local resize_cmd = "resize "
-
-  if not opts.size then
-    opts.size = math.floor(vim.o.columns / 2)
-  end
-
-  resize_cmd = resize_cmd .. " " .. opts.size
-
-  if opts.pos == "vsp" then
-    resize_cmd = "vertical " .. resize_cmd
-  end
-
-  vim.cmd(opts.pos)
-  vim.cmd(resize_cmd)
-
   if opts.id and M.get_toggled_bufnr(opts.id) then
     M.unhide_term(M.get_toggled_bufnr(opts.id))
   else
+    vim.cmd(opts.pos)
+
+    -- initially resize terminal
+    local cond = (opts.pos == "sp" and not vim.g.nv_hterm) or (opts.pos == "vsp" and not vim.g.nv_vterm)
+
+    if opts.size and (cond or opts.id) then
+      print "bruh"
+      local qty = opts.pos == "sp" and "lines" or "columns"
+      opts.size = vim.o[qty] * opts.size
+
+      local resize_func = "nvim_win_set_" .. (opts.pos == "sp" and "height" or "width")
+      vim.api[resize_func](0, math.floor(opts.size))
+
+      vim.g.nv_hterm = opts.pos == "sp" and true or false
+      vim.g.nv_vterm = opts.pos == "vsp" and true or false
+    end
+
     vim.cmd "term"
   end
 
@@ -80,7 +82,7 @@ M.unhide_term = function(bufnr)
   vim.cmd(term_info.pos)
 
   M.prettify()
-  vim.api.nvim_set_current_buf(bufnr)
+  vim.api.nvim_set_current_buf(tonumber(bufnr))
 end
 
 return M
