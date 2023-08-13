@@ -3,8 +3,10 @@ local isValid_mapping_TB = require("nvchad.cheatsheet").isValid_mapping_TB
 
 -- filter mappings_tb i.e remove tb which have empty fields
 for title, val in pairs(mappings_tb) do
-  if not isValid_mapping_TB(val) then
-    mappings_tb[title] = nil
+  for mode, mappings in pairs(val) do
+    if not isValid_mapping_TB(mappings) then
+      mappings_tb[title][mode] = nil
+    end
   end
 end
 
