@@ -7,10 +7,10 @@ vim.g.nvchad_terms = {}
 M.prettify = function()
   vim.opt_local.buflisted = false
   vim.opt_local.number = false
-
   vim.cmd "startinsert"
 end
 
+-- term bufnr + their opts in a dict
 M.save_term_info = function(opts)
   local bufnr = vim.api.nvim_get_current_buf()
 
@@ -27,9 +27,19 @@ M.get_toggled_bufnr = function(id)
   end
 end
 
+M.resize = function(opts)
+  local qty = opts.pos == "sp" and "lines" or "columns"
+  opts.size = vim.o[qty] * opts.size
+
+  local resize_func = "nvim_win_set_" .. (opts.pos == "sp" and "height" or "width")
+  vim.api[resize_func](0, math.floor(opts.size))
+end
+
+-- spawn new term based on opts
 M.new = function(opts)
   if opts.id and M.get_toggled_bufnr(opts.id) then
     M.unhide_term(M.get_toggled_bufnr(opts.id))
+    M.resize(opts)
   else
     vim.cmd(opts.pos)
 
@@ -37,12 +47,7 @@ M.new = function(opts)
     local cond = (opts.pos == "sp" and not vim.g.nv_hterm) or (opts.pos == "vsp" and not vim.g.nv_vterm)
 
     if opts.size and (cond or opts.id) then
-      print "bruh"
-      local qty = opts.pos == "sp" and "lines" or "columns"
-      opts.size = vim.o[qty] * opts.size
-
-      local resize_func = "nvim_win_set_" .. (opts.pos == "sp" and "height" or "width")
-      vim.api[resize_func](0, math.floor(opts.size))
+      M.resize(opts)
 
       vim.g.nv_hterm = opts.pos == "sp" and true or false
       vim.g.nv_vterm = opts.pos == "vsp" and true or false
@@ -76,7 +81,7 @@ M.toggle = function(opts)
   vim.g[opts.id] = not vim.g[opts.id]
 end
 
--- used for the terms telescope picker
+-- used for the terms telescope picker & toggle func
 M.unhide_term = function(bufnr)
   local term_info = vim.g.nvchad_terms[tostring(bufnr)]
   vim.cmd(term_info.pos)
