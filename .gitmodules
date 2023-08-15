@@ -1,3 +1,0 @@
-[submodule "nvchad_types"]
-	path = nvchad_types
-	url = https://github.com/NvChad/lua_types.git
