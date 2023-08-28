@@ -1,4 +1,6 @@
 ---@meta
+--- Don't edit or require this file
+error("Requring a meta file")
 
 ---@type ThemeName
 vim.g.nvchad_theme = 'onedark'
@@ -69,7 +71,7 @@ vim.g.nvchad_theme = 'onedark'
 ---@field ashes ThemeTable # Changes for ashes theme
 ---@field ayu_dark ThemeTable # Changes for ayu_dark theme
 ---@field ayu_light ThemeTable # Changes for ayu_light theme
----@field bearded-arc ThemeTable # Changes for bearded-arc theme
+---@field ["bearded-arc"] ThemeTable # Changes for bearded-arc theme
 ---@field blossom_light ThemeTable # Changes for blossom_light theme
 ---@field catppuccin ThemeTable # Changes for catppuccin theme
 ---@field chadracula ThemeTable # Changes for chadracula theme
@@ -98,8 +100,8 @@ vim.g.nvchad_theme = 'onedark'
 ---@field nightlamp ThemeTable # Changes for nightlamp theme
 ---@field nightowl ThemeTable # Changes for nightowl theme
 ---@field nord ThemeTable # Changes for nord theme
----@field oceanic-light ThemeTable # Changes for oceanic-light theme
----@field oceanic-next ThemeTable # Changes for oceanic-next theme
+---@field ["oceanic-light"] ThemeTable # Changes for oceanic-light theme
+---@field ["oceanic-next"] ThemeTable # Changes for oceanic-next theme
 ---@field one_light ThemeTable # Changes for one_light theme
 ---@field onedark ThemeTable # Changes for onedark theme
 ---@field onenord ThemeTable # Changes for onenord theme
