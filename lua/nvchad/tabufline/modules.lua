@@ -52,7 +52,25 @@ end
 
 local function add_fileInfo(name, bufnr)
   if devicons_present then
-    local icon, icon_hl = devicons.get_icon(name, string.match(name, "%a+$"))
+    local supported_prefixes = {
+      "config.ru",
+      "test.jsx?",
+      "test.tsx?",
+      "spec.jsx?",
+      "spec.tsx?",
+    }
+
+    local prefix = ""
+
+    -- check if prefix should be used and if so get the right one
+    for _, supported_prefix in ipairs(supported_prefixes) do
+      local prefix_match = string.match(name, supported_prefix)
+      if (prefix_match) then
+        prefix = string.match(prefix_match, "%a+.")
+      end
+    end
+
+    local icon, icon_hl = devicons.get_icon(name, string.match(name, prefix .. "%a+$"))
 
     if not icon then
       icon = "󰈚"
