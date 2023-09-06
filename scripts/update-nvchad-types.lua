@@ -65,10 +65,6 @@ local gen_highlights = function()
     "---@alias Extendeddules",
   }
   local hlgroups = {}
-
-  local names = {
-    tbline = "tabufline",
-  }
   local ignored_files = {
     ["treesitter"] = true,
     ["statusline"] = true,
@@ -97,8 +93,6 @@ local gen_highlights = function()
         -- end
       end
     end
-    -- vim.print(contents)
-    -- break
   end
 
   for name, integration in vim.spairs(hlgroups) do
@@ -125,26 +119,9 @@ local gen_highlights = function()
       for hlname, _ in vim.spairs(groups) do
         if not hlgroups[hlname] then
           hlgroups[hlname] = base_name
-          -- if string.sub(hlgroup, 1, 1) == "@" then
-          --   table.insert(contents, 4,
-          --     string.format("---@field [\"%s\"] Base46HLGroups # highlight group for %s", hlgroup,
-          --       mapped_name[base_name] or base_name))
-          -- else
-          --   table.insert(contents, 4,
-          --     string.format("---@field %s Base46HLGroups # highlight group for %s", hlgroup,
-          --       mapped_name[base_name] or base_name))
-          -- end
         end
       end
     end
-
-    -- vim.print(contents)
-    -- break
-    -- print(base_name)
-    -- if base_name == "cmp" then
-    --   vim.print(content)
-    -- end
-    -- print(base_name)
   end
 
   for name, integration in vim.spairs(hlgroups) do
