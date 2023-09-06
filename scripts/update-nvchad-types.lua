@@ -61,7 +61,7 @@ local gen_highlights = function()
     "",
     "---@class Base46HLGroupsList: HLGroups, ExtendedHLGroups",
     "",
-    "---@alias Extendeddules",
+    "---@alias ExtendedModules",
   }
   local hlgroups = {}
   local ignored_files = {

@@ -588,7 +588,7 @@ error("Requring a meta file")
 
 ---@class Base46HLGroupsList: HLGroups, ExtendedHLGroups
 
----@alias Extendeddules
+---@alias ExtendedModules
 ---| "'alpha'"
 ---| "'bufferline'"
 ---| "'codeactionmenu'"
