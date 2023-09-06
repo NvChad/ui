@@ -37,7 +37,6 @@ local gen_themes = function()
   ) do
     local theme_name = get_base_name(name)
     table.insert(contents, 9, "---| '\"" .. theme_name .. "\"'")
-    -- table.insert(contents, "---@field " .. theme_name .. " ThemeTable")
     table.insert(contents,
       string.format("---@field %s ThemeTable # Changes for %s theme",
         theme_name:match("[^%l%u_]") and '["' .. theme_name .. '"]' or theme_name, theme_name))
@@ -84,13 +83,6 @@ local gen_highlights = function()
     for hlname, _ in vim.spairs(groups) do
       if not hlgroups[hlname] then
         hlgroups[hlname] = base_name
-        -- if string.sub(hlgroup, 1, 1) == "@" then
-        --   table.insert(contents, 6,
-        --     string.format("---@field [\"%s\"] Base46HLGroups # highlight group for %s", hlgroup, base_name))
-        -- else
-        --   table.insert(contents, 6,
-        --     string.format("---@field %s Base46HLGroups # highlight group for %s", hlgroup, base_name))
-        -- end
       end
     end
   end
