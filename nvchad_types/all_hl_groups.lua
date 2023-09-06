@@ -398,6 +398,57 @@ error("Requring a meta file")
 ---@field ["'@annotation'"] Base46HLGroups # highlight group for syntax
 
 ---@class ExtendedHLGroups
+---@field TroubleWarning Base46HLGroups # highlight group for trouble
+---@field TroubleTextWarning Base46HLGroups # highlight group for trouble
+---@field TroubleTextInformation Base46HLGroups # highlight group for trouble
+---@field TroubleTextHint Base46HLGroups # highlight group for trouble
+---@field TroubleTextError Base46HLGroups # highlight group for trouble
+---@field TroubleText Base46HLGroups # highlight group for trouble
+---@field TroubleSource Base46HLGroups # highlight group for trouble
+---@field TroubleSignWarning Base46HLGroups # highlight group for trouble
+---@field TroubleSignOther Base46HLGroups # highlight group for trouble
+---@field TroubleSignInformation Base46HLGroups # highlight group for trouble
+---@field TroubleSignHint Base46HLGroups # highlight group for trouble
+---@field TroubleSignError Base46HLGroups # highlight group for trouble
+---@field TroublePreview Base46HLGroups # highlight group for trouble
+---@field TroubleNormal Base46HLGroups # highlight group for trouble
+---@field TroubleLocation Base46HLGroups # highlight group for trouble
+---@field TroubleInformation Base46HLGroups # highlight group for trouble
+---@field TroubleIndent Base46HLGroups # highlight group for trouble
+---@field TroubleHint Base46HLGroups # highlight group for trouble
+---@field TroubleFoldIcon Base46HLGroups # highlight group for trouble
+---@field TroubleFile Base46HLGroups # highlight group for trouble
+---@field TroubleError Base46HLGroups # highlight group for trouble
+---@field TroubleCount Base46HLGroups # highlight group for trouble
+---@field TroubleCode Base46HLGroups # highlight group for trouble
+---@field TodoSignWarn Base46HLGroups # highlight group for todo
+---@field TodoSignTodo Base46HLGroups # highlight group for todo
+---@field TodoSignTest Base46HLGroups # highlight group for todo
+---@field TodoSignPerf Base46HLGroups # highlight group for todo
+---@field TodoSignNote Base46HLGroups # highlight group for todo
+---@field TodoSignHack Base46HLGroups # highlight group for todo
+---@field TodoSignFix Base46HLGroups # highlight group for todo
+---@field TodoFgWarn Base46HLGroups # highlight group for todo
+---@field TodoFgTodo Base46HLGroups # highlight group for todo
+---@field TodoFgTest Base46HLGroups # highlight group for todo
+---@field TodoFgPerf Base46HLGroups # highlight group for todo
+---@field TodoFgNote Base46HLGroups # highlight group for todo
+---@field TodoFgHack Base46HLGroups # highlight group for todo
+---@field TodoFgFix Base46HLGroups # highlight group for todo
+---@field TodoBgWarn Base46HLGroups # highlight group for todo
+---@field TodoBgTodo Base46HLGroups # highlight group for todo
+---@field TodoBgTest Base46HLGroups # highlight group for todo
+---@field TodoBgPerf Base46HLGroups # highlight group for todo
+---@field TodoBgNote Base46HLGroups # highlight group for todo
+---@field TodoBgHack Base46HLGroups # highlight group for todo
+---@field TodoBgFix Base46HLGroups # highlight group for todo
+---@field RainbowDelimiterYellow Base46HLGroups # highlight group for rainbowdelimiters
+---@field RainbowDelimiterViolet Base46HLGroups # highlight group for rainbowdelimiters
+---@field RainbowDelimiterRed Base46HLGroups # highlight group for rainbowdelimiters
+---@field RainbowDelimiterOrange Base46HLGroups # highlight group for rainbowdelimiters
+---@field RainbowDelimiterGreen Base46HLGroups # highlight group for rainbowdelimiters
+---@field RainbowDelimiterCyan Base46HLGroups # highlight group for rainbowdelimiters
+---@field RainbowDelimiterBlue Base46HLGroups # highlight group for rainbowdelimiters
 ---@field NotifyWARNTitle Base46HLGroups # highlight group for notify
 ---@field NotifyWARNIcon Base46HLGroups # highlight group for notify
 ---@field NotifyWARNBorder Base46HLGroups # highlight group for notify
@@ -452,6 +503,9 @@ error("Requring a meta file")
 ---@field NavicIconsClass Base46HLGroups # highlight group for navic
 ---@field NavicIconsBoolean Base46HLGroups # highlight group for navic
 ---@field NavicIconsArray Base46HLGroups # highlight group for navic
+---@field HopNextKey2 Base46HLGroups # highlight group for hop
+---@field HopNextKey1 Base46HLGroups # highlight group for hop
+---@field HopNextKey Base46HLGroups # highlight group for hop
 ---@field DapUIWatchesValue Base46HLGroups # highlight group for dap
 ---@field DapUIWatchesError Base46HLGroups # highlight group for dap
 ---@field DapUIWatchesEmpty Base46HLGroups # highlight group for dap
@@ -490,6 +544,18 @@ error("Requring a meta file")
 ---@field DAPUIValue Base46HLGroups # highlight group for dap
 ---@field DAPUIType Base46HLGroups # highlight group for dap
 ---@field DAPUIScope Base46HLGroups # highlight group for dap
+---@field CodeActionMenuWarningMessageText Base46HLGroups # highlight group for codeactionmenu
+---@field CodeActionMenuWarningMessageBorder Base46HLGroups # highlight group for codeactionmenu
+---@field CodeActionMenuMenuTitle Base46HLGroups # highlight group for codeactionmenu
+---@field CodeActionMenuMenuSelection Base46HLGroups # highlight group for codeactionmenu
+---@field CodeActionMenuMenuKind Base46HLGroups # highlight group for codeactionmenu
+---@field CodeActionMenuMenuIndex Base46HLGroups # highlight group for codeactionmenu
+---@field CodeActionMenuMenuDisabled Base46HLGroups # highlight group for codeactionmenu
+---@field CodeActionMenuDetailsUndefined Base46HLGroups # highlight group for codeactionmenu
+---@field CodeActionMenuDetailsTitle Base46HLGroups # highlight group for codeactionmenu
+---@field CodeActionMenuDetailsPreferred Base46HLGroups # highlight group for codeactionmenu
+---@field CodeActionMenuDetailsLabel Base46HLGroups # highlight group for codeactionmenu
+---@field CodeActionMenuDetailsDisabled Base46HLGroups # highlight group for codeactionmenu
 ---@field BufferlineIndicatorVisible Base46HLGroups # highlight group for bufferline
 ---@field BufferlineIndicatorSelected Base46HLGroups # highlight group for bufferline
 ---@field BufferLineTabSelected Base46HLGroups # highlight group for bufferline
@@ -522,9 +588,14 @@ error("Requring a meta file")
 
 ---@class Base46HLGroupsList: HLGroups, ExtendedHLGroups
 
----@alias ExtendedModules
+---@alias Extendeddules
 ---| "'alpha'"
 ---| "'bufferline'"
+---| "'codeactionmenu'"
 ---| "'dap'"
+---| "'hop'"
 ---| "'navic'"
 ---| "'notify'"
+---| "'rainbowdelimiters'"
+---| "'todo'"
+---| "'trouble'"
