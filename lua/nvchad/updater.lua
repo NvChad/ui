@@ -109,8 +109,10 @@ return function()
 
       vim.fn.jobstart({ "git", "pull" }, { silent = true, cwd = nvim_config })
       require("lazy").sync()
-      require("lazy").load({ plugins = { "mason.nvim" } })
-      vim.cmd("MasonUpdate")
+
+      if vim.fn.exists(':MasonUpdate') then
+        vim.cmd "MasonUpdate"
+      end
     end)
   end
 
