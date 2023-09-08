@@ -110,7 +110,7 @@ return function()
       vim.fn.jobstart({ "git", "pull" }, { silent = true, cwd = nvim_config })
       require("lazy").sync()
 
-      if vim.fn.exists(':MasonUpdate') then
+      if vim.fn.exists(':MasonUpdate') > 0 then
         vim.cmd "MasonUpdate"
       end
     end)
