@@ -52,7 +52,7 @@ end
 
 local function add_fileInfo(name, bufnr)
   if devicons_present then
-    local icon, icon_hl = devicons.get_icon(name, string.match(name, "%a+$"))
+    local icon, icon_hl = devicons.get_icon(name)
 
     if not icon then
       icon = "󰈚"
