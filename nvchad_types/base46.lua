@@ -104,6 +104,7 @@
 ---@field base_30 Base30Table extra colors to use
 
 ---@class Base46Table : ThemeTable
+---@field add_hl HLTable
 ---@field polish_hl HLTable highlight groups to be changed from the default color
 ---@field type '"dark"'|'"light"' Denoting value to set for `vim.opt.bg`
 
