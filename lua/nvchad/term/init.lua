@@ -1,93 +1,85 @@
 require "base46.term"
 
+local api = vim.api
+local g = vim.g
 local M = {}
 
-vim.g.nvchad_terms = {}
+g.nvchad_terms = {}
 
-M.prettify = function()
-  vim.opt_local.buflisted = false
-  vim.opt_local.number = false
+local pos_data = {
+  sp = { resize = "height", area = "lines" },
+  vsp = { resize = "width", area = "columns" },
+}
+
+-------------------------- util funcs -----------------------------
+M.resize = function(opts)
+  local val = pos_data[opts.pos]
+  local size = vim.o[val.area] * opts.size
+  api["nvim_win_set_" .. val.resize](0, math.floor(size))
+end
+
+M.prettify = function(winnr, bufnr)
+  vim.wo[winnr].number = false
+  vim.bo[bufnr].buflisted = false
+  vim.wo[winnr].winfixheight = true
+  vim.wo[winnr].winfixwidth = true
   vim.cmd "startinsert"
 end
 
--- term bufnr + their opts in a dict
-M.save_term_info = function(opts)
-  local bufnr = vim.api.nvim_get_current_buf()
-
-  local terms_list = vim.g.nvchad_terms
+M.save_term_info = function(opts, bufnr)
+  local terms_list = g.nvchad_terms
   terms_list[tostring(bufnr)] = opts
-  vim.g.nvchad_terms = terms_list
-end
 
-M.get_toggled_bufnr = function(id)
-  for bufnr, val in pairs(vim.g.nvchad_terms) do
-    if val.id == id then
-      return bufnr
-    end
+  -- store ids for toggledterms instead of bufnr
+  if opts.id then
+    opts.bufnr = bufnr
+    terms_list[opts.id] = opts
   end
+
+  g.nvchad_terms = terms_list
 end
 
-M.resize = function(opts)
-  local qty = opts.pos == "sp" and "lines" or "columns"
-  opts.size = vim.o[qty] * opts.size
+------------------------- user api -------------------------------
+M.new = function(opts, existing_buf, isToggle)
+  vim.cmd(opts.pos)
 
-  local resize_func = "nvim_win_set_" .. (opts.pos == "sp" and "height" or "width")
-  vim.api[resize_func](0, math.floor(opts.size))
-end
+  local buf = existing_buf or vim.api.nvim_create_buf(false, true)
+  local win = api.nvim_get_current_win()
+  opts.win = win
 
--- spawn new term based on opts
-M.new = function(opts)
-  if opts.id and M.get_toggled_bufnr(opts.id) then
-    M.unhide_term(M.get_toggled_bufnr(opts.id))
+  M.prettify(win, buf)
+
+  if opts.size then
     M.resize(opts)
-  else
-    vim.cmd(opts.pos)
-
-    -- initially resize terminal
-    local cond = (opts.pos == "sp" and not vim.g.nv_hterm) or (opts.pos == "vsp" and not vim.g.nv_vterm)
-
-    if opts.size and (cond or opts.id) then
-      M.resize(opts)
-
-      vim.g.nv_hterm = opts.pos == "sp" and true or false
-      vim.g.nv_vterm = opts.pos == "vsp" and true or false
-    end
-
-    vim.cmd "term"
   end
 
-  M.prettify()
+  api.nvim_win_set_buf(win, buf)
 
-  -- save term info
-  M.save_term_info(opts)
+  -- handle cmd opt
+  local shell = vim.o.shell
+  local cmd = shell
 
-  -- run shell command
-  if opts.shell_cmd then
-    local job_id = vim.b.terminal_job_id
+  if opts.cmd and (not opts.id or isToggle) then
+    cmd = { shell, "-c", opts.cmd .. "; " .. shell }
+  end
 
-    vim.api.nvim_chan_send(job_id, opts.shell_cmd .. " \n")
-    vim.cmd "startinsert"
+  M.save_term_info(opts, buf)
+
+  if not opts.id or isToggle then
+    vim.fn.termopen(cmd)
   end
 end
 
 M.toggle = function(opts)
-  if not vim.g[opts.id] then
-    M.new(opts)
+  local x = g.nvchad_terms[opts.id]
+
+  if x == nil then
+    M.new(opts, nil, true)
+  elseif vim.fn.bufwinid(x.bufnr) == -1 then
+    M.new(opts, x.bufnr)
   else
-    local buf = M.get_toggled_bufnr(opts.id)
-    require("nvchad.tabufline").close_buffer(buf)
+    api.nvim_win_close(x.win, true)
   end
-
-  vim.g[opts.id] = not vim.g[opts.id]
-end
-
--- used for the terms telescope picker & toggle func
-M.unhide_term = function(bufnr)
-  local term_info = vim.g.nvchad_terms[tostring(bufnr)]
-  vim.cmd(term_info.pos)
-
-  M.prettify()
-  vim.api.nvim_set_current_buf(tonumber(bufnr))
 end
 
 return M
