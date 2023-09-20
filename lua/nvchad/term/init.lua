@@ -12,6 +12,7 @@ local pos_data = {
 }
 
 -------------------------- util funcs -----------------------------
+-- works only for non floating windows
 M.resize = function(opts)
   local val = pos_data[opts.pos]
   local size = vim.o[val.area] * opts.size
@@ -20,6 +21,7 @@ end
 
 M.prettify = function(winnr, bufnr)
   vim.wo[winnr].number = false
+  vim.wo[winnr].relativenumber = false
   vim.bo[bufnr].buflisted = false
   vim.wo[winnr].winfixheight = true
   vim.wo[winnr].winfixwidth = true
@@ -97,7 +99,6 @@ M.refresh_cmd = function(opts)
     M.new(opts, x.bufnr)
     -- ensure that the buf is displayed on a window i.e visible to neovim!
   elseif vim.fn.bufwinid(x.bufnr) ~= -1 then
-    vim.fn.feedkeys("^L", "n")
     local job_id = vim.b[x.bufnr].terminal_job_id
     vim.api.nvim_chan_send(job_id, "clear; " .. opts.cmd .. " \n")
   end
