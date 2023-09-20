@@ -82,4 +82,25 @@ M.toggle = function(opts)
   end
 end
 
+-- spawns term with *cmd & runs the *cmd if the keybind is run again
+M.refresh_cmd = function(opts)
+  if not opts.cmd then
+    print "cmd opt is needed!"
+    return
+  end
+
+  local x = g.nvchad_terms[opts.id]
+
+  if x == nil then
+    M.new(opts, nil, true)
+  elseif vim.fn.bufwinid(x.bufnr) == -1 then
+    M.new(opts, x.bufnr)
+    -- ensure that the buf is displayed on a window i.e visible to neovim!
+  elseif vim.fn.bufwinid(x.bufnr) ~= -1 then
+    vim.fn.feedkeys("^L", "n")
+    local job_id = vim.b[x.bufnr].terminal_job_id
+    vim.api.nvim_chan_send(job_id, "clear; " .. opts.cmd .. " \n")
+  end
+end
+
 return M
