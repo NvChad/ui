@@ -75,7 +75,7 @@ end
 M.toggle = function(opts)
   local x = g.nvchad_terms[opts.id]
 
-  if x == nil then
+  if x == nil or not api.nvim_buf_is_valid(x.bufnr) then
     M.new(opts, nil, true)
   elseif vim.fn.bufwinid(x.bufnr) == -1 then
     M.new(opts, x.bufnr)
