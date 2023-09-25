@@ -11,26 +11,26 @@ local pos_data = {
   vsp = { resize = "width", area = "columns" },
 }
 
+local config = require("core.utils").load_config().ui.term.sizes
+
+-- used for initially resizing terms
+vim.g.nvhterm = false
+vim.g.nvvterm = false
+
 -------------------------- util funcs -----------------------------
 M.resize = function(opts)
   local val = pos_data[opts.pos]
-  local size = vim.o[val.area] * opts.size
+  local size = vim.o[val.area] * config[opts.pos]
   api["nvim_win_set_" .. val.resize](0, math.floor(size))
 end
 
-M.prettify = function(winnr, bufnr, hl, size)
+M.prettify = function(winnr, bufnr, hl)
   vim.wo[winnr].number = false
   vim.wo[winnr].relativenumber = false
   vim.bo[bufnr].buflisted = false
 
-  if size then
-    vim.wo[winnr].winfixheight = true
-    vim.wo[winnr].winfixwidth = true
-  end
-
   -- custom highlight
   vim.wo[winnr].winhl = hl or "Normal:Normal,WinSeparator:WinSeparator"
-
   vim.cmd "startinsert"
 end
 
@@ -47,7 +47,7 @@ M.save_term_info = function(opts, bufnr)
   g.nvchad_terms = terms_list
 end
 
-M.float = function(buffer, user_opts)
+M.create_float = function(buffer, user_opts)
   local opts = {
     relative = "editor",
     width = math.ceil(0.5 * vim.o.columns),
@@ -68,8 +68,9 @@ M.new = function(opts, existing_buf, toggleStatus)
 
   local isFloat = opts.pos == "float"
 
+  -- create window
   if isFloat then
-    M.float(buf, opts.float_opts)
+    M.create_float(buf, opts.float_opts)
   else
     vim.cmd(opts.pos)
   end
@@ -77,9 +78,10 @@ M.new = function(opts, existing_buf, toggleStatus)
   local win = api.nvim_get_current_win()
   opts.win = win
 
-  M.prettify(win, buf, opts.hl, opts.size)
+  M.prettify(win, buf, opts.hl)
 
-  if (not isFloat and opts.size) then
+  -- resize non floating wins initially + or only when they're toggleable
+  if (opts.pos == "sp" and not vim.g.nvhterm) or (opts.pos == "vsp" and not vim.g.nvvterm) or toggleStatus then
     M.resize(opts)
   end
 
@@ -95,8 +97,15 @@ M.new = function(opts, existing_buf, toggleStatus)
 
   M.save_term_info(opts, buf)
 
-  if not opts.id or toggleStatus == "notToggle" then
+  -- use termopen only for non toggled terms
+  if (not opts.id) or (toggleStatus == "notToggle") then
     vim.fn.termopen(cmd)
+  end
+
+  if opts.pos == "sp" then
+    vim.g.nvhterm = true
+  elseif opts.pos == "vsp" then
+    vim.g.nvvterm = true
   end
 end
 
