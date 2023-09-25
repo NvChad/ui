@@ -81,7 +81,11 @@ M.new = function(opts, existing_buf, toggleStatus)
   M.prettify(win, buf, opts.hl)
 
   -- resize non floating wins initially + or only when they're toggleable
-  if (opts.pos == "sp" and not vim.g.nvhterm) or (opts.pos == "vsp" and not vim.g.nvvterm) or toggleStatus then
+  if
+    (opts.pos == "sp" and not vim.g.nvhterm)
+    or (opts.pos == "vsp" and not vim.g.nvvterm)
+    or (toggleStatus and opts.pos ~= "float")
+  then
     M.resize(opts)
   end
 
