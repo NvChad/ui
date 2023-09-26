@@ -11,7 +11,7 @@ local pos_data = {
   vsp = { resize = "width", area = "columns" },
 }
 
-local config = require("core.utils").load_config().ui.term.sizes
+local config = require("core.utils").load_config().ui.term
 
 -- used for initially resizing terms
 vim.g.nvhterm = false
@@ -20,7 +20,7 @@ vim.g.nvvterm = false
 -------------------------- util funcs -----------------------------
 M.resize = function(opts)
   local val = pos_data[opts.pos]
-  local size = vim.o[val.area] * config[opts.pos]
+  local size = vim.o[val.area] * config.sizes[opts.pos]
   api["nvim_win_set_" .. val.resize](0, math.floor(size))
 end
 
@@ -146,11 +146,13 @@ M.refresh_cmd = function(opts)
 end
 
 -- autoinsert when entering term buffers
-vim.api.nvim_create_autocmd({ "BufEnter" }, {
-  pattern = "term://*",
-  callback = function()
-    vim.cmd "startinsert"
-  end,
-})
+if config.behavior.auto_insert then
+  vim.api.nvim_create_autocmd({ "BufEnter" }, {
+    pattern = "term://*",
+    callback = function()
+      vim.cmd "startinsert"
+    end,
+  })
+end
 
 return M
