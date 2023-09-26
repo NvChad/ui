@@ -1,4 +1,4 @@
-local config = require("core.utils").load_config().ui.lsp.signature 
+local config = require("core.utils").load_config().ui.lsp.signature
 
 -- thx to https://gitlab.com/ranjithshegde/dotbare/-/blob/master/.config/nvim/lua/lsp/init.lua
 local M = {}
@@ -102,6 +102,15 @@ M.setup = function(client)
       end
       open_signature()
     end,
+  })
+
+  vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+    border = "single",
+  })
+  vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+    border = "single",
+    focusable = false,
+    relative = "cursor",
   })
 end
 
