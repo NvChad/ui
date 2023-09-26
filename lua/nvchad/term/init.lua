@@ -145,4 +145,12 @@ M.refresh_cmd = function(opts)
   end
 end
 
+-- autoinsert when entering term buffers
+vim.api.nvim_create_autocmd({ "BufEnter" }, {
+  pattern = "term://*",
+  callback = function()
+    vim.cmd "startinsert"
+  end,
+})
+
 return M
