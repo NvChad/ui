@@ -123,11 +123,8 @@
 
 ---Options for NvChad/ui lsp configuration
 ---@class NvLspConfig 
----@field signature? NvLspSignatureConfig Opts for showing function signatures as you type
-
----@class NvLspSignatureConfig
----@field disabled? boolean Whether to disable this feature
----@field silent? boolean Whether to hide `No signature help available` message from appearing
+---@field signature? boolean showing LSP function signatures as you type
+---@field semantic_tokens? boolean Lsp semantic_tokens highlighting
 
 --- A table of mappings
 ---     - `disabled` is used to define the keymaps that you don't want to keep
