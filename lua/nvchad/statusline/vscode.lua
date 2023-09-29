@@ -1,5 +1,6 @@
 local fn = vim.fn
 local config = require("core.utils").load_config().ui.statusline
+local utils = require "core.utils"
 
 local M = {}
 
@@ -94,35 +95,27 @@ end
 
 -- LSP STUFF
 M.LSP_progress = function()
-  if not rawget(vim, "lsp") or vim.lsp.status then
+  local status = utils.get_message()
+
+  if not rawget(vim, "lsp") or vim.o.columns < 120 or not status then
     return ""
   end
 
-  local Lsp = vim.lsp.util.get_progress_messages()[1]
-
-  if vim.o.columns < 120 or not Lsp then
-    return ""
-  end
-
-  if Lsp.done then
+  if status.done then
     vim.defer_fn(function()
       vim.cmd.redrawstatus()
     end, 1000)
   end
 
-  local msg = Lsp.message or ""
-  local percentage = Lsp.percentage or 0
-  local title = Lsp.title or ""
+  local msg = status.msg or ""
+  local percentage = status.percentage or 100
+  local title = status.title or ""
   local spinners = { "", "󰪞", "󰪟", "󰪠", "󰪢", "󰪣", "󰪤", "󰪥" }
-  local ms = vim.loop.hrtime() / 1000000
-  local frame = math.floor(ms / 120) % #spinners
+  -- Choose the frame based on the percentage
+  local frame = percentage ~= 100 and math.floor(percentage * #spinners / 100) or 7
   local content = string.format(" %%<%s %s %s (%s%%%%) ", spinners[frame + 1], title, msg, percentage)
 
-  if config.lsprogress_len then
-    content = string.sub(content, 1, config.lsprogress_len)
-  end
-
-  return content or ""
+  return (status.msg or status.title) and ("%#St_LspProgress#" .. content) or ""
 end
 
 M.LSP_Diagnostics = function()
@@ -149,11 +142,15 @@ end
 
 M.LSP_status = function()
   if rawget(vim, "lsp") then
-    for _, client in ipairs(vim.lsp.get_active_clients()) do
-      if client.attached_buffers[vim.api.nvim_get_current_buf()] and client.name ~= "null-ls" then
-        return (vim.o.columns > 100 and " 󰄭  " .. client.name .. "  ") or " 󰄭  LSP  "
+    local lsp_status = ""
+    for _, client in ipairs(vim.lsp.get_clients()) do
+      if client.attached_buffers[vim.api.nvim_get_current_buf()] then
+        lsp_status = lsp_status .. client.name .. " "
       end
     end
+    return #lsp_status > 0
+        and ((vim.o.columns > 100 and "%#St_LspStatus# 󰄭  [" .. lsp_status:sub(0, #lsp_status - 1) .. "] ") or "%#St_LspStatus# 󰄭  LSP  ")
+      or ""
   end
 
   return ""
