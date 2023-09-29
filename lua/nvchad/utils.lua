@@ -31,4 +31,24 @@ M.replace_word = function(old, new)
   file:close()
 end
 
+M.get_message = function()
+  local done = false
+  for _, client in ipairs(vim.lsp.get_clients()) do
+    for progress in client.progress do
+      local value = progress.value
+      if type(value) == "table" and value.kind then
+        if value.kind == "end" then
+          done = true
+        end
+        return {
+          msg = value.message,
+          title = value.title,
+          percentage = value.percentage,
+          done = done,
+        }
+      end
+    end
+  end
+  return nil
+end
 return M
