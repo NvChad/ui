@@ -150,6 +150,8 @@ error("Requring a meta file")
 ---@field NvimTreeGitDeleted Base46HLGroups # highlight group for nvimtree
 ---@field NvimTreeFolderName Base46HLGroups # highlight group for nvimtree
 ---@field NvimTreeFolderIcon Base46HLGroups # highlight group for nvimtree
+---@field NvimTreeFolderArrowOpen Base46HLGroups # highlight group for nvimtree
+---@field NvimTreeFolderArrowClosed Base46HLGroups # highlight group for nvimtree
 ---@field NvimTreeEndOfBuffer Base46HLGroups # highlight group for nvimtree
 ---@field NvimTreeEmptyFolderName Base46HLGroups # highlight group for nvimtree
 ---@field NvimTreeCursorLine Base46HLGroups # highlight group for nvimtree
@@ -298,6 +300,7 @@ error("Requring a meta file")
 ---@field CmpItemKindTypeParameter Base46HLGroups # highlight group for cmp
 ---@field CmpItemKindType Base46HLGroups # highlight group for cmp
 ---@field CmpItemKindText Base46HLGroups # highlight group for cmp
+---@field CmpItemKindTabNine Base46HLGroups # highlight group for cmp
 ---@field CmpItemKindStructure Base46HLGroups # highlight group for cmp
 ---@field CmpItemKindStruct Base46HLGroups # highlight group for cmp
 ---@field CmpItemKindSnippet Base46HLGroups # highlight group for cmp
@@ -320,6 +323,7 @@ error("Requring a meta file")
 ---@field CmpItemKindConstructor Base46HLGroups # highlight group for cmp
 ---@field CmpItemKindConstant Base46HLGroups # highlight group for cmp
 ---@field CmpItemKindColor Base46HLGroups # highlight group for cmp
+---@field CmpItemKindCodeium Base46HLGroups # highlight group for cmp
 ---@field CmpItemKindClass Base46HLGroups # highlight group for cmp
 ---@field CmpItemAbbrMatch Base46HLGroups # highlight group for cmp
 ---@field CmpItemAbbr Base46HLGroups # highlight group for cmp
@@ -442,6 +446,8 @@ error("Requring a meta file")
 ---@field TodoBgNote Base46HLGroups # highlight group for todo
 ---@field TodoBgHack Base46HLGroups # highlight group for todo
 ---@field TodoBgFix Base46HLGroups # highlight group for todo
+---@field SagaNormal Base46HLGroups # highlight group for lspsaga
+---@field SagaBorder Base46HLGroups # highlight group for lspsaga
 ---@field RainbowDelimiterYellow Base46HLGroups # highlight group for rainbowdelimiters
 ---@field RainbowDelimiterViolet Base46HLGroups # highlight group for rainbowdelimiters
 ---@field RainbowDelimiterRed Base46HLGroups # highlight group for rainbowdelimiters
@@ -594,6 +600,7 @@ error("Requring a meta file")
 ---| "'codeactionmenu'"
 ---| "'dap'"
 ---| "'hop'"
+---| "'lspsaga'"
 ---| "'navic'"
 ---| "'notify'"
 ---| "'rainbowdelimiters'"
