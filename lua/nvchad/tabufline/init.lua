@@ -54,6 +54,7 @@ M.close_buffer = function(bufnr)
   if vim.bo.buftype == "terminal" then
     vim.cmd(vim.bo.buflisted and "set nobl | enew" or "hide")
   else
+    -- for those who have disabled tabufline
     if not vim.t.bufs then
       vim.cmd "bd"
       return

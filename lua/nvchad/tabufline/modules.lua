@@ -99,13 +99,20 @@ local function add_fileInfo(name, bufnr)
     end
 
     -- padding around bufname; 24 = bufame length (icon + filename)
-    local padding = (24 - #name - 5) / 2
+    local l_pad = (24 - #name - 5) / 2
+    local r_pad = l_pad
+
+    if l_pad % 1 ~= 0 then
+      l_pad = math.floor(l_pad + 1)
+      r_pad = math.floor(r_pad)
+    end
+
     local maxname_len = 16
 
     name = (#name > maxname_len and string.sub(name, 1, 14) .. "..") or name
     name = (api.nvim_get_current_buf() == bufnr and "%#TbLineBufOn# " .. name) or ("%#TbLineBufOff# " .. name)
 
-    return string.rep(" ", padding) .. icon .. name .. string.rep(" ", padding)
+    return string.rep(" ", l_pad) .. icon .. name .. string.rep(" ", r_pad)
   end
 end
 
@@ -142,31 +149,28 @@ end
 local M = {}
 
 M.NvimTreeOverlay = function()
-  return "%#NvimTreeNormal#" .. (vim.g.nvimtree_side == "right" and "" or string.rep(" ", getNvimTreeWidth()))
+  return "%#NvimTreeNormal#" .. string.rep(" ", getNvimTreeWidth())
 end
 
 M.bufferlist = function()
   local buffers = {} -- buffersults
-  local available_space = vim.o.columns - getNvimTreeWidth() - getBtnsWidth()
+  local available_space = vim.o.columns - getNvimTreeWidth() - getBtnsWidth() - 5
   local current_buf = api.nvim_get_current_buf()
   local has_current = false -- have we seen current buffer yet?
 
   for _, bufnr in ipairs(vim.t.bufs) do
-    if isBufValid(bufnr) then
-      if ((#buffers + 1) * 21) > available_space then
-        if has_current then
-          break
-        end
-
-        table.remove(buffers, 1)
+    if ((#buffers + 1) * 24) > available_space then
+      if has_current then
+        break
       end
 
-      has_current = (bufnr == current_buf and true) or has_current
-      table.insert(buffers, styleBufferTab(bufnr))
+      table.remove(buffers, 1)
     end
+
+    has_current = (bufnr == current_buf and true) or has_current
+    table.insert(buffers, styleBufferTab(bufnr))
   end
 
-  vim.g.visibuffers = buffers
   return table.concat(buffers) .. "%#TblineFill#" .. "%=" -- buffers + empty space
 end
 
