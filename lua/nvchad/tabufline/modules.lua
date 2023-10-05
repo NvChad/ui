@@ -67,7 +67,7 @@ local function add_fileInfo(name, bufnr)
     -- check for same buffer names under different dirs
     for _, value in ipairs(vim.t.bufs) do
       if isBufValid(value) then
-        if name == fn.fnamemodify(api.nvim_buf_get_name(value), ":t") and value ~= bufnr then
+        if name == api.nvim_buf_get_name(value):match "^.+/(.+)$" and value ~= bufnr then
           local other = {}
           for match in (vim.fs.normalize(api.nvim_buf_get_name(value)) .. "/"):gmatch("(.-)" .. "/") do
             table.insert(other, match)
@@ -114,7 +114,8 @@ end
 
 local function styleBufferTab(nr)
   local close_btn = "%" .. nr .. "@TbKillBuf@ 󰅖 %X"
-  local name = (#api.nvim_buf_get_name(nr) ~= 0) and fn.fnamemodify(api.nvim_buf_get_name(nr), ":t") or " No Name "
+  local filepath = api.nvim_buf_get_name(nr)
+  local name = (#filepath ~= 0) and filepath:match "^.+/(.+)$" or " No Name "
   name = "%" .. nr .. "@TbGoToBuf@" .. add_fileInfo(name, nr) .. "%X"
 
   -- add numbers to each tab in tabufline
