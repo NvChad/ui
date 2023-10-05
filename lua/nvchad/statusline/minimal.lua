@@ -18,6 +18,14 @@ local function gen_block(icon, txt, sep_l_hlgroup, iconHl_group, txt_hl_group)
   return sep_l_hlgroup .. sep_l .. iconHl_group .. icon .. " " .. txt_hl_group .. " " .. txt .. sep_r
 end
 
+local function stbufnr()
+  return vim.api.nvim_win_get_buf(vim.g.statusline_winid)
+end
+
+local function is_activewin()
+  return vim.api.nvim_get_current_win() == vim.g.statusline_winid
+end
+
 local M = {}
 
 M.modes = {
@@ -65,6 +73,10 @@ M.modes = {
 }
 
 M.mode = function()
+  if not is_activewin() then
+    return ""
+  end
+
   local m = vim.api.nvim_get_mode().mode
 
   return gen_block(
@@ -78,26 +90,27 @@ end
 
 M.fileInfo = function()
   local icon = "󰈚"
-  local filename = (fn.expand "%" == "" and "Empty") or fn.expand "%:t"
+  local path = vim.api.nvim_buf_get_name(stbufnr())
+  local name = (path == "" and "Empty ") or path:match "^.+/(.+)$"
 
-  if filename ~= "Empty" then
+  if name ~= "Empty" then
     local devicons_present, devicons = pcall(require, "nvim-web-devicons")
 
     if devicons_present then
-      local ft_icon = devicons.get_icon(filename)
+      local ft_icon = devicons.get_icon(name)
       icon = (ft_icon ~= nil and ft_icon) or icon
     end
   end
 
-  return gen_block(icon, filename, "%#St_file_sep#", "%#St_file_bg#", "%#St_file_txt#")
+  return gen_block(icon, name, "%#St_file_sep#", "%#St_file_bg#", "%#St_file_txt#")
 end
 
 M.git = function()
-  if not vim.b.gitsigns_head or vim.b.gitsigns_git_status then
+  if not vim.b[stbufnr()].gitsigns_head or vim.b[stbufnr()].gitsigns_git_status then
     return ""
   end
 
-  local git_status = vim.b.gitsigns_status_dict
+  local git_status = vim.b[stbufnr()].gitsigns_status_dict
 
   local added = (git_status.added and git_status.added ~= 0) and ("  " .. git_status.added) or ""
   local changed = (git_status.changed and git_status.changed ~= 0) and ("  " .. git_status.changed) or ""
@@ -109,7 +122,7 @@ end
 
 -- LSP STUFF
 M.LSP_progress = function()
-  if not rawget(vim, "lsp") or vim.lsp.status then
+  if not rawget(vim, "lsp") or vim.lsp.status or not is_activewin() then
     return ""
   end
 
@@ -145,10 +158,10 @@ M.LSP_Diagnostics = function()
     return ""
   end
 
-  local errors = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
-  local warnings = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
-  local hints = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT })
-  local info = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO })
+  local errors = #vim.diagnostic.get(stbufnr(), { severity = vim.diagnostic.severity.ERROR })
+  local warnings = #vim.diagnostic.get(stbufnr(), { severity = vim.diagnostic.severity.WARN })
+  local hints = #vim.diagnostic.get(stbufnr(), { severity = vim.diagnostic.severity.HINT })
+  local info = #vim.diagnostic.get(stbufnr(), { severity = vim.diagnostic.severity.INFO })
 
   errors = (errors and errors > 0) and ("%#St_lspError#" .. " " .. errors .. " ") or ""
   warnings = (warnings and warnings > 0) and ("%#St_lspWarning#" .. "  " .. warnings .. " ") or ""
@@ -161,7 +174,7 @@ end
 M.LSP_status = function()
   if rawget(vim, "lsp") then
     for _, client in ipairs(vim.lsp.get_active_clients()) do
-      if client.attached_buffers[vim.api.nvim_get_current_buf()] and client.name ~= "null-ls" then
+      if client.attached_buffers[stbufnr()] and client.name ~= "null-ls" then
         return (vim.o.columns > 100 and gen_block("", client.name, "%#St_lsp_sep#", "%#St_lsp_bg#", "%#St_lsp_txt#"))
           or "  LSP "
       end
@@ -183,7 +196,8 @@ M.cursor_position = function()
 end
 
 M.file_encoding = function()
-  return string.upper(vim.bo.fileencoding) == "" and "" or string.upper(vim.bo.fileencoding) .. "  "
+  local encode = vim.bo[stbufnr()].fileencoding
+  return string.upper(encode) == "" and "" or string.upper(encode) .. "  "
 end
 
 M.run = function()
