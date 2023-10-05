@@ -15,7 +15,7 @@ local sep_l = separators["left"]
 local sep_r = separators["right"]
 
 local function stbufnr()
-  return fn.winbufnr(vim.g.statusline_winid)
+  return vim.api.nvim_win_get_buf(vim.g.statusline_winid)
 end
 
 local function is_activewin()
@@ -82,21 +82,21 @@ end
 
 M.fileInfo = function()
   local icon = " 󰈚 "
-  local filef = "#" .. stbufnr()
-  local filename = (fn.expand(filef) == "" and "Empty") or fn.expand(filef .. ":t")
+  local path = vim.api.nvim_buf_get_name(stbufnr())
+  local name = (path == "" and "Empty ") or path:match "^.+/(.+)$"
 
-  if filename ~= "Empty " then
+  if name ~= "Empty " then
     local devicons_present, devicons = pcall(require, "nvim-web-devicons")
 
     if devicons_present then
-      local ft_icon = devicons.get_icon(filename)
+      local ft_icon = devicons.get_icon(name)
       icon = (ft_icon ~= nil and " " .. ft_icon) or ""
     end
 
-    filename = " " .. filename .. " "
+    name = " " .. name .. " "
   end
 
-  return "%#St_file_info#" .. icon .. filename .. "%#St_file_sep#" .. sep_r
+  return "%#St_file_info#" .. icon .. name .. "%#St_file_sep#" .. sep_r
 end
 
 M.git = function()
