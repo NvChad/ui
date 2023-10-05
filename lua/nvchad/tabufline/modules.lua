@@ -99,13 +99,9 @@ local function add_fileInfo(name, bufnr)
     end
 
     -- padding around bufname; 24 = bufame length (icon + filename)
-    local l_pad = (24 - #name - 5) / 2
-    local r_pad = l_pad
-
-    if l_pad % 1 ~= 0 then
-      l_pad = math.floor(l_pad + 1)
-      r_pad = math.floor(r_pad)
-    end
+    local available_pad = (24 - #name - 5)
+    local r_pad = math.floor(available_pad / 2)
+    local l_pad = available_pad - r_pad
 
     local maxname_len = 16
 
