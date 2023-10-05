@@ -46,54 +46,54 @@
 ---@alias HLTable table<string, Base46HLGroups>
 
 ---@alias Base30Colors
----| '"white"'
----| '"darker_black"'
----| '"black"'
----| '"black2"'
----| '"one_bg"'
----| '"one_bg2"'
----| '"one_bg3"'
----| '"grey"'
----| '"grey_fg"'
----| '"grey_fg2"'
----| '"light_grey"'
----| '"red"'
----| '"baby_pink"'
----| '"pink"'
----| '"line"'
----| '"green"'
----| '"vibrant_green"'
----| '"blue"'
----| '"nord_blue"'
----| '"yellow"'
----| '"sun"'
----| '"purple"'
----| '"dark_purple"'
----| '"teal"'
----| '"orange"'
----| '"cyan"'
----| '"statusline_bg"'
----| '"lightbg"'
----| '"pmenu_bg"'
----| '"folder_bg"'
+---| '"white"' #
+---| '"darker_black"' # LSP/CMP Pop-ups, Tree BG
+---| '"black"' # CMP BG, Icons/Headers FG
+---| '"black2"' # Tabline BG, Cursor Lines, Selections
+---| '"one_bg"' # Pop-up Menu BG, Statusline Icon FG
+---| '"one_bg2"' # Tabline Inactive BG, Indent Line Context Start
+---| '"one_bg3"' # Tabline Toggle/New Btn, Borders
+---| '"grey"' # Line Nr, Scrollbar, Indent Line Hover
+---| '"grey_fg"' # Comment
+---| '"grey_fg2"' # Unused
+---| '"light_grey"' # Diff Change, Tabline Inactive FG
+---| '"red"' # Diff Delete, Diag Error
+---| '"baby_pink"' # Some Dev Icons
+---| '"pink"' # Indicators
+---| '"line"' # Win Sep, Indent Line
+---| '"green"' # Diff Add, Diag Info, Indicators
+---| '"vibrant_green"' # Some Dev Icons
+---| '"blue"' # UI Elements, Dev/CMP Icons
+---| '"nord_blue"' # Indicators
+---| '"yellow"' # Diag Warn
+---| '"sun"' # Dev Icons
+---| '"purple"' # Diag Hint, Dev/CMP Icons
+---| '"dark_purple"' # Some Dev Icons
+---| '"teal"' # Dev/CMP Icons
+---| '"orange"' # Diff Mod
+---| '"cyan"' # Dev/CMP Icons
+---| '"statusline_bg"' # Statusline
+---| '"lightbg"' # Statusline Components
+---| '"pmenu_bg"' # Pop-up Menu Selection
+---| '"folder_bg"' # Nvimtree Items
 
 ---@alias Base16Colors
----| '"base00"'
----| '"base01"'
----| '"base02"'
----| '"base03"'
----| '"base04"'
----| '"base05"'
----| '"base06"'
----| '"base07"'
----| '"base08"'
----| '"base09"'
----| '"base0A"'
----| '"base0B"'
----| '"base0C"'
----| '"base0D"'
----| '"base0E"'
----| '"base0F"'
+---| '"base00"' # Neovim Default Background
+---| '"base01"' # Lighter Background (Used for status bars, line number and folding marks)
+---| '"base02"' # Selection Background (Visual Mode)
+---| '"base03"' # Comments, Invisibles, Line Highlighting, Special Keys, Sings, Fold bg
+---| '"base04"' # Dark Foreground, Dnf Underline (Used for status bars)
+---| '"base05"' # Default Foreground (for text), Var, Refrences Caret, Delimiters, Operators
+---| '"base06"' # Light Foreground (Not often used)
+---| '"base07"' # Light Foreground, Cmp Icons (Not often used)
+---| '"base08"' # Variables, Identifiers, Filed, Name Space, Error, Spell XML Tags, Markup Link Text, Markup Lists, Diff Deleted
+---| '"base09"' # Integers, Boolean, Constants, XML Attributes, Markup Link Url, Inc Search
+---| '"base0A"' # Classes, Attribute, Type, Repeat, Tag, Todo, Markup Bold, Search Text Background
+---| '"base0B"' # Strings, Symbols, Inherited Class, Markup Code, Diff Inserted
+---| '"base0C"' # Constructor,Special, Fold Column, Support, Regular Expressions, Escape Characters, Markup Quotes
+---| '"base0D"' # Functions, Methods, Attribute IDs, Headings
+---| '"base0E"' # Keywords, Storage, Selector, Markup Italic, Diff Changed
+---| '"base0F"' # Delimiters, Special Char, Deprecated, Opening/Closing Embedded Language Tags, e.g. <?php ?>
 
 ---@alias Base46Colors
 ---| Base30Colors
