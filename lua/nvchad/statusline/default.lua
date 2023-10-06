@@ -80,10 +80,11 @@ M.mode = function()
   return current_mode .. mode_sep1 .. "%#ST_EmptySpace#" .. sep_r
 end
 
+-- credits to ii14 for str:match func
 M.fileInfo = function()
   local icon = " 󰈚 "
   local path = vim.api.nvim_buf_get_name(stbufnr())
-  local name = (path == "" and "Empty ") or path:match "^.+/(.+)$"
+  local name = (path == "" and "Empty ") or path:match "^.+[/\\](.+)$"
 
   if name ~= "Empty " then
     local devicons_present, devicons = pcall(require, "nvim-web-devicons")
