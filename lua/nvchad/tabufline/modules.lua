@@ -113,7 +113,7 @@ end
 local function styleBufferTab(nr)
   local close_btn = "%" .. nr .. "@TbKillBuf@ 󰅖 %X"
   local filepath = api.nvim_buf_get_name(nr)
-  local name = (filepath == "" and " No Name ") or filepath:match "^.+/(.+)$"
+  local name = (filepath == "" and " No Name ") or filepath:match "^.+[/\\](.+)$"
   name = "%" .. nr .. "@TbGoToBuf@" .. add_fileInfo(name, nr) .. "%X"
 
   -- add numbers to each tab in tabufline
