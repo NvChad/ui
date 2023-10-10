@@ -28,6 +28,7 @@ M.prettify = function(winnr, bufnr, hl)
   vim.wo[winnr].number = false
   vim.wo[winnr].relativenumber = false
   vim.wo[winnr].foldcolumn = "0"
+  vim.wo[winnr].signcolumn = "no"
   vim.bo[bufnr].buflisted = false
 
   -- custom highlight
