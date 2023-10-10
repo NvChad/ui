@@ -6,8 +6,10 @@ local isValid_mapping_TB = require("nvchad.cheatsheet").isValid_mapping_TB
 
 -- filter mappings_tb i.e remove tb which have empty fields
 for title, val in pairs(mappings_tb) do
-  if not isValid_mapping_TB(val) then
-    mappings_tb[title] = nil
+  for mode, mappings in pairs(val) do
+    if not isValid_mapping_TB(mappings) then
+      mappings_tb[title][mode] = nil
+    end
   end
 end
 
@@ -302,8 +304,9 @@ return function()
   vim.opt_local.list = false
   vim.opt_local.wrap = false
   vim.opt_local.relativenumber = false
-  vim.opt_local.cul = false
+  vim.opt_local.cursorline = false
   vim.opt_local.colorcolumn = "0"
+  vim.opt_local.foldcolumn = "0"
   vim.g.nvcheatsheet_displayed = true
 
   vim.keymap.set("n", "<ESC>", function()

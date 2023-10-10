@@ -1,5 +1,4 @@
 local api = vim.api
-local devicons_present, devicons = pcall(require, "nvim-web-devicons")
 local fn = vim.fn
 local tabufline_config = require("core.utils").load_config().ui.tabufline
 
@@ -51,23 +50,22 @@ local function getBtnsWidth() -- close, theme toggle btn etc
 end
 
 local function add_fileInfo(name, bufnr)
-  if devicons_present then
-    local icon, icon_hl = devicons.get_icon(name)
+  local icon = "󰈚"
+  local tbHlName = (api.nvim_get_current_buf() == bufnr and "TbLineBufOn" or "TbLineBufOff")
+  local icon_hl = new_hl("DevIconDefault", tbHlName)
 
-    if not icon then
-      icon = "󰈚"
-      icon_hl = "DevIconDefault"
+  if name ~= " No Name " then
+    local devicon, devicon_hl = require("nvim-web-devicons").get_icon(name)
+
+    if devicon then
+      icon = devicon
+      icon_hl = new_hl(devicon_hl, tbHlName)
     end
-
-    icon = (
-      api.nvim_get_current_buf() == bufnr and new_hl(icon_hl, "TbLineBufOn") .. " " .. icon
-      or new_hl(icon_hl, "TbLineBufOff") .. " " .. icon
-    )
 
     -- check for same buffer names under different dirs
     for _, value in ipairs(vim.t.bufs) do
       if isBufValid(value) then
-        if name == fn.fnamemodify(api.nvim_buf_get_name(value), ":t") and value ~= bufnr then
+        if name == api.nvim_buf_get_name(value):match "^.+/(.+)$" and value ~= bufnr then
           local other = {}
           for match in (vim.fs.normalize(api.nvim_buf_get_name(value)) .. "/"):gmatch("(.-)" .. "/") do
             table.insert(other, match)
@@ -97,21 +95,25 @@ local function add_fileInfo(name, bufnr)
         end
       end
     end
-
-    -- padding around bufname; 24 = bufame length (icon + filename)
-    local padding = (24 - #name - 5) / 2
-    local maxname_len = 16
-
-    name = (#name > maxname_len and string.sub(name, 1, 14) .. "..") or name
-    name = (api.nvim_get_current_buf() == bufnr and "%#TbLineBufOn# " .. name) or ("%#TbLineBufOff# " .. name)
-
-    return string.rep(" ", padding) .. icon .. name .. string.rep(" ", padding)
   end
+
+  -- padding around bufname; 24 = bufame length (icon + filename)
+  local available_pad = (24 - #name - 5)
+  local r_pad = math.floor(available_pad / 2)
+  local l_pad = available_pad - r_pad
+
+  local maxname_len = 16
+
+  name = (#name > maxname_len and string.sub(name, 1, 14) .. "..") or name
+  name = "%#" .. tbHlName .. "# " .. name
+
+  return string.rep(" ", l_pad) .. (icon_hl .. icon .. name) .. string.rep(" ", r_pad)
 end
 
 local function styleBufferTab(nr)
   local close_btn = "%" .. nr .. "@TbKillBuf@ 󰅖 %X"
-  local name = (#api.nvim_buf_get_name(nr) ~= 0) and fn.fnamemodify(api.nvim_buf_get_name(nr), ":t") or " No Name "
+  local filepath = api.nvim_buf_get_name(nr)
+  local name = (filepath == "" and " No Name ") or filepath:match "^.+[/\\](.+)$"
   name = "%" .. nr .. "@TbGoToBuf@" .. add_fileInfo(name, nr) .. "%X"
 
   -- add numbers to each tab in tabufline
@@ -142,31 +144,28 @@ end
 local M = {}
 
 M.NvimTreeOverlay = function()
-  return "%#NvimTreeNormal#" .. (vim.g.nvimtree_side == "right" and "" or string.rep(" ", getNvimTreeWidth()))
+  return "%#NvimTreeNormal#" .. string.rep(" ", getNvimTreeWidth())
 end
 
 M.bufferlist = function()
   local buffers = {} -- buffersults
-  local available_space = vim.o.columns - getNvimTreeWidth() - getBtnsWidth()
+  local available_space = vim.o.columns - getNvimTreeWidth() - getBtnsWidth() - 5
   local current_buf = api.nvim_get_current_buf()
   local has_current = false -- have we seen current buffer yet?
 
   for _, bufnr in ipairs(vim.t.bufs) do
-    if isBufValid(bufnr) then
-      if ((#buffers + 1) * 21) > available_space then
-        if has_current then
-          break
-        end
-
-        table.remove(buffers, 1)
+    if ((#buffers + 1) * 24) > available_space then
+      if has_current then
+        break
       end
 
-      has_current = (bufnr == current_buf and true) or has_current
-      table.insert(buffers, styleBufferTab(bufnr))
+      table.remove(buffers, 1)
     end
+
+    has_current = (bufnr == current_buf and true) or has_current
+    table.insert(buffers, styleBufferTab(bufnr))
   end
 
-  vim.g.visibuffers = buffers
   return table.concat(buffers) .. "%#TblineFill#" .. "%=" -- buffers + empty space
 end
 

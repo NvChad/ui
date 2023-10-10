@@ -2,6 +2,14 @@ local fn = vim.fn
 local config = require("core.utils").load_config().ui.statusline
 local utils = require "core.utils"
 
+local function stbufnr()
+  return vim.api.nvim_win_get_buf(vim.g.statusline_winid)
+end
+
+local function is_activewin()
+  return vim.api.nvim_get_current_win() == vim.g.statusline_winid
+end
+
 local M = {}
 
 M.modes = {
@@ -49,42 +57,47 @@ M.modes = {
 }
 
 M.mode = function()
+  if not is_activewin() then
+    return ""
+  end
+
   local m = vim.api.nvim_get_mode().mode
   return "%#" .. M.modes[m][2] .. "#" .. "  " .. M.modes[m][1] .. " "
 end
 
 M.fileInfo = function()
   local icon = " 󰈚 "
-  local filename = (fn.expand "%" == "" and "Empty ") or fn.expand "%:t"
+  local path = vim.api.nvim_buf_get_name(stbufnr())
+  local name = (path == "" and "Empty ") or path:match "^.+[/\\](.+)$"
 
-  if filename ~= "Empty " then
+  if name ~= "Empty " then
     local devicons_present, devicons = pcall(require, "nvim-web-devicons")
 
     if devicons_present then
-      local ft_icon = devicons.get_icon(filename)
+      local ft_icon = devicons.get_icon(name)
       icon = (ft_icon ~= nil and " " .. ft_icon) or ""
     end
 
-    filename = " " .. filename .. " "
+    name = " " .. name .. " "
   end
 
-  return "%#StText# " .. icon .. filename
+  return "%#StText# " .. icon .. name
 end
 
 M.git = function()
-  if not vim.b.gitsigns_head or vim.b.gitsigns_git_status then
+  if not vim.b[stbufnr()].gitsigns_head or vim.b[stbufnr()].gitsigns_git_status then
     return ""
   end
 
-  return "  " .. vim.b.gitsigns_status_dict.head .. "  "
+  return "  " .. vim.b[stbufnr()].gitsigns_status_dict.head .. "  "
 end
 
 M.gitchanges = function()
-  if not vim.b.gitsigns_head or vim.b.gitsigns_git_status or vim.o.columns < 120 then
+  if not vim.b[stbufnr()].gitsigns_head or vim.b[stbufnr()].gitsigns_git_status or vim.o.columns < 120 then
     return ""
   end
 
-  local git_status = vim.b.gitsigns_status_dict
+  local git_status = vim.b[stbufnr()].gitsigns_status_dict
 
   local added = (git_status.added and git_status.added ~= 0) and ("%#St_lspInfo#  " .. git_status.added .. " ") or ""
   local changed = (git_status.changed and git_status.changed ~= 0)
@@ -137,7 +150,8 @@ M.LSP_Diagnostics = function()
 end
 
 M.filetype = function()
-  return vim.bo.ft == "" and "%#St_ft# {} plain text  " or "%#St_ft#{} " .. vim.bo.ft .. " "
+  local ft = vim.bo[stbufnr()].ft
+  return ft == "" and "%#St_ft# {} plain text  " or "%#St_ft#{} " .. ft .. " "
 end
 
 M.LSP_status = function()
@@ -157,7 +171,8 @@ M.cursor_position = function()
 end
 
 M.file_encoding = function()
-  return string.upper(vim.bo.fileencoding) == "" and "" or "%#St_encode#" .. string.upper(vim.bo.fileencoding) .. "  "
+  local encode = vim.bo[stbufnr()].fileencoding
+  return string.upper(encode) == "" and "" or "%#St_encode#" .. string.upper(encode) .. "  "
 end
 
 M.cwd = function()

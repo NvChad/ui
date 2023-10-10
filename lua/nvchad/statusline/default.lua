@@ -15,6 +15,14 @@ local separators = (type(sep_style) == "table" and sep_style) or default_sep_ico
 local sep_l = separators["left"]
 local sep_r = separators["right"]
 
+local function stbufnr()
+  return vim.api.nvim_win_get_buf(vim.g.statusline_winid)
+end
+
+local function is_activewin()
+  return vim.api.nvim_get_current_win() == vim.g.statusline_winid
+end
+
 local M = {}
 
 M.modes = {
@@ -62,6 +70,10 @@ M.modes = {
 }
 
 M.mode = function()
+  if not is_activewin() then
+    return ""
+  end
+
   local m = vim.api.nvim_get_mode().mode
   local current_mode = "%#" .. M.modes[m][2] .. "#" .. "  " .. M.modes[m][1]
   local mode_sep1 = "%#" .. M.modes[m][2] .. "Sep" .. "#" .. sep_r
@@ -69,30 +81,32 @@ M.mode = function()
   return current_mode .. mode_sep1 .. "%#ST_EmptySpace#" .. sep_r
 end
 
+-- credits to ii14 for str:match func
 M.fileInfo = function()
   local icon = " 󰈚 "
-  local filename = (fn.expand "%" == "" and "Empty ") or fn.expand "%:t"
+  local path = vim.api.nvim_buf_get_name(stbufnr())
+  local name = (path == "" and "Empty ") or path:match "^.+[/\\](.+)$"
 
-  if filename ~= "Empty " then
+  if name ~= "Empty " then
     local devicons_present, devicons = pcall(require, "nvim-web-devicons")
 
     if devicons_present then
-      local ft_icon = devicons.get_icon(filename)
+      local ft_icon = devicons.get_icon(name)
       icon = (ft_icon ~= nil and " " .. ft_icon) or ""
     end
 
-    filename = " " .. filename .. " "
+    name = " " .. name .. " "
   end
 
-  return "%#St_file_info#" .. icon .. filename .. "%#St_file_sep#" .. sep_r
+  return "%#St_file_info#" .. icon .. name .. "%#St_file_sep#" .. sep_r
 end
 
 M.git = function()
-  if not vim.b.gitsigns_head or vim.b.gitsigns_git_status then
+  if not vim.b[stbufnr()].gitsigns_head or vim.b[stbufnr()].gitsigns_git_status then
     return ""
   end
 
-  local git_status = vim.b.gitsigns_status_dict
+  local git_status = vim.b[stbufnr()].gitsigns_status_dict
 
   local added = (git_status.added and git_status.added ~= 0) and ("  " .. git_status.added) or ""
   local changed = (git_status.changed and git_status.changed ~= 0) and ("  " .. git_status.changed) or ""
@@ -162,8 +176,8 @@ end
 M.cursor_position = function()
   local left_sep = "%#St_pos_sep#" .. sep_l .. "%#St_pos_icon#" .. " "
 
-  local current_line = fn.line "."
-  local total_line = fn.line "$"
+  local current_line = fn.line(".", vim.g.statusline_winid)
+  local total_line = fn.line("$", vim.g.statusline_winid)
   local text = math.modf((current_line / total_line) * 100) .. tostring "%%"
   text = string.format("%4s", text)
 
