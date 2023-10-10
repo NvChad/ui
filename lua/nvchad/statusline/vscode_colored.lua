@@ -101,7 +101,7 @@ end
 M.LSP_progress = function()
   local status = utils.get_message()
 
-  if not rawget(vim, "lsp") or vim.o.columns < 120 or not status then
+  if vim.o.columns < 120 or not status then
     return ""
   end
 
@@ -123,10 +123,6 @@ M.LSP_progress = function()
 end
 
 M.LSP_Diagnostics = function()
-  if not rawget(vim, "lsp") then
-    return "%#St_lspError# 󰅚 0 %#St_lspWarning# 0"
-  end
-
   local errors = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
   local warnings = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
   local hints = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT })
@@ -145,19 +141,15 @@ M.filetype = function()
 end
 
 M.LSP_status = function()
-  if rawget(vim, "lsp") then
-    local lsp_status = ""
-    for _, client in ipairs(vim.lsp.get_clients()) do
-      if client.attached_buffers[vim.api.nvim_get_current_buf()] then
-        lsp_status = lsp_status .. client.name .. " "
-      end
+  local lsp_status = ""
+  for _, client in ipairs(vim.lsp.get_clients()) do
+    if client.attached_buffers[vim.api.nvim_get_current_buf()] then
+      lsp_status = lsp_status .. client.name .. " "
     end
-    return #lsp_status > 0
-        and ((vim.o.columns > 100 and "%#St_LspStatus# 󰄭  [" .. lsp_status:sub(0, #lsp_status - 1) .. "] ") or "%#St_LspStatus# 󰄭  LSP  ")
-      or ""
   end
-
-  return ""
+  return #lsp_status > 0
+      and ((vim.o.columns > 100 and "%#St_LspStatus# 󰄭  [" .. lsp_status:sub(0, #lsp_status - 1) .. "] ") or "%#St_LspStatus# 󰄭  LSP  ")
+    or ""
 end
 
 M.cursor_position = function()
