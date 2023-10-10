@@ -108,7 +108,7 @@ end
 
 -- LSP STUFF
 M.LSP_progress = function()
-  local status = utils.get_message()
+  local status = require("utils").get_message()
 
   if vim.o.columns < 120 or not status then
     return ""
