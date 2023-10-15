@@ -3,7 +3,7 @@ local config = require("core.utils").load_config().ui.statusline
 local sep_style = config.separator_style
 
 local default_sep_icons = {
-  default = { left = "", right = " " },
+  default = { left = "", right = "" },
   round = { left = "", right = "" },
   block = { left = "█", right = "█" },
   arrow = { left = "", right = "" },
@@ -84,14 +84,14 @@ end
 M.fileInfo = function()
   local icon = " 󰈚 "
   local path = vim.api.nvim_buf_get_name(stbufnr())
-  local name = (path == "" and "Empty ") or path:match "^.+[/\\](.+)$"
+  local name = (path == "" and "Empty ") or path:match "([^/\\]+)[/\\]*$"
 
   if name ~= "Empty " then
     local devicons_present, devicons = pcall(require, "nvim-web-devicons")
 
     if devicons_present then
       local ft_icon = devicons.get_icon(name)
-      icon = (ft_icon ~= nil and " " .. ft_icon) or ""
+      icon = (ft_icon ~= nil and " " .. ft_icon) or icon
     end
 
     name = " " .. name .. " "
