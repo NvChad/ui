@@ -1,4 +1,4 @@
-local mappings_tb = require("core.utils").load_config().mappings -- default & user mappings
+local mappings_tb = require("nvconfig").mappings -- default & user mappings
 local isValid_mapping_TB = require("nvchad.cheatsheet").isValid_mapping_TB
 
 -- filter mappings_tb i.e remove tb which have empty fields

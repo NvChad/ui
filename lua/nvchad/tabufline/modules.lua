@@ -1,6 +1,6 @@
 local api = vim.api
 local fn = vim.fn
-local tabufline_config = require("core.utils").load_config().ui.tabufline
+local tabufline_config = require("nvconfig").ui.tabufline
 
 dofile(vim.g.base46_cache .. "tbline")
 

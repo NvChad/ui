@@ -1,4 +1,4 @@
-local opts = require("core.utils").load_config().ui.tabufline
+local opts = require("nvconfig").ui.tabufline
 
 -- store listed buffers in tab local var
 vim.t.bufs = vim.api.nvim_list_bufs()

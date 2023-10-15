@@ -4,7 +4,7 @@ local fn = vim.fn
 
 dofile(vim.g.base46_cache .. "nvdash")
 
-local config = require("core.utils").load_config().ui.nvdash
+local config = require("nvconfig").ui.nvdash
 
 local headerAscii = config.header
 local emmptyLine = string.rep(" ", vim.fn.strwidth(headerAscii[1]))
