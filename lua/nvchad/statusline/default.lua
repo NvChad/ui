@@ -1,5 +1,5 @@
 local fn = vim.fn
-local config = require("core.utils").load_config().ui.statusline
+local config = require("nvconfig").ui.statusline
 local sep_style = config.separator_style
 
 local default_sep_icons = {
