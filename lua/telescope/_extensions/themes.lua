@@ -76,8 +76,7 @@ local function switcher()
       actions.select_default:replace(function()
         if action_state.get_selected_entry() then
           actions.close(prompt_bufnr)
-          local current_theme = require("nvconfig").ui.theme
-          require("nvchad.utils").replace_word(current_theme, action_state.get_selected_entry()[1])
+          require("nvchad.utils").change_key_val("theme", action_state.get_selected_entry()[1])
         end
       end)
       return true
