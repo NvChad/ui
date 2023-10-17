@@ -58,6 +58,12 @@
 ---@field lsp_semantic_tokens? boolean
 --- List of extras themes for other plugins not in NvChad that you want to compile
 ---@field extended_integrations? ExtendedModules[]
+---@field diagnostic_config? table
+--- A table of overrides for vim.diagnostic.config
+--- Example:
+--- ```lua
+---     diagnostic_config = { virtual_text = false }
+--- ```
 
 --- Options for stylings of nvim-cmp 
 ---@class NvCmpConfig

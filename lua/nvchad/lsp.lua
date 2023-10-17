@@ -1,3 +1,5 @@
+local config = require("core.utils").load_config().ui
+
 local function lspSymbol(name, icon)
   local hl = "DiagnosticSign" .. name
   vim.fn.sign_define(hl, { text = icon, numhl = hl, texthl = hl })
@@ -8,7 +10,7 @@ lspSymbol("Info", "󰋼")
 lspSymbol("Hint", "󰌵")
 lspSymbol("Warn", "")
 
-vim.diagnostic.config {
+local diagnostic_config = {
   virtual_text = {
     prefix = "",
   },
@@ -16,6 +18,14 @@ vim.diagnostic.config {
   underline = true,
   update_in_insert = false,
 }
+
+if config.diagnostic_config ~= nil then
+  for k, v in pairs(config.diagnostic_config) do
+    diagnostic_config[k] = v
+  end
+end
+
+vim.diagnostic.config(diagnostic_config)
 
 vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
   border = "single",
