@@ -98,7 +98,7 @@ M.fileInfo = function()
 
     if devicons_present then
       local ft_icon = devicons.get_icon(name)
-      icon = (ft_icon ~= nil and " " .. ft_icon) or icon
+      icon = (ft_icon ~= nil and ft_icon) or icon
     end
   end
 
