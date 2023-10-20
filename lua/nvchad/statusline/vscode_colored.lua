@@ -65,7 +65,7 @@ M.mode = function()
 end
 
 M.fileInfo = function()
-  local icon = " 󰈚 "
+  local icon = "󰈚 "
   local path = vim.api.nvim_buf_get_name(stbufnr())
   local name = (path == "" and "Empty ") or path:match "([^/\\]+)[/\\]*$"
 
@@ -74,7 +74,7 @@ M.fileInfo = function()
 
     if devicons_present then
       local ft_icon = devicons.get_icon(name)
-      icon = (ft_icon ~= nil and " " .. ft_icon) or icon
+      icon = (ft_icon ~= nil and ft_icon) or icon
     end
 
     name = " " .. name .. " "
