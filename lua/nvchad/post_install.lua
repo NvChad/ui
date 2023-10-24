@@ -31,7 +31,7 @@ local function screen()
     "",
     "  Check the default mappings by pressing space + ch or NvCheatsheet command",
     "",
-    "  Need help to install a plugin? Check out our nvcommunity in https://github.com/NvChad/nvcommunity",
+    "  Need help to install a plugin? Check out our nvcommunity plugins in https://github.com/NvChad/nvcommunity",
     "",
     "Now quit nvim!",
   }
