@@ -24,10 +24,10 @@ M.change_key_val = function(key, val)
   local file = io.open(chadrc, "r")
 
   local content = file:read "*all"
-	local pattern = "(%s*" .. key .. "%s*=%s*)([^,]+)"
+  local pattern = "(%s*" .. key .. "%s*=%s*)([^,]+)"
 
   val = (type(val) == "boolean" and tostring(val)) or ('"' .. val .. '"')
-  
+
   local updated_content = content:gsub(pattern, "%1" .. val)
 
   file = io.open(chadrc, "w")
