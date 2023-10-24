@@ -3,6 +3,7 @@ local config = require("nvconfig").ui
 
 if config.statusline.theme ~= "custom" then
   vim.opt.statusline = "%!v:lua.require('nvchad.statusline." .. config.statusline.theme .. "').run()"
+  dofile(vim.g.base46_cache .. "statusline")
 end
 
 if config.tabufline.enabled then

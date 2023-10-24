@@ -7,7 +7,7 @@ local actions = require "telescope.actions"
 local action_state = require "telescope.actions.state"
 
 local function reload_theme(name)
-  vim.g.nvchad_theme = name
+  require("nvconfig").ui.theme = name
   require("base46").load_all_highlights()
   vim.api.nvim_exec_autocmds("User", { pattern = "NvChadThemeReload" })
 end
@@ -76,8 +76,7 @@ local function switcher()
       actions.select_default:replace(function()
         if action_state.get_selected_entry() then
           actions.close(prompt_bufnr)
-          local current_theme = require("nvconfig").ui.theme
-          require("nvchad.utils").replace_word(current_theme, action_state.get_selected_entry()[1])
+          require("nvchad.utils").change_key_val("theme", action_state.get_selected_entry()[1])
         end
       end)
       return true
