@@ -1,8 +1,7 @@
 dofile(vim.g.base46_cache .. "nvchad_updater")
 
 local nvim_config = vim.fn.stdpath "config"
-local chadrc_config = require("nvconfig").ui.statusline
-local config_branch = chadrc_config.options.nvchad_branch
+local config_branch = require("nvconfig").options.nvchad_branch
 
 local api = vim.api
 
