@@ -13,6 +13,13 @@ local content = { " ", " ", "" }
 local header = " 󰓂 Update status "
 
 return function()
+  local local_branch = vim.fn.system { "git", "-C", nvim_config, "branch", "--show-current" }
+  local_branch = local_branch:gsub("\n", "")
+
+  if local_branch ~= config_branch then
+    vim.fn.system { "git", "-C", nvim_config, "switch", config_branch }
+  end
+
   -- create buffer
   local buf = vim.api.nvim_create_buf(false, true)
 
@@ -103,14 +110,15 @@ return function()
       api.nvim_buf_add_highlight(buf, nvUpdater, title_hl, 1, 0, #header)
       api.nvim_buf_add_highlight(buf, nvUpdater, progress_hl, 1, #header, -1)
 
+      -- 7 = length of git commit hash aliases + 1 :
       for i = 3, #content do
-        api.nvim_buf_add_highlight(buf, nvUpdater, (git_fetch_err and "nvUpdaterFAIL" or "nvUpdaterCommits"), i, 2, 13) -- 7 = length of git commit hash aliases + 1 :
+        api.nvim_buf_add_highlight(buf, nvUpdater, (git_fetch_err and "nvUpdaterFAIL" or "nvUpdaterCommits"), i, 2, 13)
       end
 
       vim.fn.jobstart({ "git", "pull" }, { silent = true, cwd = nvim_config })
       require("lazy").sync()
 
-      if vim.fn.exists(':MasonUpdate') > 0 then
+      if vim.fn.exists ":MasonUpdate" > 0 then
         vim.cmd "MasonUpdate"
       end
     end)
