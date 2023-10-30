@@ -17,7 +17,9 @@ return function()
   local_branch = local_branch:gsub("\n", "")
 
   if local_branch ~= config_branch then
+    print "Updated local branch! reopen neovim & run NvChadUpdate command again"
     vim.fn.system { "git", "-C", nvim_config, "switch", config_branch }
+    vim.cmd "exit"
   end
 
   -- create buffer
