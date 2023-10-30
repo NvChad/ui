@@ -19,19 +19,14 @@ M.list_themes = function()
   return default_themes
 end
 
-M.change_key_val = function(key, val)
+M.replace_word = function(old, new)
   local chadrc = vim.fn.stdpath "config" .. "/lua/custom/" .. "chadrc.lua"
   local file = io.open(chadrc, "r")
-
-  local content = file:read "*all"
-  local pattern = "(%s*" .. key .. "%s*=%s*)([^,]+)"
-
-  val = (type(val) == "boolean" and tostring(val)) or ('"' .. val .. '"')
-
-  local updated_content = content:gsub(pattern, "%1" .. val)
+  local added_pattern = string.gsub(old, "-", "%%-") -- add % before - if exists
+  local new_content = file:read("*all"):gsub(added_pattern, new)
 
   file = io.open(chadrc, "w")
-  file:write(updated_content)
+  file:write(new_content)
   file:close()
 end
 
