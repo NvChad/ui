@@ -606,3 +606,4 @@ error("Requring a meta file")
 ---| "'rainbowdelimiters'"
 ---| "'todo'"
 ---| "'trouble'"
+---| "'illuminate'"
