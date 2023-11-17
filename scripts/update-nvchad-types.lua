@@ -19,7 +19,7 @@ local gen_themes = function()
   local contents = {
     "---@meta",
     "--- Don't edit or require this file",
-    "error(\"Requring a meta file\")",
+    'error("Requring a meta file")',
     "",
     "---@type ThemeName",
     "vim.g.nvchad_theme = 'onedark'",
@@ -28,24 +28,23 @@ local gen_themes = function()
     "",
     "---@class ChangedTheme",
     "--- changes for all themes. Has lower precedence than theme-specific changes",
-    "---@field all ThemeTable"
+    "---@field all ThemeTable",
   }
 
-
-  for name, _ in vim.fs.dir(
-    normalize(base46_fp .. "/themes")
-  ) do
+  for name, _ in vim.fs.dir(normalize(base46_fp .. "/themes")) do
     local theme_name = get_base_name(name)
     table.insert(contents, 9, "---| '\"" .. theme_name .. "\"'")
-    table.insert(contents,
-      string.format("---@field %s ThemeTable # Changes for %s theme",
-        theme_name:match("[^%l%u_]") and '["' .. theme_name .. '"]' or theme_name, theme_name))
+    table.insert(
+      contents,
+      string.format(
+        "---@field %s ThemeTable # Changes for %s theme",
+        theme_name:match "[^%l%u_]" and '["' .. theme_name .. '"]' or theme_name,
+        theme_name
+      )
+    )
   end
 
-  write_file(
-    nvchad_types_fp .. "/themes.lua",
-    table.concat(contents, "\n")
-  )
+  write_file(nvchad_types_fp .. "/themes.lua", table.concat(contents, "\n"))
 end
 
 local gen_highlights = function()
@@ -53,7 +52,7 @@ local gen_highlights = function()
     "---@meta",
     "",
     "--- Don't edit or require this file",
-    "error(\"Requring a meta file\")",
+    'error("Requring a meta file")',
     "",
     "---@class HLGroups",
     "",
@@ -69,13 +68,7 @@ local gen_highlights = function()
     ["statusline"] = true,
   }
 
-  local mapped_name = {
-    ["tbline"] = "tabufline",
-  }
-
-  for name, _ in vim.fs.dir(
-    normalize(base46_fp .. "/extended_integrations")
-  ) do
+  for name, _ in vim.fs.dir(normalize(base46_fp .. "/extended_integrations")) do
     local base_name = get_base_name(name)
     ---@type table<string, Base46HLGroups>
     local groups = require("base46.extended_integrations." .. base_name)
@@ -89,21 +82,31 @@ local gen_highlights = function()
 
   for name, integration in vim.spairs(hlgroups) do
     if string.sub(name, 1, 1) == "@" then
-      table.insert(contents, 9,
-        string.format("---@field [\"'%s'\"] Base46HLGroups # highlight group for %s", name,
-          mapped_name[integration] or integration))
+      table.insert(
+        contents,
+        9,
+        string.format(
+          "---@field [\"'%s'\"] Base46HLGroups # highlight group for %s",
+          name,
+          mapped_name[integration] or integration
+        )
+      )
     else
-      table.insert(contents, 9,
-        string.format("---@field %s Base46HLGroups # highlight group for %s", name,
-          mapped_name[integration] or integration))
+      table.insert(
+        contents,
+        9,
+        string.format(
+          "---@field %s Base46HLGroups # highlight group for %s",
+          name,
+          mapped_name[integration] or integration
+        )
+      )
     end
   end
 
   hlgroups = {}
 
-  for name, _ in vim.fs.dir(
-    normalize(base46_fp .. "/integrations")
-  ) do
+  for name, _ in vim.fs.dir(normalize(base46_fp .. "/integrations")) do
     local base_name = get_base_name(name)
     ---@type table<string, Base46HLGroups>
     local groups = require("base46.integrations." .. base_name)
@@ -118,20 +121,29 @@ local gen_highlights = function()
 
   for name, integration in vim.spairs(hlgroups) do
     if string.sub(name, 1, 1) == "@" then
-      table.insert(contents, 7,
-        string.format("---@field [\"'%s'\"] Base46HLGroups # highlight group for %s", name,
-          mapped_name[integration] or integration))
+      table.insert(
+        contents,
+        7,
+        string.format(
+          "---@field [\"'%s'\"] Base46HLGroups # highlight group for %s",
+          name,
+          mapped_name[integration] or integration
+        )
+      )
     else
-      table.insert(contents, 7,
-        string.format("---@field %s Base46HLGroups # highlight group for %s", name,
-          mapped_name[integration] or integration))
+      table.insert(
+        contents,
+        7,
+        string.format(
+          "---@field %s Base46HLGroups # highlight group for %s",
+          name,
+          mapped_name[integration] or integration
+        )
+      )
     end
   end
 
-  write_file(
-    nvchad_types_fp .. "/all_hl_groups.lua",
-    table.concat(contents, "\n")
-  )
+  write_file(nvchad_types_fp .. "/all_hl_groups.lua", table.concat(contents, "\n"))
 end
 
 gen_themes()

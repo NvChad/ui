@@ -183,8 +183,4 @@ return function()
   vim.opt_local.relativenumber = false
   vim.opt_local.colorcolumn = "0"
   vim.opt_local.cul = false
-
-  vim.keymap.set("n", "<ESC>", function()
-    require("nvchad.tabufline").close_buffer(buf)
-  end, { buffer = buf }) -- use ESC to close
 end

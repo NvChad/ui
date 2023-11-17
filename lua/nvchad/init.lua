@@ -3,17 +3,9 @@ local config = require("core.utils").load_config().ui
 
 vim.opt.statusline = "%!v:lua.require('nvchad.statusline." .. config.statusline.theme .. "').run()"
 
-if config.tabufline.enabled then
-  require "nvchad.tabufline.lazyload"
-end
-
 -- Command to toggle NvDash
 new_cmd("Nvdash", function()
-  if vim.g.nvdash_displayed then
-    require("nvchad.tabufline").close_buffer()
-  else
-    require("nvchad.nvdash").open()
-  end
+  require("nvchad.nvdash").open()
 end, {})
 
 -- load nvdash
@@ -29,11 +21,7 @@ end
 
 -- command to toggle cheatsheet
 new_cmd("NvCheatsheet", function()
-  if vim.g.nvcheatsheet_displayed then
-    require("nvchad.tabufline").close_buffer()
-  else
-    require("nvchad.cheatsheet." .. config.cheatsheet.theme)()
-  end
+  require("nvchad.cheatsheet." .. config.cheatsheet.theme)()
 end, {})
 
 -- redraw dashboard on VimResized event

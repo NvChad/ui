@@ -307,8 +307,4 @@ return function()
   vim.opt_local.cul = false
   vim.opt_local.colorcolumn = "0"
   vim.g.nvcheatsheet_displayed = true
-
-  vim.keymap.set("n", "<ESC>", function()
-    require("nvchad.tabufline").close_buffer(buf)
-  end, { buffer = buf }) -- use ESC to close
 end

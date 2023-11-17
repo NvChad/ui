@@ -50,8 +50,6 @@
 ---@field cmp? NvCmpConfig
 ---@field telescope? NvTelescopeConfig
 ---@field statusline? NvStatusLineConfig
----@field tabufline? NvTabLineConfig
----@field nvdash? NvDashboardConfig
 ---@field cheatsheet? NvCheatsheetConfig
 ---@field lsp? NvLspConfig
 --- Whether to enable LSP Semantic Tokens highlighting
@@ -59,7 +57,7 @@
 --- List of extras themes for other plugins not in NvChad that you want to compile
 ---@field extended_integrations? ExtendedModules[]
 
---- Options for stylings of nvim-cmp 
+--- Options for stylings of nvim-cmp
 ---@class NvCmpConfig
 --- Whether to add colors to icons in nvim-cmp popup menu
 ---@field icons? boolean
@@ -89,22 +87,8 @@
 --- Maximum length for the progress messages section
 ---@field lspprogress_len? integer
 
---- Options for NvChad Tabufline
----@class NvTabLineConfig
---- Whether to use/load tabufline or not
----@field enabled? boolean
---- If false, load tabufline on startup
---- If true, load tabufline when there is at least 2 buffers opened
----@field lazyload? boolean
---- Function that overirde the modules
---- Try to `vim.print(table.concat(modules))` to see what they are
---- Check https://github.com/NvChad/ui/blob/v2.0/lua/nvchad/tabufline/modules.lua for the list of modules
----@field overriden_modules? fun(modules: table)
---- Show numbers on tabufline buffer tabs
---- @field show_numbers? boolean
-
 ---@class NvDashboardConfig
---- Whether to open dashboard on opening nvim 
+--- Whether to open dashboard on opening nvim
 ---@field load_on_startup? boolean
 --- Your ascii art
 --- Each string is one line
@@ -122,7 +106,7 @@
 ---@field [3] string|fun() A Vim Command/A Lua function to be triggered when pressing the keybind/pressing enter on the line with the description on the dashboard
 
 ---Options for NvChad/ui lsp configuration
----@class NvLspConfig 
+---@class NvLspConfig
 ---@field signature? NvLspSignatureConfig Opts for showing function signatures as you type
 
 ---@class NvLspSignatureConfig
@@ -153,7 +137,6 @@
 --- @class DefaultMappingsTable
 --- @field disabled?   DisabledTable Keymaps to be removed
 --- @field general?    KeymapsTable Keymaps that will be load on startup
---- @field tabufline?  KeymapsTable Keymaps that will be load with NvChad's tabline
 --- @field comment?    KeymapsTable Keymaps for Comment.nvim
 --- @field lspconfig?  KeymapsTable Keymaps for nvim-lspconfig
 --- @field nvimtree?   KeymapsTable Keymaps for nvim-tree.lua
@@ -164,7 +147,7 @@
 --- @field gitsigns?   KeymapsTable Keymaps for gitsigns.nvim
 
 --- List of keymaps that is part of `core/mappings.lua` that will be removed
----@class DisabledTable 
+---@class DisabledTable
 ---@field n?   table<string, '""'|false> Normal Mode keymaps to remove
 ---@field x?   table<string, '""'|false> Visual Mode keymaps to remove
 ---@field s?   table<string, '""'|false> Select Mode keymaps to remove

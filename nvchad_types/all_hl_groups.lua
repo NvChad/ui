@@ -1,7 +1,7 @@
 ---@meta
 
 --- Don't edit or require this file
-error("Requring a meta file")
+error "Requring a meta file"
 
 ---@class HLGroups
 ---@field nvUpdaterTitleFAIL Base46HLGroups # highlight group for nvchad_updater
@@ -59,21 +59,7 @@ error("Requring a meta file")
 ---@field TelescopePreviewTitle Base46HLGroups # highlight group for telescope
 ---@field TelescopeNormal Base46HLGroups # highlight group for telescope
 ---@field TelescopeBorder Base46HLGroups # highlight group for telescope
----@field TblineTabNewBtn Base46HLGroups # highlight group for tabufline
----@field TblineFill Base46HLGroups # highlight group for tabufline
----@field TbLineThemeToggleBtn Base46HLGroups # highlight group for tabufline
----@field TbLineTabOn Base46HLGroups # highlight group for tabufline
----@field TbLineTabOff Base46HLGroups # highlight group for tabufline
----@field TbLineTabCloseBtn Base46HLGroups # highlight group for tabufline
----@field TbLineCloseAllBufsBtn Base46HLGroups # highlight group for tabufline
----@field TbLineBufOnModified Base46HLGroups # highlight group for tabufline
----@field TbLineBufOnClose Base46HLGroups # highlight group for tabufline
----@field TbLineBufOn Base46HLGroups # highlight group for tabufline
----@field TbLineBufOffModified Base46HLGroups # highlight group for tabufline
----@field TbLineBufOffClose Base46HLGroups # highlight group for tabufline
----@field TbLineBufOff Base46HLGroups # highlight group for tabufline
 ---@field Tag Base46HLGroups # highlight group for syntax
----@field TBTabTitle Base46HLGroups # highlight group for tabufline
 ---@field Substitute Base46HLGroups # highlight group for defaults
 ---@field Structure Base46HLGroups # highlight group for syntax
 ---@field String Base46HLGroups # highlight group for syntax
@@ -606,3 +592,4 @@ error("Requring a meta file")
 ---| "'rainbowdelimiters'"
 ---| "'todo'"
 ---| "'trouble'"
+

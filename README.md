@@ -1,7 +1,6 @@
 # NvChad's UI plugin
 Lightweight &amp; performant ui plugin for nvchad providing the following : 
 - Statusline with 4 themes 
-- Tabufline ( manages buffers per tab ) 
 - NvDash ( dashboard ) 
 - NvCheatsheet ( auto-generates cheatsheet based on default & user mappings in nice grid (Masonry layout) / column layout )
 - basic Lsp signature 
