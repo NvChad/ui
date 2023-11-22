@@ -2,6 +2,7 @@
 -- This is modified version of the above snippet
 
 local M = {}
+local map = vim.keymap.set
 
 M.open = function()
   local currName = vim.fn.expand "<cword>" .. " "
@@ -20,29 +21,15 @@ M.open = function()
     col = "cursor-1",
   })
 
-  local map_opts = { noremap = true, silent = true }
-
   vim.cmd "normal w"
   vim.cmd "startinsert"
 
-  vim.api.nvim_buf_set_keymap(0, "i", "<Esc>", "<cmd>stopinsert | q!<CR>", map_opts)
-  vim.api.nvim_buf_set_keymap(0, "n", "<Esc>", "<cmd>stopinsert | q!<CR>", map_opts)
+  map({ "i", "n" }, "<Esc>", "<cmd>q<CR>", { buffer = 0 })
 
-  vim.api.nvim_buf_set_keymap(
-    0,
-    "i",
-    "<CR>",
-    "<cmd>stopinsert | lua require'nvchad.renamer'.apply(" .. currName .. "," .. win .. ")<CR>",
-    map_opts
-  )
-
-  vim.api.nvim_buf_set_keymap(
-    0,
-    "n",
-    "<CR>",
-    "<cmd>stopinsert | lua require'nvchad.renamer'.apply(" .. currName .. "," .. win .. ")<CR>",
-    map_opts
-  )
+  map({ "i", "n" }, "<CR>", function()
+    require("nvchad.renamer").apply(currName, win)
+    vim.cmd.stopinsert()
+  end, { buffer = 0 })
 end
 
 M.apply = function(curr, win)
