@@ -26,8 +26,6 @@ local function switcher()
       -- add syntax highlighting in previewer
       local ft = (vim.filetype.match { buf = bufnr } or "diff"):match "%w+"
       require("telescope.previewers.utils").highlighter(self.state.bufnr, ft)
-
-      reload_theme(entry.value)
     end,
   }
 
