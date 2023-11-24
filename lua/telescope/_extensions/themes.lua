@@ -4,6 +4,7 @@ local previewers = require "telescope.previewers"
 
 local conf = require("telescope.config").values
 local actions = require "telescope.actions"
+local action_set = require "telescope.actions.set"
 local action_state = require "telescope.actions.state"
 
 local function reload_theme(name)
@@ -52,23 +53,12 @@ local function switcher()
         })
       end)
       -- reload theme on cycling
-      map("i", "<C-n>", function()
-        actions.move_selection_next(prompt_bufnr)
+      actions.move_selection_previous:replace(function()
+        action_set.shift_selection(prompt_bufnr, -1)
         reload_theme(action_state.get_selected_entry()[1])
       end)
-
-      map("i", "<Down>", function()
-        actions.move_selection_next(prompt_bufnr)
-        reload_theme(action_state.get_selected_entry()[1])
-      end)
-
-      map("i", "<C-p>", function()
-        actions.move_selection_previous(prompt_bufnr)
-        reload_theme(action_state.get_selected_entry()[1])
-      end)
-
-      map("i", "<Up>", function()
-        actions.move_selection_previous(prompt_bufnr)
+      actions.move_selection_next:replace(function()
+        action_set.shift_selection(prompt_bufnr, 1)
         reload_theme(action_state.get_selected_entry()[1])
       end)
 
