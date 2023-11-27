@@ -1,6 +1,7 @@
 local fn = vim.fn
 local config = require("core.utils").load_config().ui.statusline
 local sep_style = config.separator_style
+local custom_separators = config.add_separators
 
 sep_style = (sep_style ~= "round" and sep_style ~= "block") and "block" or sep_style
 
@@ -8,6 +9,24 @@ local default_sep_icons = {
   round = { left = "", right = "" },
   block = { left = "█", right = "█" },
 }
+
+-- returns combination of two tables  
+local function add_custom_separators(separators, new_separators)
+    local merged = {}
+    -- Copy all fields from the original table to the new table
+    for key, value in pairs(separators) do
+        merged[key] = value
+    end
+    -- Add new fields or override fields
+    for key, value in pairs(new_separators) do
+        merged[key] = value
+    end
+    return merged
+end
+
+-- redifine separators
+default_sep_icons = add_custom_separators(default_sep_icons, custom_separators)
+
 
 local separators = (type(sep_style) == "table" and sep_style) or default_sep_icons[sep_style]
 
