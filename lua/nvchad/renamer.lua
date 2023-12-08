@@ -21,7 +21,7 @@ M.open = function()
     col = "cursor-1",
   })
 
-  vim.cmd "normal w"
+  vim.cmd "normal A"
   vim.cmd "startinsert"
 
   map({ "i", "n" }, "<Esc>", "<cmd>q<CR>", { buffer = 0 })
