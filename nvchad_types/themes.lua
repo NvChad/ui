@@ -64,7 +64,7 @@ vim.g.nvchad_theme = 'onedark'
 ---| '"ashes"'
 ---| '"aquarium"'
 
----@class ChangedTheme
+---@class (exact) ChangedTheme
 --- changes for all themes. Has lower precedence than theme-specific changes
 ---@field all ThemeTable
 ---@field aquarium ThemeTable # Changes for aquarium theme

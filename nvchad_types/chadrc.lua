@@ -1,6 +1,6 @@
 ---@meta
 
----@class ChadrcConfig
+---@class (exact) ChadrcConfig
 ---@field ui? UIConfig
 ---@field mappings? MappingsTable
 --- The module to be imported and merged with the default plugin settings
@@ -11,7 +11,7 @@
 
 --- UI related configuration
 --- e.g. colorschemes, statusline themes, cmp themes, dashboard, some LSP ui related
----@class UIConfig
+---@class (exact) UIConfig
 --- List of highlights group to add.
 --- Should be highlights that is not a part of base46 default integrations
 --- (The default is all hlgroup that can be found from `hl_override`)
@@ -60,7 +60,7 @@
 ---@field extended_integrations? ExtendedModules[]
 
 --- Options for stylings of nvim-cmp 
----@class NvCmpConfig
+---@class (exact) NvCmpConfig
 --- Whether to add colors to icons in nvim-cmp popup menu
 ---@field icons? boolean
 --- Whether to also have the lsp kind highlighted with the icons as well or not
@@ -72,11 +72,11 @@
 --- Whether to have more vibrant color for the currently selected entry in the popup menu
 ---@field selected_item_bg? "colored"|"simple"
 
----@class NvTelescopeConfig
+---@class (exact) NvTelescopeConfig
 --- Telescope style
 ---@field style? '"borderless"'|'"bordered"'
 
----@class NvStatusLineConfig
+---@class (exact) NvStatusLineConfig
 --- statusline theme
 ---@field theme? '"default"'|'"vscode"'|'"vscode_colored"'|'"minimal"'
 --- Separator style for NvChad Statusline
@@ -90,7 +90,7 @@
 ---@field lspprogress_len? integer
 
 --- Options for NvChad Tabufline
----@class NvTabLineConfig
+---@class (exact) NvTabLineConfig
 --- Whether to use/load tabufline or not
 ---@field enabled? boolean
 --- If false, load tabufline on startup
@@ -103,7 +103,7 @@
 --- Show numbers on tabufline buffer tabs
 --- @field show_numbers? boolean
 
----@class NvDashboardConfig
+---@class (exact) NvDashboardConfig
 --- Whether to open dashboard on opening nvim 
 ---@field load_on_startup? boolean
 --- Your ascii art
@@ -112,20 +112,20 @@
 --- List of buttons to show on the dashboard
 ---@field buttons? NvDashButtonConfig[]
 
----@class NvCheatsheetConfig
+---@class (exact) NvCheatsheetConfig
 --- Cheatsheet theme
 ---@field theme? '"grid"'|'"simple"'
 
----@class NvDashButtonConfig
+---@class (exact) NvDashButtonConfig
 ---@field [1] string Description for the button
 ---@field [2] string sequence of keys to press to trigger the keybind
 ---@field [3] string|fun() A Vim Command/A Lua function to be triggered when pressing the keybind/pressing enter on the line with the description on the dashboard
 
 ---Options for NvChad/ui lsp configuration
----@class NvLspConfig 
+---@class (exact) NvLspConfig 
 ---@field signature? NvLspSignatureConfig Opts for showing function signatures as you type
 
----@class NvLspSignatureConfig
+---@class (exact) NvLspSignatureConfig
 ---@field disabled? boolean Whether to disable this feature
 ---@field silent? boolean Whether to hide `No signature help available` message from appearing
 
@@ -150,7 +150,7 @@
 --- see lua/core/mappings.lua for more information
 ---@alias MappingsTable DefaultMappingsTable | table<string, KeymapsTable>
 
---- @class DefaultMappingsTable
+--- @class (exact) DefaultMappingsTable
 --- @field disabled?   DisabledTable Keymaps to be removed
 --- @field general?    KeymapsTable Keymaps that will be load on startup
 --- @field tabufline?  KeymapsTable Keymaps that will be load with NvChad's tabline
@@ -164,7 +164,7 @@
 --- @field gitsigns?   KeymapsTable Keymaps for gitsigns.nvim
 
 --- List of keymaps that is part of `core/mappings.lua` that will be removed
----@class DisabledTable 
+---@class (exact) DisabledTable 
 ---@field n?   table<string, '""'|false> Normal Mode keymaps to remove
 ---@field x?   table<string, '""'|false> Visual Mode keymaps to remove
 ---@field s?   table<string, '""'|false> Select Mode keymaps to remove
@@ -177,7 +177,7 @@
 ---@field ['"!"']? table<string, '""'|false> Insert + Command-Line Mode keymaps to remove
 ---@field ['""']?  table<string, '""'|false> Normal, Visual and Operating-Pending Mode keymaps to remove
 
----@class KeymapsTable
+---@class (exact) KeymapsTable
 ---@field plugin? boolean Whether this whole table will be loaded on startup or not
 ---@field n?   table<string, KeymapConfig> Normal Mode keymaps
 ---@field x?   table<string, KeymapConfig> Visual Mode keymaps
@@ -191,7 +191,7 @@
 ---@field ['"!"']? table<string, KeymapConfig> Insert + Command-Line Mode keymaps
 ---@field ['""']? table<string, KeymapConfig> Normal, Visual and Operating-Pending Mode keymaps
 
----@class KeymapConfig
+---@class (exact) KeymapConfig
 ---@field [1] string|fun() A Vimscript string or a Lua function. `rhs` of the keymap
 ---@field [2] string Description for the keymap
 ---@field opts? NvKeymapOpts? List of additional options for the keymap

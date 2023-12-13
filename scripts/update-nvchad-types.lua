@@ -26,7 +26,7 @@ local gen_themes = function()
     "",
     "---@alias ThemeName",
     "",
-    "---@class ChangedTheme",
+    "---@class (exact) ChangedTheme",
     "--- changes for all themes. Has lower precedence than theme-specific changes",
     "---@field all ThemeTable"
   }
@@ -55,11 +55,7 @@ local gen_highlights = function()
     "--- Don't edit or require this file",
     "error(\"Requring a meta file\")",
     "",
-    "---@class HLGroups",
-    "",
-    "---@class ExtendedHLGroups",
-    "",
-    "---@class Base46HLGroupsList: HLGroups, ExtendedHLGroups",
+    "---@class (exact) Base46HLGroupsList",
     "",
     "---@alias ExtendedModules",
   }
@@ -87,19 +83,6 @@ local gen_highlights = function()
     end
   end
 
-  for name, integration in vim.spairs(hlgroups) do
-    if string.sub(name, 1, 1) == "@" then
-      table.insert(contents, 9,
-        string.format("---@field [\"'%s'\"] Base46HLGroups # highlight group for %s", name,
-          mapped_name[integration] or integration))
-    else
-      table.insert(contents, 9,
-        string.format("---@field %s Base46HLGroups # highlight group for %s", name,
-          mapped_name[integration] or integration))
-    end
-  end
-
-  hlgroups = {}
 
   for name, _ in vim.fs.dir(
     normalize(base46_fp .. "/integrations")
@@ -119,11 +102,11 @@ local gen_highlights = function()
   for name, integration in vim.spairs(hlgroups) do
     if string.sub(name, 1, 1) == "@" then
       table.insert(contents, 7,
-        string.format("---@field [\"'%s'\"] Base46HLGroups # highlight group for %s", name,
+        string.format("---@field [\"'%s'\"]? Base46HLGroups # highlight group for %s", name,
           mapped_name[integration] or integration))
     else
       table.insert(contents, 7,
-        string.format("---@field %s Base46HLGroups # highlight group for %s", name,
+        string.format("---@field %s? Base46HLGroups # highlight group for %s", name,
           mapped_name[integration] or integration))
     end
   end

@@ -2,7 +2,7 @@
 
 ---@alias PluginName string
 
----@class NvImportSpec: LazySpecImport
+---@class (exact) NvImportSpec: LazySpecImport
 --- Name of the module to be imported.
 --- It should be a string for `require()`, and it should return a table containing the plugin config
 --- If this field is inside a table, all other keys inside such table will not be used, except for `enabled`
@@ -16,7 +16,7 @@
 ---     - `lua/foo/bar/baz/someLuaFile.lua`
 ---@field import? string
 
----@class LazyPluginSpecExtra: LazyPluginSpec
+---@class (exact) LazyPluginSpecExtra: LazyPluginSpec
 --- Specify the plugin to load when opening a file with one of the specified filetypes
 ---@field ft? string|string[]|fun(_: LazyPlugin, ft: string[]):string[] 
 --- Specify the plugin to load when one of the specified commands are called
@@ -32,7 +32,7 @@
 ---       {"foo", "bar", desc = "Some keymaps", mode = {"n", "i"}}
 ---     }
 --- ```
----@field keys? string|string[]|LazyKeymaps[]|fun(_:LazyPlugin, keys:string[]):(string|LazyKeymaps)[] 
+---@field keys? string|(string|LazyKeymaps)[]|fun(_:LazyPlugin, keys:string[]):(string|LazyKeymaps)[] 
 --- Will be executed when this plugin is loaded. 
 --- - If `config` is `true`, then `require("plugin").setup(opts)` will be run.  
 --- - If a function, then `opts` argument will be the table from `opts` field
@@ -87,7 +87,7 @@
 ---       },
 ---     }
 --- ```
----@field dependencies? (string[]|NvPluginSpec) 
+---@field dependencies? NvPluginSpec
 ---@field init? fun(_: LazyPlugin) Will always be run on opening neovim
 --- Condition that this plugin will be loaded
 --- Useful for defining loading conditions for plugins only used inside Neovim TUI and not FireNvim and VsCode, for example
@@ -118,7 +118,7 @@
 ---@alias NvPluginSpec string|LazyPluginSpecExtra|NvImportSpec|NvPluginSpec[]
 
 ---Check `:h vim.keymap.set()` for more information
----@class LazyKeymaps
+---@class (exact) LazyKeymaps
 ---@field [1] string lhs of the mapping. Must always exist
 ---@field [2]? string|fun()|false rhs. Can be a vimscript string or a Lua function
 ---@field desc? string

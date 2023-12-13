@@ -1,7 +1,7 @@
 ---@meta
 
 --- List of options for `vim.api.nvim_set_hl`
----@class APISetHighlightOpts
+---@class (exact) APISetHighlightOpts
 ---@field fg? string Color name or Hex code of foreground
 ---@field bg? string Color name or Hex code of background
 ---@field sp? string Color of underlines. Read more at `:h guisp`.
@@ -29,7 +29,7 @@
 ---@field ctermbg? number Sets background of cterm color
 ---@field cterm? string comma-separated list of cterm opts. For more information, check `:h highlight-args`
 
----@class Base46HLGroups : APISetHighlightOpts
+---@class (exact) Base46HLGroups : APISetHighlightOpts
 --- Color name or Hex code of foreground
 --- if fg is "NONE", remove the foreground color
 ---@field fg? string|Base30Colors|'"NONE"'
@@ -108,7 +108,7 @@
 ---@field polish_hl HLTable highlight groups to be changed from the default color
 ---@field type '"dark"'|'"light"' Denoting value to set for `vim.opt.bg`
 
----@class Base16Table
+---@class (exact) Base16Table
 ---@field base00 string Neovim Default Background
 ---@field base01 string Lighter Background (Used for status bars, line number and folding marks)
 ---@field base02 string Selection Background (Visual Mode)

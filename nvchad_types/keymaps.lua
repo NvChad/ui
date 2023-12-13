@@ -1,6 +1,6 @@
 ---@meta
 
----@class ApiKeymapOpts
+---@class ApiKeymapOpts: vim.api.keyset.keymap
 ---@field nowait? boolean If true, once the `lhs` is matched, the `rhs` will be executed
 ---@field expr? boolean Specify whether the `rhs` is an expression to be evaluated or not (default false)
 ---@field silent? boolean Specify whether `rhs` will be echoed on the command line
