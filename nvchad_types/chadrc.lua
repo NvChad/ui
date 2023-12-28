@@ -88,6 +88,8 @@
 ---@field overriden_modules? fun(modules: table)
 --- Maximum length for the progress messages section
 ---@field lspprogress_len? integer
+--- How the name of the currently open file is displayed
+---@field filename_type? '"name"'|'"relative"'|'"absolute"'
 
 --- Options for NvChad Tabufline
 ---@class NvTabLineConfig
