@@ -93,7 +93,7 @@ M.fileInfo = function()
   local path = vim.api.nvim_buf_get_name(stbufnr())
   local name = (path == "" and "Empty ") or path:match "([^/\\]+)[/\\]*$"
 
-  if name ~= "Empty" then
+  if name ~= "Empty " then
     local devicons_present, devicons = pcall(require, "nvim-web-devicons")
 
     if devicons_present then
