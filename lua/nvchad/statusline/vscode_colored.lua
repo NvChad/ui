@@ -67,12 +67,12 @@ end
 M.fileInfo = function()
   local icon = "󰈚 "
   local absolute_path = vim.api.nvim_buf_get_name(stbufnr())
-  local filename_types = {
+  local filename_styles = {
     absolute = absolute_path,
     relative = vim.fn.fnamemodify(absolute_path, ":."),
     name = absolute_path:match "([^/\\]+)[/\\]*$",
   }
-  local name = (absolute_path == "" and "Empty ") or filename_types[config.filename_type]
+  local name = (absolute_path == "" and "Empty ") or filename_styles[config.filename_style]
 
   if name ~= "Empty " then
     local devicons_present, devicons = pcall(require, "nvim-web-devicons")
