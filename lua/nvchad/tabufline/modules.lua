@@ -59,10 +59,51 @@ local function add_fileInfo(name, bufnr)
       icon_hl = "DevIconDefault"
     end
 
-    icon = (
-      api.nvim_get_current_buf() == bufnr and new_hl(icon_hl, "TbLineBufOn") .. " " .. icon
-      or new_hl(icon_hl, "TbLineBufOff") .. " " .. icon
-    )
+    local isBufOn = api.nvim_get_current_buf() == bufnr
+    icon = (isBufOn and new_hl(icon_hl, "TbLineBufOn") .. " " .. icon or new_hl(icon_hl, "TbLineBufOff") .. " " .. icon)
+
+    local currHl = ""
+    local lspHl = function(HlName)
+      currHl = "%#Tbline" .. HlName .. "#"
+      return isBufOn and currHl or "%#TbLineBufOff#"
+    end
+
+    local errors = #vim.diagnostic.get(bufnr, { severity = vim.diagnostic.severity.ERROR })
+    local warnings = #vim.diagnostic.get(bufnr, { severity = vim.diagnostic.severity.WARN })
+    local hints = #vim.diagnostic.get(bufnr, { severity = vim.diagnostic.severity.HINT })
+    local info = #vim.diagnostic.get(bufnr, { severity = vim.diagnostic.severity.INFO })
+    local status = {}
+
+    if info ~= 0 then
+      status.info = lspHl "Info"
+    end
+
+    if hints ~= 0 then
+      status.hint = lspHl "Hint"
+    end
+
+    if warnings ~= 0 then
+      status.warning = lspHl "Warning"
+    end
+
+    if errors ~= 0 then
+      status.error = lspHl "Error"
+    end
+
+    local LspDiagnostics = function()
+      if not rawget(vim, "lsp") then
+        return ""
+      end
+
+      errors = (errors ~= 0) and (status.error .. " " .. errors .. " ") or ""
+      warnings = (warnings ~= 0) and (status.warning .. " " .. warnings .. " ") or ""
+
+      -- can also be used based on preference, but requires more configuration as it will result in longer length
+      -- hints = (hints and hints > 0) and (status.hint .. "󰛩 " .. hints .. " ") or ""
+      -- info = (info and info > 0) and (status.info .. "󰋼 " .. info .. " ") or ""
+
+      return errors .. warnings
+    end
 
     -- check for same buffer names under different dirs
     for _, value in ipairs(vim.t.bufs) do
@@ -101,11 +142,18 @@ local function add_fileInfo(name, bufnr)
     -- padding around bufname; 24 = bufame length (icon + filename)
     local padding = (24 - #name - 5) / 2
     local maxname_len = 16
+    local seperator = tabufline_config.seperator and (isBufOn and "▎" or " ") or ""
+    local diagnostics = tabufline_config.diagnostics and LspDiagnostics() or ""
 
     name = (#name > maxname_len and string.sub(name, 1, 14) .. "..") or name
-    name = (api.nvim_get_current_buf() == bufnr and "%#TbLineBufOn# " .. name) or ("%#TbLineBufOff# " .. name)
+    name = (
+      tabufline_config.diagnostics
+        and (isBufOn and ((currHl ~= "" and (" " .. currHl) or "%#TbLineBufOn# ") .. name) or ("%#TbLineBufOff# " .. name))
+      or (isBufOn and "%#TbLineBufOn# " .. name)
+      or ("%#TbLineBufOff# " .. name)
+    )
 
-    return string.rep(" ", padding) .. icon .. name .. string.rep(" ", padding)
+    return seperator .. string.rep(" ", padding) .. icon .. name .. string.rep(" ", padding) .. diagnostics
   end
 end
 
