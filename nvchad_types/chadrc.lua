@@ -59,7 +59,7 @@
 --- List of extras themes for other plugins not in NvChad that you want to compile
 ---@field extended_integrations? ExtendedModules[]
 
---- Options for stylings of nvim-cmp 
+--- Options for stylings of nvim-cmp
 ---@class NvCmpConfig
 --- Whether to add colors to icons in nvim-cmp popup menu
 ---@field icons? boolean
@@ -102,9 +102,13 @@
 ---@field overriden_modules? fun(modules: table)
 --- Show numbers on tabufline buffer tabs
 --- @field show_numbers? boolean
+--- enable lsp diagnostics
+---@field diagnostics? boolean
+--- add a left line to the current buffer
+---@field indicator? boolean
 
 ---@class NvDashboardConfig
---- Whether to open dashboard on opening nvim 
+--- Whether to open dashboard on opening nvim
 ---@field load_on_startup? boolean
 --- Your ascii art
 --- Each string is one line
@@ -122,7 +126,7 @@
 ---@field [3] string|fun() A Vim Command/A Lua function to be triggered when pressing the keybind/pressing enter on the line with the description on the dashboard
 
 ---Options for NvChad/ui lsp configuration
----@class NvLspConfig 
+---@class NvLspConfig
 ---@field signature? NvLspSignatureConfig Opts for showing function signatures as you type
 
 ---@class NvLspSignatureConfig
@@ -164,7 +168,7 @@
 --- @field gitsigns?   KeymapsTable Keymaps for gitsigns.nvim
 
 --- List of keymaps that is part of `core/mappings.lua` that will be removed
----@class DisabledTable 
+---@class DisabledTable
 ---@field n?   table<string, '""'|false> Normal Mode keymaps to remove
 ---@field x?   table<string, '""'|false> Visual Mode keymaps to remove
 ---@field s?   table<string, '""'|false> Select Mode keymaps to remove
