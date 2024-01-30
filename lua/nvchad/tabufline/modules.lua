@@ -142,7 +142,7 @@ local function add_fileInfo(name, bufnr)
     -- padding around bufname; 24 = bufame length (icon + filename)
     local padding = (24 - #name - 5) / 2
     local maxname_len = 16
-    local seperator = tabufline_config.seperator and (isBufOn and "▎" or " ") or ""
+    local separator = tabufline_config.seperator and (isBufOn and "▎" or " ") or ""
     local diagnostics = tabufline_config.diagnostics and LspDiagnostics() or ""
 
     name = (#name > maxname_len and string.sub(name, 1, 14) .. "..") or name
@@ -153,7 +153,7 @@ local function add_fileInfo(name, bufnr)
       or ("%#TbLineBufOff# " .. name)
     )
 
-    return seperator .. string.rep(" ", padding) .. icon .. name .. string.rep(" ", padding) .. diagnostics
+    return separator .. string.rep(" ", padding) .. icon .. name .. string.rep(" ", padding) .. diagnostics
   end
 end
 
