@@ -49,18 +49,15 @@ M.save_term_info = function(opts, bufnr)
   g.nvchad_terms = terms_list
 end
 
-M.create_float = function(buffer, user_opts)
-  local opts = {
-    relative = "editor",
-    width = math.ceil(0.5 * vim.o.columns),
-    height = math.ceil(0.4 * vim.o.lines),
-    row = math.floor(0.3 * vim.o.lines),
-    col = math.floor(0.25 * vim.o.columns),
-    border = "single",
-    style = "minimal",
-  }
+M.create_float = function(buffer, float_opts)
+  local opts = vim.tbl_deep_extend("force", {}, config.float)
+  opts = vim.tbl_deep_extend("force", opts, float_opts or {})
 
-  opts = vim.tbl_deep_extend("force", opts, user_opts or {})
+  opts.width = math.ceil(opts.width * vim.o.columns)
+  opts.height = math.ceil(opts.height * vim.o.lines)
+  opts.row = math.ceil(opts.row * vim.o.lines)
+  opts.col = math.ceil(opts.col * vim.o.columns)
+
   vim.api.nvim_open_win(buffer, true, opts)
 end
 
