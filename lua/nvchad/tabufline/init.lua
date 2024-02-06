@@ -9,9 +9,12 @@ M.bufilter = function()
   end
 
   for i, nr in ipairs(bufs) do
-    if not vim.api.nvim_buf_is_valid(nr) then
-      table.remove(bufs, i)
-    end
+    local is_valid = vim.api.nvim_buf_is_valid(nr)
+    -- NOTE: It is important to remove unlisted buffers from the list otherwise
+    -- it may cause an error when trying to switch to them.
+    local is_listed = vim.api.nvim_buf_get_option(nr, 'buflisted')
+    local should_remove = not is_valid or not is_listed
+    if should_remove then table.remove(bufs, i) end
   end
 
   vim.t.bufs = bufs
