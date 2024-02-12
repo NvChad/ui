@@ -73,11 +73,11 @@ return function()
     -- using vim.schedule because we cant use set_lines & systemlist in callback
     vim.schedule(function()
       if not git_fetch_err then
-        local head_hash = vim.fn.systemlist("git -C " .. nvim_config .. " rev-parse HEAD")
+        local head_hash = vim.fn.systemlist("git -C '" .. nvim_config .. "' rev-parse HEAD")
 
         -- git log --format="format:%h: %s"  HEAD..origin/somebranch
         git_outputs = vim.fn.systemlist(
-          "git -C " .. nvim_config .. ' log --format="format:%h: %s" ' .. head_hash[1] .. "..origin/" .. config_branch
+          'git -C "' .. nvim_config .. '" log --format="format:%h: %s" ' .. head_hash[1] .. "..origin/" .. config_branch
         )
 
         if #git_outputs == 0 then
