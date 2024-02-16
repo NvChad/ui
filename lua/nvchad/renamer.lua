@@ -1,6 +1,3 @@
--- credits to @Malace : https://www.reddit.com/r/neovim/comments/ql4iuj/rename_hover_including_window_title_and/
--- This is modified version of the above snippet
-
 local M = {}
 local map = vim.keymap.set
 
