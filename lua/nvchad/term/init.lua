@@ -32,7 +32,7 @@ M.prettify = function(winnr, bufnr, hl)
   vim.bo[bufnr].buflisted = false
 
   -- custom highlight
-  vim.wo[winnr].winhl = hl or "Normal:Normal,WinSeparator:WinSeparator"
+  vim.wo[winnr].winhl = hl or config.hl
   vim.cmd "startinsert"
 end
 
