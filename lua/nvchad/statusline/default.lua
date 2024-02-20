@@ -80,11 +80,53 @@ M.mode = function()
   return current_mode .. mode_sep1 .. "%#ST_EmptySpace#" .. sep_r
 end
 
+function get_file_path(chosen_length)
+  local adjusted_length = chosen_length - 1
+  local parts_to_get = adjusted_length <= 0 and 0 or adjusted_length
+  local path = vim.api.nvim_buf_get_name(stbufnr())
+  local parts = {}
+
+  if path ~= "" then
+    -- Split the path into parts
+    for part in path:gmatch("[^/]+") do
+      print(part)
+      table.insert(parts, part)
+    end
+
+    
+    -- Get all parts
+    local num_parts = #parts
+    for i = 1, num_parts do
+      table.insert(parts, parts[i])  -- Corrected the variable name here
+    end
+  end
+
+local output = {}
+for i = #parts - parts_to_get, #parts do
+    print(parts[i])
+    table.insert(output, parts[i])
+end
+
+local ret_value = table.concat(output, "/")
+  print(ret_value)
+  return ret_value
+end
+
+
+
 -- credits to ii14 for str:match func
 M.fileInfo = function()
   local icon = " 󰈚 "
-  local path = vim.api.nvim_buf_get_name(stbufnr())
-  local name = (path == "" and "Empty ") or path:match "([^/\\]+)[/\\]*$"
+  local parts_to_get = vim and vim.g and vim.g.file_path_length or 1
+  local fragments = get_file_path(parts_to_get)
+  print(fragments)
+  local name = ""
+
+  if #fragments > 0 then
+    name = fragments
+  else
+    name = "Empty "
+  end
 
   if name ~= "Empty " then
     local devicons_present, devicons = pcall(require, "nvim-web-devicons")
