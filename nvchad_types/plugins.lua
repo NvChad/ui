@@ -33,6 +33,13 @@
 ---     keys = {
 ---       {"foo", "bar", desc = "Some keymaps", mode = {"n", "i"}}
 ---     }
+---     keys = function (_, keys)
+---       ---@type (string|LazyKeymaps)[]
+---       return {
+---         { "foo", mode = { "n", "i" } },
+---         "bar"
+---       }
+---     end
 --- ```
 ---@field keys? string|string[]|LazyKeymaps[]|fun(_:LazyPlugin, keys:string[]):PluginKeyReturnTypes
 --- Will be executed when this plugin is loaded. 
