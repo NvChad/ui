@@ -2,8 +2,6 @@
 
 ---@alias PluginName string
 
----@alias PluginKeyReturnTypes (string|LazyKeymaps)[]
-
 ---@class (exact) NvImportSpec: LazySpecImport
 --- Name of the module to be imported.
 --- It should be a string for `require()`, and it should return a table containing the plugin config
@@ -41,7 +39,7 @@
 ---       }
 ---     end
 --- ```
----@field keys? string|string[]|LazyKeymaps[]|fun(_:LazyPlugin, keys:string[]):PluginKeyReturnTypes
+---@field keys? string|string[]|LazyKeymaps[]|fun(_:LazyPlugin, keys:string[]):((string|LazyKeymaps)[])
 --- Will be executed when this plugin is loaded. 
 --- - If `config` is `true`, then `require("plugin").setup(opts)` will be run.  
 --- - If a function, then `opts` argument will be the table from `opts` field
