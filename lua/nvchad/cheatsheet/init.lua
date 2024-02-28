@@ -16,12 +16,30 @@ M.getLargestWin = function()
   return largest_win_id
 end
 
-M.isValid_mapping_TB = function(tbl)
-  if type(tbl) ~= "table" or #vim.tbl_keys(tbl) == 0 then
-    return false
+M.get_mappings = function(mappings, tb_to_add)
+  for _, v in ipairs(mappings) do
+    local desc = v.desc
+
+    if not desc then
+      goto continue
+    end
+
+    local heading = desc:match "%S+"
+    heading = (v.mode ~= "n" and heading .. " (" .. v.mode .. ")") or heading
+
+    if not tb_to_add[heading] then
+      tb_to_add[heading] = {}
+    end
+
+    local keybind = string.sub(v.lhs, 1, 1) == " " and "<leader> +" .. v.lhs or v.lhs
+    desc = v.desc:match "%s(.+)"
+
+    table.insert(tb_to_add[heading], { desc, keybind })
+
+    ::continue::
   end
 
-  return true
+  return tb_to_add
 end
 
 return M

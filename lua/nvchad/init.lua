@@ -37,6 +37,7 @@ new_cmd("NvCheatsheet", function()
   if vim.g.nvcheatsheet_displayed then
     require("nvchad.tabufline").close_buffer()
   else
+    package.loaded["nvchad.cheatsheet" .. config.cheatsheet.theme] = nil
     require("nvchad.cheatsheet." .. config.cheatsheet.theme)()
   end
 end, {})
