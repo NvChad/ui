@@ -38,8 +38,18 @@ M.get_mappings = function(mappings, tb_to_add)
 
     ::continue::
   end
+end
 
-  return tb_to_add
+M.organize_mappings = function(tb_to_add)
+  local modes = { "n", "i", "v", "t" }
+
+  for _, mode in ipairs(modes) do
+    local keymaps = vim.api.nvim_get_keymap(mode)
+    require("nvchad.cheatsheet").get_mappings(keymaps, tb_to_add)
+
+    local bufkeymaps = vim.api.nvim_buf_get_keymap(0, mode)
+    require("nvchad.cheatsheet").get_mappings(bufkeymaps, tb_to_add)
+  end
 end
 
 return M

@@ -22,20 +22,10 @@ local ascii = {
 
 -- basically the draw function
 return function()
-  local api = vim.api
   local nvcheatsheet = vim.api.nvim_create_namespace "nvcheatsheet"
 
   local mappings_tb = {}
-
-  local modes = { "n", "i", "v", "t" }
-
-  for _, mode in ipairs(modes) do
-    local keymaps = api.nvim_get_keymap(mode)
-    require("nvchad.cheatsheet").get_mappings(keymaps, mappings_tb)
-
-    local bufkeymaps = api.nvim_buf_get_keymap(0, mode)
-    require("nvchad.cheatsheet").get_mappings(bufkeymaps, mappings_tb)
-  end
+  require("nvchad.cheatsheet").organize_mappings(mappings_tb)
 
   vim.g.nv_previous_buf = vim.api.nvim_get_current_buf()
   local buf = vim.api.nvim_create_buf(false, true)
