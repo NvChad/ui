@@ -141,19 +141,7 @@ return function()
 
   api.nvim_set_current_buf(buf)
 
-  -- buf only options
-  vim.opt_local.buflisted = false
-  vim.opt_local.modifiable = false
-  vim.opt_local.buftype = "nofile"
-  vim.opt_local.filetype = "nvcheatsheet"
-  vim.opt_local.number = false
-  vim.opt_local.list = false
-  vim.opt_local.wrap = false
-  vim.opt_local.relativenumber = false
-  vim.opt_local.colorcolumn = "0"
-  vim.opt_local.foldcolumn = "0"
-  vim.opt_local.cursorline = false
-  vim.g.nvcheatsheet_displayed = true
+  require("nvchad.utils").set_cleanbuf_opts "nvcheatsheet"
 
   vim.keymap.set("n", "<ESC>", function()
     require("nvchad.tabufline").close_buffer(buf)

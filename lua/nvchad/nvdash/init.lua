@@ -42,9 +42,6 @@ M.open = function()
 
   api.nvim_win_set_buf(win, buf)
 
-  vim.opt_local.filetype = "nvdash"
-  vim.g.nvdash_displayed = true
-
   local header = headerAscii
   local buttons = config.buttons
 
@@ -143,16 +140,7 @@ M.open = function()
     end
   end, { buffer = true })
 
-  -- buf only options
-  vim.opt_local.buflisted = false
-  vim.opt_local.modifiable = false
-  vim.opt_local.number = false
-  vim.opt_local.list = false
-  vim.opt_local.relativenumber = false
-  vim.opt_local.wrap = false
-  vim.opt_local.cursorline = false
-  vim.opt_local.colorcolumn = "0"
-  vim.opt_local.foldcolumn = "0"
+  require("nvchad.utils").set_cleanbuf_opts "nvdash"
 end
 
 return M
