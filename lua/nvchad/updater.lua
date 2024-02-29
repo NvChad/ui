@@ -29,6 +29,7 @@ return function()
   vim.api.nvim_set_current_buf(buf)
 
   require("nvchad.utils").set_cleanbuf_opts "nvupdater"
+  vim.opt.modifiable = true
 
   -- set lines & highlight for updater title
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, content)
