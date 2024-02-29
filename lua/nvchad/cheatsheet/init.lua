@@ -16,12 +16,40 @@ M.getLargestWin = function()
   return largest_win_id
 end
 
-M.isValid_mapping_TB = function(tbl)
-  if type(tbl) ~= "table" or #vim.tbl_keys(tbl) == 0 then
-    return false
-  end
+M.get_mappings = function(mappings, tb_to_add)
+  for _, v in ipairs(mappings) do
+    local desc = v.desc
 
-  return true
+    if not desc then
+      goto continue
+    end
+
+    local heading = desc:match "%S+"
+    heading = (v.mode ~= "n" and heading .. " (" .. v.mode .. ")") or heading
+
+    if not tb_to_add[heading] then
+      tb_to_add[heading] = {}
+    end
+
+    local keybind = string.sub(v.lhs, 1, 1) == " " and "<leader> +" .. v.lhs or v.lhs
+    desc = v.desc:match "%s(.+)"
+
+    table.insert(tb_to_add[heading], { desc, keybind })
+
+    ::continue::
+  end
+end
+
+M.organize_mappings = function(tb_to_add)
+  local modes = { "n", "i", "v", "t" }
+
+  for _, mode in ipairs(modes) do
+    local keymaps = vim.api.nvim_get_keymap(mode)
+    require("nvchad.cheatsheet").get_mappings(keymaps, tb_to_add)
+
+    local bufkeymaps = vim.api.nvim_buf_get_keymap(0, mode)
+    require("nvchad.cheatsheet").get_mappings(bufkeymaps, tb_to_add)
+  end
 end
 
 return M

@@ -28,13 +28,7 @@ return function()
 
   vim.api.nvim_set_current_buf(buf)
 
-  -- local options
-  vim.opt_local.buflisted = false
-  vim.opt_local.number = false
-  vim.opt_local.list = false
-  vim.opt_local.relativenumber = false
-  vim.opt_local.wrap = false
-  vim.opt_local.cul = false
+  require("nvchad.utils").set_cleanbuf_opts "nvupdater"
 
   -- set lines & highlight for updater title
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, content)

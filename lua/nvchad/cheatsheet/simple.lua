@@ -1,15 +1,3 @@
-local mappings_tb = require("nvconfig").mappings -- default & user mappings
-local isValid_mapping_TB = require("nvchad.cheatsheet").isValid_mapping_TB
-
--- filter mappings_tb i.e remove tb which have empty fields
-for title, val in pairs(mappings_tb) do
-  for mode, mappings in pairs(val) do
-    if not isValid_mapping_TB(mappings) then
-      mappings_tb[title][mode] = nil
-    end
-  end
-end
-
 local api = vim.api
 local genStr = string.rep
 
@@ -24,6 +12,9 @@ vim.api.nvim_create_autocmd("BufWinLeave", {
 })
 
 return function()
+  local mappings_tb = {}
+  require("nvchad.cheatsheet").organize_mappings(mappings_tb)
+
   vim.g.nv_previous_buf = vim.api.nvim_get_current_buf()
   local buf = api.nvim_create_buf(false, true)
 
@@ -41,24 +32,10 @@ return function()
   -- Find largest string i.e mapping desc among all mappings
   local largest_str = 0
 
-  local cards = {}
-
-  for heading, modes in pairs(mappings_tb) do
-    modes.plugin = nil
-
-    for mode, mappings in pairs(modes) do
-      local card_header = mode == "n" and heading or heading .. string.format(" ( %s ) ", mode)
-
-      cards[card_header] = mappings
-
-      if type(mappings) == "table" then
-        for keybind, mappingInfo in pairs(mappings) do
-          if mappingInfo[2] then
-            largest_str = largest_str > #mappingInfo[2] + #prettify_Str(keybind) and largest_str
-              or #mappingInfo[2] + #prettify_Str(keybind)
-          end
-        end
-      end
+  for _, section in pairs(mappings_tb) do
+    for _, keymap in ipairs(section) do
+      largest_str = largest_str > #keymap[1] + #prettify_Str(keymap[2]) and largest_str
+        or #keymap[2] + #prettify_Str(keymap[2])
     end
   end
 
@@ -93,16 +70,10 @@ return function()
 
   local mapping_txt_endIndex = 0
 
-  -- sort table
-  local sorted_tb_keys = vim.tbl_keys(cards)
-  table.sort(sorted_tb_keys, function(a, b)
-    return a > b
-  end)
-
   -- Store content in a table in a formatted way
-  for _, card_name in pairs(sorted_tb_keys) do
+  for card_name, section in pairs(mappings_tb) do
     -- Set section headings
-    local heading = addPadding(Capitalize(card_name))
+    local heading = addPadding(card_name)
     local padded_heading = genStr(" ", centerPoint - #heading / 2) .. heading -- centered text
     local padding_chars = genStr(" ", centerPoint + (#heading / 2) + 2)
 
@@ -113,27 +84,25 @@ return function()
     lineNumsDesc[#lineNumsDesc + 1] = "paddingBlock"
 
     -- Set section mappings : description & keybinds
-    for keybind, mappingInfo in pairs(cards[card_name]) do
-      if mappingInfo[2] then
-        local emptySpace = largest_str + 30 - #mappingInfo[2] - #prettify_Str(keybind) - 10
+    for _, keymap in ipairs(section) do
+      local emptySpace = largest_str + 30 - #keymap[1] - #keymap[2] - 10
 
-        local map = Capitalize(mappingInfo[2]) .. genStr(" ", emptySpace) .. prettify_Str(keybind)
-        local txt = genStr(" ", centerPoint - #map / 2) .. map
+      local map = Capitalize(keymap[1]) .. genStr(" ", emptySpace) .. keymap[2]
+      local txt = genStr(" ", centerPoint - #map / 2) .. map
 
-        result[#result + 1] = "   " .. txt .. "   "
+      result[#result + 1] = "   " .. txt .. "   "
 
-        if mapping_txt_endIndex == 0 then
-          mapping_txt_endIndex = #result[#result]
-        end
+      if mapping_txt_endIndex == 0 then
+        mapping_txt_endIndex = #result[#result]
+      end
 
-        lineNumsDesc[#lineNumsDesc + 1] = "mapping"
+      lineNumsDesc[#lineNumsDesc + 1] = "mapping"
 
-        result[#result + 1] = padding_chars
-        lineNumsDesc[#lineNumsDesc + 1] = "paddingBlock"
+      result[#result + 1] = padding_chars
+      lineNumsDesc[#lineNumsDesc + 1] = "paddingBlock"
 
-        if horiz_index == 0 then
-          horiz_index = math.floor(centerPoint - math.floor(#map / 2))
-        end
+      if horiz_index == 0 then
+        horiz_index = math.floor(centerPoint - math.floor(#map / 2))
       end
     end
 
@@ -172,20 +141,9 @@ return function()
 
   api.nvim_set_current_buf(buf)
 
-  -- buf only options
-  vim.opt_local.buflisted = false
-  vim.opt_local.modifiable = false
-  vim.opt_local.buftype = "nofile"
-  vim.opt_local.filetype = "nvcheatsheet"
-  vim.opt_local.number = false
-  vim.opt_local.list = false
-  vim.opt_local.wrap = false
-  vim.opt_local.relativenumber = false
-  vim.opt_local.colorcolumn = "0"
-  vim.opt_local.foldcolumn = "0"
-  vim.opt_local.cursorline = false
+  require("nvchad.utils").set_cleanbuf_opts "nvcheatsheet"
 
   vim.keymap.set("n", "<ESC>", function()
     require("nvchad.tabufline").close_buffer(buf)
-  end, { buffer = buf }) -- use ESC to close
+  end, { buffer = buf })
 end

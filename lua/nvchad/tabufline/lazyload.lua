@@ -63,8 +63,6 @@ vim.api.nvim_create_autocmd("BufDelete", {
   end,
 })
 
-require("core.utils").load_mappings "tabufline"
-
 if opts.lazyload then
   vim.api.nvim_create_autocmd({ "BufNew", "BufNewFile", "BufRead", "TabEnter", "TermOpen" }, {
     pattern = "*",
