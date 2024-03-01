@@ -47,7 +47,6 @@ return function()
 
   -- column width
   local column_width = 0
-
   for _, section in pairs(mappings_tb) do
     for _, mapping in pairs(section) do
       local txt = vim.fn.strdisplaywidth(mapping[1] .. mapping[2])
@@ -118,12 +117,8 @@ return function()
 
   local cards_headings_sorted = vim.tbl_keys(cards)
 
-  table.sort(cards_headings_sorted, function(first, second)
-    return first:gsub("%s*", "") < second:gsub("%s*", "")
-  end)
-
   -- imitate masonry layout
-  for _, heading in pairs(cards_headings_sorted) do
+  for _, heading in ipairs(cards_headings_sorted) do
     for column, mappings in ipairs(columns) do
       if column == 1 and getColumn_height(columns[1]) == 0 then
         columns[1][1] = cards_headings_sorted[1]
@@ -169,6 +164,7 @@ return function()
   end
 
   local result = vim.tbl_values(columns[1])
+
 
   -- merge all the column strings
   for index, value in ipairs(result) do

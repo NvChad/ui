@@ -20,11 +20,11 @@ M.get_mappings = function(mappings, tb_to_add)
   for _, v in ipairs(mappings) do
     local desc = v.desc
 
-    if not desc then
+    if not desc or (select(2, desc:gsub("%S+", "")) <= 1) then
       goto continue
     end
 
-    local heading = desc:match "%S+"
+    local heading = desc:match "%S+" -- get first word
     heading = (v.mode ~= "n" and heading .. " (" .. v.mode .. ")") or heading
 
     if not tb_to_add[heading] then
@@ -32,7 +32,8 @@ M.get_mappings = function(mappings, tb_to_add)
     end
 
     local keybind = string.sub(v.lhs, 1, 1) == " " and "<leader> +" .. v.lhs or v.lhs
-    desc = v.desc:match "%s(.+)"
+
+    desc = v.desc:match "%s(.+)" -- remove first word from desc
 
     table.insert(tb_to_add[heading], { desc, keybind })
 
@@ -49,6 +50,13 @@ M.organize_mappings = function(tb_to_add)
 
     local bufkeymaps = vim.api.nvim_buf_get_keymap(0, mode)
     require("nvchad.cheatsheet").get_mappings(bufkeymaps, tb_to_add)
+  end
+
+  -- remove groups which have only 1 mapping
+  for key, x in pairs(tb_to_add) do
+    if(#x <=1) then
+      tb_to_add[key] = nil
+    end
   end
 end
 

@@ -23,19 +23,13 @@ return function()
 
   local centerPoint = api.nvim_win_get_width(win) / 2
 
-  -- convert "<leader>th" to "<leader> + th"
-  local function prettify_Str(str)
-    local one, two = str:match "([^,]+)>([^,]+)"
-    return one and one .. "> + " .. two or str
-  end
-
   -- Find largest string i.e mapping desc among all mappings
   local largest_str = 0
 
   for _, section in pairs(mappings_tb) do
     for _, keymap in ipairs(section) do
-      largest_str = largest_str > #keymap[1] + #prettify_Str(keymap[2]) and largest_str
-        or #keymap[2] + #prettify_Str(keymap[2])
+      largest_str = largest_str > #keymap[1] + #keymap[2] and largest_str
+        or #keymap[2] + #keymap[2]
     end
   end
 
