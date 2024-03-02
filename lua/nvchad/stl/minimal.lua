@@ -1,6 +1,6 @@
-local fn = vim.fn
 local config = require("nvconfig").ui.statusline
 local sep_style = config.separator_style
+local utils = require "nvchad.stl.utils"
 
 sep_style = (sep_style ~= "round" and sep_style ~= "block") and "block" or sep_style
 
@@ -18,7 +18,7 @@ local function gen_block(icon, txt, sep_l_hlgroup, iconHl_group, txt_hl_group)
   return sep_l_hlgroup .. sep_l .. iconHl_group .. icon .. " " .. txt_hl_group .. " " .. txt .. sep_r
 end
 
-local is_activewin = require("nvchad.stl.utils").is_activewin
+local is_activewin = utils.is_activewin
 
 local M = {}
 
@@ -27,7 +27,7 @@ M.mode = function()
     return ""
   end
 
-  local modes = require("nvchad.stl.utils").modes
+  local modes = utils.modes
   local m = vim.api.nvim_get_mode().mode
 
   return gen_block(
@@ -40,26 +40,27 @@ M.mode = function()
 end
 
 M.file = function()
-  local x = require("nvchad.stl.utils").file()
+  local x = utils.file()
   return gen_block(x[1], x[2], "%#St_file_sep#", "%#St_file_bg#", "%#St_file_txt#")
 end
 
 M.git = function()
-  return "%#St_gitIcons#" .. require("nvchad.stl.utils").git()
+  return "%#St_gitIcons#" .. utils.git()
 end
 
 M.lsp_msg = function()
-  return "%#St_LspProgress#" .. require("nvchad.stl.utils").lsp_msg()
+  return "%#St_LspMsg#" .. utils.lsp_msg()
 end
 
-M.diagnostics = require("nvchad.stl.utils").diagnostics
+M.diagnostics = utils.diagnostics
 
 M.lsp = function()
-  return "%#St_LspStatus#" .. require("nvchad.stl.utils").lsp()
+  return "%#St_Lsp#" .. utils.lsp()
 end
 
 M.cwd = function()
-  return gen_block("", fn.fnamemodify(fn.getcwd(), ":t"), "%#St_cwd_sep#", "%#St_cwd_bg#", "%#St_cwd_txt#")
+  local name = vim.loop.cwd():match ".+/(.-)$"
+  return gen_block("", name, "%#St_cwd_sep#", "%#St_cwd_bg#", "%#St_cwd_txt#")
 end
 
 M.cursor = function()
@@ -69,5 +70,5 @@ end
 M["%="] = "%="
 
 return function()
-  return require("nvchad.stl.utils").generate("default", M)
+  return utils.generate("default", M)
 end

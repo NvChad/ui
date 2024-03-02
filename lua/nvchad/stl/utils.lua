@@ -80,7 +80,7 @@ M.modes = {
 
 -- credits to ii14 for str:match func
 M.file = function()
-  local icon = "󰈚 "
+  local icon = "󰈚"
   local path = vim.api.nvim_buf_get_name(M.stbufnr())
   local name = (path == "" and "Empty ") or path:match "([^/\\]+)[/\\]*$"
 
@@ -91,8 +91,6 @@ M.file = function()
       local ft_icon = devicons.get_icon(name)
       icon = (ft_icon ~= nil and ft_icon) or icon
     end
-
-    name = " " .. name .. " "
   end
 
   return { icon, name }
