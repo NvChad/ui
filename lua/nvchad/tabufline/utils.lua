@@ -4,6 +4,7 @@ local fn = vim.fn
 local buf_opt = api.nvim_buf_get_option
 local strep = string.rep
 local cur_buf = api.nvim_get_current_buf
+local buf_name = api.nvim_buf_get_name
 
 M.txt = function(str, hl)
   str = str or ""
@@ -17,6 +18,10 @@ M.btn = function(str, hl, func, arg)
   return "%" .. arg .. "@Tb" .. func .. "@" .. str .. "%X"
 end
 
+local function filename(str)
+  return str:match "([^/\\]+)[/\\]*$"
+end
+
 local btn = M.btn
 local txt = M.txt
 
@@ -27,17 +32,23 @@ local function new_hl(group1, group2)
   return "%#" .. group1 .. group2 .. "#"
 end
 
-M.style_buf = function(nr)
+local function gen_unique_name(oldname, index)
+  for i2, nr2 in ipairs(vim.t.bufs) do
+    if index ~= i2 and filename(buf_name(nr2)) == oldname then
+      return fn.fnamemodify(buf_name(vim.t.bufs[index]), ":p:.")
+    end
+  end
+end
+
+M.style_buf = function(nr, i)
   local icon = "󰈚"
   local is_curbuf = cur_buf() == nr
   local tbHlName = "BufO" .. (is_curbuf and "n" or "ff")
   local icon_hl = new_hl("DevIconDefault", tbHlName)
 
-  local name = api.nvim_buf_get_name(nr)
-  name = name:match "([^/\\]+)[/\\]*$"
+  local name = filename(buf_name(nr))
+  name = gen_unique_name(name, i) or name
   name = (name == "" or not name) and " No Name " or name
-
-  -- todo write dupli name funcjjk
 
   if name ~= " No Name " then
     local devicon, devicon_hl = require("nvim-web-devicons").get_icon(name)
@@ -50,7 +61,8 @@ M.style_buf = function(nr)
 
   -- padding around bufname; 15= maxnamelen + 2 icon & space + 2 close icon
   local pad = math.floor((23 - #name - 5) / 2)
-  pad = pad == 0 and 1 or pad
+  pad = pad <= 0 and 1 or pad
+
   local maxname_len = 15
 
   name = string.sub(name, 1, 13) .. (#name > maxname_len and ".." or "")
