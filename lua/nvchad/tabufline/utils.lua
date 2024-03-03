@@ -27,11 +27,17 @@ local function new_hl(group1, group2)
   return "%#" .. group1 .. group2 .. "#"
 end
 
-M.style_buf = function(buf)
+M.style_buf = function(nr)
   local icon = "󰈚"
-  local tbHlName = "BufO" .. (buf.cur and "n" or "ff")
+  local is_curbuf = cur_buf() == nr
+  local tbHlName = "BufO" .. (is_curbuf and "n" or "ff")
   local icon_hl = new_hl("DevIconDefault", tbHlName)
-  local name = buf.name
+
+  local name = api.nvim_buf_get_name(nr)
+  name = name:match "([^/\\]+)[/\\]*$"
+  name = (name == "" or not name) and " No Name " or name
+
+  -- todo write dupli name funcjjk
 
   if name ~= " No Name " then
     local devicon, devicon_hl = require("nvim-web-devicons").get_icon(name)
@@ -52,36 +58,23 @@ M.style_buf = function(buf)
 
   name = strep(" ", pad) .. (icon_hl .. icon .. name) .. strep(" ", pad - 1)
 
-  local close_btn = btn(" 󰅖 ", nil, "TbKillBuf", buf.nr)
-  name = btn(name, nil, "GoToBuf", buf.nr)
+  local close_btn = btn(" 󰅖 ", nil, "TbKillBuf", nr)
+  name = btn(name, nil, "GoToBuf", nr)
+
+  -- modified bufs icon or close icon
+  local mod = buf_opt(nr, "mod")
+  local cur_mod = buf_opt(0, "mod")
 
   -- color close btn for focused / hidden  buffers
-  if buf.cur then
-    close_btn = buf.modified and txt("  ", "BufOnModified") or txt(close_btn, "BufOnClose")
-    name = txt(name .. close_btn, "BufOn")
+  if is_curbuf then
+    close_btn = cur_mod and txt("  ", "BufOnModified") or txt(close_btn, "BufOnClose")
   else
-    close_btn = buf.modified and txt("  ", "BufOffModified") or txt(close_btn, "BufOffClose")
-    name = txt(name .. close_btn, "BufOff")
+    close_btn = mod and txt("  ", "BufOffModified") or txt(close_btn, "BufOffClose")
   end
 
+  name = txt(name .. close_btn, "BufO" .. (is_curbuf and "n" or "ff"))
+
   return name
-end
-
-M.buf_info = function(nr)
-  local name = api.nvim_buf_get_name(nr)
-  name = name:match "([^/\\]+)[/\\]*$"
-  name = (name == "" or not name) and " No Name " or name
-
-  local buf = {
-    nr = nr,
-    name = name,
-    cur = cur_buf() == nr,
-    modified = buf_opt(nr, "modified"),
-  }
-
-  buf.ui = M.style_buf(buf)
-
-  return buf
 end
 
 return M

@@ -48,7 +48,7 @@ M.bufferlist = function()
   local available_space = vim.o.columns - getNvimTreeWidth()
   local has_current = false -- have we seen current buffer yet?
 
-  for _, buf in ipairs(vim.t.bufs) do
+  for _, nr in ipairs(vim.t.bufs) do
     if ((#buffers + 1) * 24) > available_space then
       if has_current then
         break
@@ -57,8 +57,8 @@ M.bufferlist = function()
       table.remove(buffers, 1)
     end
 
-    has_current = cur_buf() == buf.nr
-    table.insert(buffers, buf.ui)
+    has_current = cur_buf() == nr
+    table.insert(buffers, style_buf(nr))
   end
 
   return table.concat(buffers) .. txt("%=", "Fill") -- buffers + empty space
