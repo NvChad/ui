@@ -1,53 +1,38 @@
 local M = {}
 local api = vim.api
+local cur_buf = api.nvim_get_current_buf
+local set_buf = api.nvim_set_current_buf
 
-M.bufilter = function()
-  local bufs = vim.t.bufs or nil
-
-  if not bufs then
-    return {}
-  end
-
-  for i, nr in ipairs(bufs) do
-    if not vim.api.nvim_buf_is_valid(nr) then
-      table.remove(bufs, i)
-    end
-  end
-
-  vim.t.bufs = bufs
-  return bufs
-end
-
-M.getBufIndex = function(bufnr)
-  for i, value in ipairs(M.bufilter()) do
+local function buf_index(bufnr)
+  for i, value in ipairs(vim.t.bufs) do
     if value == bufnr then
       return i
     end
   end
 end
 
-M.tabuflineNext = function()
-  local bufs = M.bufilter() or {}
-  local curbufIndex = M.getBufIndex(api.nvim_get_current_buf())
+M.next = function()
+  local bufs = vim.t.bufs
+  local curbufIndex = buf_index(cur_buf())
 
   if not curbufIndex then
-    vim.cmd("b" .. vim.t.bufs[1])
+    set_buf(vim.t.bufs[1])
     return
   end
 
-  vim.cmd(curbufIndex == #bufs and "b" .. bufs[1] or "b" .. bufs[curbufIndex + 1])
+  set_buf((curbufIndex == #bufs and bufs[1]) or bufs[curbufIndex + 1])
 end
 
-M.tabuflinePrev = function()
-  local bufs = M.bufilter() or {}
-  local curbufIndex = M.getBufIndex(api.nvim_get_current_buf())
+M.prev = function()
+  local bufs = vim.t.bufs
+  local curbufIndex = buf_index(cur_buf())
 
   if not curbufIndex then
-    vim.cmd("b" .. vim.t.bufs[1])
+    set_buf(vim.t.bufs[1])
     return
   end
 
-  vim.cmd(curbufIndex == 1 and "b" .. bufs[#bufs] or "b" .. bufs[curbufIndex - 1])
+  set_buf((curbufIndex == 1 and bufs[#bufs]) or bufs[curbufIndex - 1])
 end
 
 M.close_buffer = function(bufnr)
@@ -60,8 +45,8 @@ M.close_buffer = function(bufnr)
       return
     end
 
-    bufnr = bufnr or api.nvim_get_current_buf()
-    local curBufIndex = M.getBufIndex(bufnr)
+    bufnr = bufnr or cur_buf()
+    local curBufIndex = buf_index(bufnr)
     local bufhidden = vim.bo.bufhidden
 
     -- force close floating wins
@@ -74,7 +59,7 @@ M.close_buffer = function(bufnr)
       local newBufIndex = curBufIndex == #vim.t.bufs and -1 or 1
       vim.cmd("b" .. vim.t.bufs[curBufIndex + newBufIndex])
 
-    -- handle unlisted
+      -- handle unlisted
     elseif not vim.bo.buflisted then
       local tmpbufnr = vim.t.bufs[1]
 
@@ -116,7 +101,7 @@ end
 -- closes all bufs except current one
 M.closeOtherBufs = function()
   for _, buf in ipairs(vim.t.bufs) do
-    if buf ~= api.nvim_get_current_buf() then
+    if buf ~= cur_buf() then
       vim.api.nvim_buf_delete(buf, {})
     end
   end
@@ -126,7 +111,7 @@ end
 
 -- closes all other buffers right or left
 M.closeBufs_at_direction = function(x)
-  local bufindex = M.getBufIndex(api.nvim_get_current_buf())
+  local bufindex = buf_index(cur_buf())
 
   for i, bufnr in ipairs(vim.t.bufs) do
     if (x == "left" and i < bufindex) or (x == "right" and i > bufindex) then
@@ -139,7 +124,7 @@ M.move_buf = function(n)
   local bufs = vim.t.bufs
 
   for i, bufnr in ipairs(bufs) do
-    if bufnr == vim.api.nvim_get_current_buf() then
+    if bufnr == vim.cur_buf() then
       if n < 0 and i == 1 or n > 0 and i == #bufs then
         bufs[1], bufs[#bufs] = bufs[#bufs], bufs[1]
       else
