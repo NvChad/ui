@@ -1,48 +1,29 @@
 local opts = require("nvconfig").ui.tabufline
-
--- store listed buffers in tab local var
-vim.t.bufs = vim.api.nvim_list_bufs()
+local api = vim.api
+local utils = require "nvchad.tabufline.utils"
+local buf_opt = api.nvim_buf_get_option
 
 local listed_bufs = {}
 
-for _, val in ipairs(vim.t.bufs) do
-  if vim.bo[val].buflisted then
-    table.insert(listed_bufs, val)
+for _, nr in ipairs(vim.api.nvim_list_bufs()) do
+  if buf_opt(nr, "buflisted") then
+    table.insert(listed_bufs, utils.buf_info(nr))
   end
 end
 
 vim.t.bufs = listed_bufs
 
--- autocmds for tabufline -> store bufnrs on bufadd, bufenter events
--- thx to https://github.com/ii14 & stores buffer per tab -> table
+-- autocmds for tabufline -> track bufs on bufadd, bufenter events
+-- thx to https://github.com/ii14 for helping me with tab-local variables
 vim.api.nvim_create_autocmd({ "BufAdd", "BufEnter", "tabnew" }, {
   callback = function(args)
     local bufs = vim.t.bufs
 
-    if vim.t.bufs == nil then
-      vim.t.bufs = vim.api.nvim_get_current_buf() == args.buf and {} or { args.buf }
-    else
-      -- check for duplicates
-      if
-        not vim.tbl_contains(bufs, args.buf)
-        and (args.event == "BufEnter" or vim.bo[args.buf].buflisted or args.buf ~= vim.api.nvim_get_current_buf())
-        and vim.api.nvim_buf_is_valid(args.buf)
-        and vim.bo[args.buf].buflisted
-      then
-        table.insert(bufs, args.buf)
-        vim.t.bufs = bufs
-      end
+    if args.event == "BufAdd" and buf_opt(args.buf, "buflisted") then
+      table.insert(bufs, utils.buf_info(args.buf))
     end
 
-    -- remove unnamed buffer which isnt current buf & modified
-    if args.event == "BufAdd" then
-      local first_buf = vim.t.bufs[1]
-
-      if #vim.api.nvim_buf_get_name(first_buf) == 0 and not vim.api.nvim_buf_get_option(first_buf, "modified") then
-        table.remove(bufs, 1)
-        vim.t.bufs = bufs
-      end
-    end
+    vim.t.bufs = bufs
   end,
 })
 
@@ -70,12 +51,12 @@ if opts.lazyload then
     callback = function()
       if #vim.fn.getbufinfo { buflisted = 1 } >= 2 or #vim.api.nvim_list_tabpages() >= 2 then
         vim.opt.showtabline = 2
-        vim.opt.tabline = "%!v:lua.require('nvchad.tabufline.modules').run()"
+        vim.opt.tabline = "%!v:lua.require('nvchad.tabufline.modules')()"
         vim.api.nvim_del_augroup_by_name "TabuflineLazyLoad"
       end
     end,
   })
 else
   vim.opt.showtabline = 2
-  vim.opt.tabline = "%!v:lua.require('nvchad.tabufline.modules').run()"
+  vim.opt.tabline = "%!v:lua.require('nvchad.tabufline.modules')()"
 end
