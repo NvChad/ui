@@ -9,6 +9,7 @@ local btn = require("nvchad.tabufline.utils").btn
 local strep = string.rep
 local style_buf = require("nvchad.tabufline.utils").style_buf
 local cur_buf = api.nvim_get_current_buf
+local config = require("nvconfig").ui.tabufline
 
 ---------------------------------------------------------- btn onclick functions ----------------------------------------------
 
@@ -39,17 +40,17 @@ end
 ------------------------------------- modules -----------------------------------------
 local M = {}
 
-M.NvimTreeOverlay = function()
+M.treeOffset = function()
   return "%#NvimTreeNormal#" .. strep(" ", getNvimTreeWidth())
 end
 
-M.bufferlist = function()
+M.buffers = function()
   local buffers = {}
   local available_space = vim.o.columns - getNvimTreeWidth()
   local has_current = false -- have we seen current buffer yet?
 
   for i, nr in ipairs(vim.t.bufs) do
-    if ((#buffers + 1) * 24) > available_space then
+    if ((#buffers + 1) * 23) > available_space then
       if has_current then
         break
       end
@@ -66,7 +67,7 @@ end
 
 g.TbTabsToggled = 0
 
-M.tablist = function()
+M.tabs = function()
   local result, tabs = "", fn.tabpagenr "$"
 
   if tabs > 1 then
@@ -85,19 +86,22 @@ M.tablist = function()
   return ""
 end
 
-M.buttons = function()
+M.btns = function()
   local toggle_theme = btn(g.toggle_theme_icon, "ThemeToggleBtn", "Toggle_theme")
   local closeAllBufs = btn(" 󰅖 ", "CloseAllBufsBtn", "CloseAllBufs")
   return toggle_theme .. closeAllBufs
 end
 
 return function()
-  local modules = {
-    M.NvimTreeOverlay(),
-    M.bufferlist(),
-    M.tablist(),
-    M.buttons(),
-  }
+  local result = {}
 
-  return table.concat(modules)
+  for key, value in pairs(config.modules) do
+    M[key] = value
+  end
+
+  for _, v in ipairs(config.order) do
+    table.insert(result, M[v]())
+  end
+
+  return table.concat(result)
 end

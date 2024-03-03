@@ -18,10 +18,8 @@ M.generate = function(theme, modules)
   local order = config.order or orders[theme]
   local result = {}
 
-  if config.modules then
-    for key, value in pairs(config.modules) do
-      modules[key] = value
-    end
+  for key, value in pairs(config.modules) do
+    modules[key] = value
   end
 
   for value in order:gmatch "%S+" do

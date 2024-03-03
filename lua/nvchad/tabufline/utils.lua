@@ -41,6 +41,7 @@ local function gen_unique_name(oldname, index)
 end
 
 M.style_buf = function(nr, i)
+  -- add fileicon + name
   local icon = "󰈚"
   local is_curbuf = cur_buf() == nr
   local tbHlName = "BufO" .. (is_curbuf and "n" or "ff")
