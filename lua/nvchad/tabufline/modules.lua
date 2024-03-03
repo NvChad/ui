@@ -40,17 +40,29 @@ end
 ------------------------------------- modules -----------------------------------------
 local M = {}
 
+local function available_space()
+  local str = ""
+
+  for key, value in pairs(M) do
+    if key ~= "buffers" then
+      str = str .. value()
+    end
+  end
+
+  local modules = api.nvim_eval_statusline(str, { use_tabline = true })
+  return vim.o.columns - modules.width
+end
+
 M.treeOffset = function()
   return "%#NvimTreeNormal#" .. strep(" ", getNvimTreeWidth())
 end
 
 M.buffers = function()
   local buffers = {}
-  local available_space = vim.o.columns - getNvimTreeWidth()
   local has_current = false -- have we seen current buffer yet?
 
   for i, nr in ipairs(vim.t.bufs) do
-    if ((#buffers + 1) * 23) > available_space then
+    if ((#buffers + 1) * 23) > available_space() then
       if has_current then
         break
       end
