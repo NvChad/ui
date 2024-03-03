@@ -58,7 +58,7 @@ M.bufferlist = function()
     end
 
     has_current = cur_buf() == buf.nr
-    table.insert(buffers, style_buf(buf))
+    table.insert(buffers, buf.ui)
   end
 
   return table.concat(buffers) .. txt("%=", "Fill") -- buffers + empty space

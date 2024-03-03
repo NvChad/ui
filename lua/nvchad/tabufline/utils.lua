@@ -1,7 +1,7 @@
 local M = {}
 local api = vim.api
 local fn = vim.fn
-
+local buf_opt = api.nvim_buf_get_option
 local strep = string.rep
 local cur_buf = api.nvim_get_current_buf
 
@@ -20,13 +20,6 @@ end
 local btn = M.btn
 local txt = M.txt
 
-M.buf_info = function(nr)
-  local name = api.nvim_buf_get_name(nr)
-  name = name:match "([^/\\]+)[/\\]*$"
-  name = (name == "" or not name) and " No Name " or name
-  return { nr = nr, name = name }
-end
-
 local function new_hl(group1, group2)
   local fg = fn.synIDattr(fn.synIDtrans(fn.hlID(group1)), "fg#")
   local bg = fn.synIDattr(fn.synIDtrans(fn.hlID("Tb" .. group2)), "bg#")
@@ -34,10 +27,11 @@ local function new_hl(group1, group2)
   return "%#" .. group1 .. group2 .. "#"
 end
 
-local function add_file_info(name, nr)
+M.style_buf = function(buf)
   local icon = "󰈚"
-  local tbHlName = "BufO" .. (cur_buf() == nr and "n" or "ff")
+  local tbHlName = "BufO" .. (buf.cur and "n" or "ff")
   local icon_hl = new_hl("DevIconDefault", tbHlName)
+  local name = buf.name
 
   if name ~= " No Name " then
     local devicon, devicon_hl = require("nvim-web-devicons").get_icon(name)
@@ -56,23 +50,38 @@ local function add_file_info(name, nr)
   name = string.sub(name, 1, 13) .. (#name > maxname_len and ".." or "")
   name = M.txt(" " .. name, tbHlName)
 
-  return strep(" ", pad) .. (icon_hl .. icon .. name) .. strep(" ", pad - 1)
-end
+  name = strep(" ", pad) .. (icon_hl .. icon .. name) .. strep(" ", pad - 1)
 
-M.style_buf = function(buf)
   local close_btn = btn(" 󰅖 ", nil, "TbKillBuf", buf.nr)
-  local name = btn(add_file_info(buf.name, buf.nr), nil, "GoToBuf", buf.nr)
+  name = btn(name, nil, "GoToBuf", buf.nr)
 
   -- color close btn for focused / hidden  buffers
-  if cur_buf() == buf.nr then
-    close_btn = vim.bo[0].modified and txt("  ", "BufOnModified") or txt(close_btn, "BufOnClose")
+  if buf.cur then
+    close_btn = buf.modified and txt("  ", "BufOnModified") or txt(close_btn, "BufOnClose")
     name = txt(name .. close_btn, "BufOn")
   else
-    close_btn = vim.bo[buf.nr].modified and txt("  ", "BufOffModified") or txt(close_btn, "BufOffClose")
+    close_btn = buf.modified and txt("  ", "BufOffModified") or txt(close_btn, "BufOffClose")
     name = txt(name .. close_btn, "BufOff")
   end
 
   return name
+end
+
+M.buf_info = function(nr)
+  local name = api.nvim_buf_get_name(nr)
+  name = name:match "([^/\\]+)[/\\]*$"
+  name = (name == "" or not name) and " No Name " or name
+
+  local buf = {
+    nr = nr,
+    name = name,
+    cur = cur_buf() == nr,
+    modified = buf_opt(nr, "modified"),
+  }
+
+  buf.ui = M.style_buf(buf)
+
+  return buf
 end
 
 return M

@@ -21,6 +21,10 @@ vim.api.nvim_create_autocmd({ "BufAdd", "BufEnter", "tabnew" }, {
 
     if args.event == "BufAdd" and buf_opt(args.buf, "buflisted") then
       table.insert(bufs, utils.buf_info(args.buf))
+    else
+      for i, v in ipairs(bufs) do
+        bufs[i] = utils.buf_info(v.nr)
+      end
     end
 
     vim.t.bufs = bufs
