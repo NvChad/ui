@@ -10,20 +10,22 @@ M.is_activewin = function()
 end
 
 local orders = {
-  default = "mode file git %= lsp_msg %= diagnostics lsp cwd cursor",
-  vscode = "mode file git %= lsp_msg %= diagnostics cursor lsp cwd",
+  default = { "mode", "file", "git", "%=", "lsp_msg", "%=", "diagnostics", "lsp", "cwd", "cursor" },
+  vscode = { "mode", "file", "git", "%=", "lsp_msg", "%=", "diagnostics", "lsp", "cursor", "lsp", "cwd" },
 }
 
 M.generate = function(theme, modules)
   local order = config.order or orders[theme]
   local result = {}
 
-  for key, value in pairs(config.modules) do
-    modules[key] = value
+  if config.modules then
+    for key, value in pairs(config.modules) do
+      modules[key] = value
+    end
   end
 
-  for value in order:gmatch "%S+" do
-    local module = modules[value]
+  for _, v in ipairs(order) do
+    local module = modules[v]
     module = type(module) == "string" and module or module()
     table.insert(result, module)
   end

@@ -107,8 +107,10 @@ end
 return function()
   local result = {}
 
-  for key, value in pairs(config.modules) do
-    M[key] = value
+  if config.modules then
+    for key, value in pairs(config.modules) do
+      M[key] = value
+    end
   end
 
   for _, v in ipairs(config.order) do
