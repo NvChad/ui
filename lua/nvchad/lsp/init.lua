@@ -17,7 +17,7 @@ vim.diagnostic.config {
   update_in_insert = false,
 }
 
---  LspInfo winodw borders
+--  LspInfo window borders
 local win = require "lspconfig.ui.windows"
 local _default_opts = win.default_opts
 
