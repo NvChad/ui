@@ -19,9 +19,10 @@ vim.g.nvvterm = false
 
 -------------------------- util funcs -----------------------------
 M.resize = function(opts)
-  local val = pos_data[opts.pos]
-  local size = vim.o[val.area] * config.sizes[opts.pos]
-  api["nvim_win_set_" .. val.resize](0, math.floor(size))
+  local type = pos_data[opts.pos]
+  local size = opts.size and  opts.size or config.sizes[opts.pos]
+  local new_size = vim.o[type.area] * size
+  api["nvim_win_set_" .. type.resize](0, math.floor(new_size))
 end
 
 M.prettify = function(winnr, bufnr, hl)
@@ -142,16 +143,6 @@ M.refresh_cmd = function(opts)
     local job_id = vim.b[x.bufnr].terminal_job_id
     vim.api.nvim_chan_send(job_id, "clear; " .. opts.cmd .. " \n")
   end
-end
-
--- autoinsert when entering term buffers
-if config.behavior.auto_insert then
-  vim.api.nvim_create_autocmd({ "BufEnter" }, {
-    pattern = "term://*",
-    callback = function()
-      vim.cmd "startinsert"
-    end,
-  })
 end
 
 return M
