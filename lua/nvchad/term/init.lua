@@ -20,7 +20,7 @@ vim.g.nvvterm = false
 -------------------------- util funcs -----------------------------
 M.resize = function(opts)
   local type = pos_data[opts.pos]
-  local size = opts.size and  opts.size or config.sizes[opts.pos]
+  local size = opts.size and opts.size or config.sizes[opts.pos]
   local new_size = vim.o[type.area] * size
   api["nvim_win_set_" .. type.resize](0, math.floor(new_size))
 end
@@ -51,8 +51,7 @@ M.save_term_info = function(opts, bufnr)
 end
 
 M.create_float = function(buffer, float_opts)
-  local opts = vim.tbl_deep_extend("force", {}, config.float)
-  opts = vim.tbl_deep_extend("force", opts, float_opts or {})
+  local opts = vim.tbl_deep_extend("force", config.float, float_opts or {})
 
   opts.width = math.ceil(opts.width * vim.o.columns)
   opts.height = math.ceil(opts.height * vim.o.lines)
@@ -95,22 +94,19 @@ M.new = function(opts, existing_buf, toggleStatus)
   local shell = vim.o.shell
   local cmd = shell
 
-  if opts.cmd and (not opts.id or toggleStatus == "notToggle") then
+  if opts.cmd and (toggleStatus == "notToggle") then
     cmd = { shell, "-c", opts.cmd .. "; " .. shell }
   end
 
   M.save_term_info(opts, buf)
 
   -- use termopen only for non toggled terms
-  if (not opts.id) or (toggleStatus == "notToggle") then
+  if toggleStatus == "notToggle" then
     vim.fn.termopen(cmd)
   end
 
-  if opts.pos == "sp" then
-    vim.g.nvhterm = true
-  elseif opts.pos == "vsp" then
-    vim.g.nvvterm = true
-  end
+  vim.g.nvhterm = opts.pos == "sp"
+  vim.g.nvvterm = opts.pos == "vsp"
 end
 
 M.toggle = function(opts)
@@ -126,22 +122,31 @@ M.toggle = function(opts)
 end
 
 -- spawns term with *cmd & runs the *cmd if the keybind is run again
-M.refresh_cmd = function(opts)
-  if not opts.cmd then
-    print "cmd opt is needed!"
-    return
-  end
-
+M.runner = function(opts)
   local x = g.nvchad_terms[opts.id]
 
   if x == nil then
-    M.new(opts, nil, true)
-  elseif vim.fn.bufwinid(x.bufnr) == -1 then
-    M.new(opts, x.bufnr)
-    -- ensure that the buf is displayed on a window i.e visible to neovim!
+    M.new(opts, nil, "notToggle")
+
+    -- if window is visible
   elseif vim.fn.bufwinid(x.bufnr) ~= -1 then
     local job_id = vim.b[x.bufnr].terminal_job_id
     vim.api.nvim_chan_send(job_id, "clear; " .. opts.cmd .. " \n")
+
+    -- if window is not visible
+  elseif vim.fn.bufwinid(x.bufnr) == -1 then
+    -- if term window is closed by bd or killed
+    if not api.nvim_buf_is_valid(x.bufnr) then
+      -- delete that bufnr val
+      local termbufs = g.nvchad_terms
+      termbufs[x.bufnr] = nil
+      g.nvchad_terms = termbufs
+
+      M.new(opts, nil, "notToggle")
+      return
+    end
+
+    M.new(opts, x.bufnr)
   end
 end
 
