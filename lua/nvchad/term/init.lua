@@ -67,6 +67,8 @@ end
 
 ------------------------- user api -------------------------------
 M.new = function(opts, existing_buf, toggleStatus)
+  toggleStatus = toggleStatus or "notToggle"
+
   local buf = existing_buf or vim.api.nvim_create_buf(false, true)
 
   local isFloat = opts.pos == "float"
