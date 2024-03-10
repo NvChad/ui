@@ -130,7 +130,9 @@ M.toggle = function(opts)
 end
 
 -- spawns term with *cmd & runs the *cmd if the keybind is run again
-M.runner = function(opts)
+M.runner = function(opts, clear_cmd)
+  clear_cmd = clear_cmd or "clear; "
+
   local x = g.nvchad_terms[opts.id]
 
   if x == nil then
@@ -139,7 +141,7 @@ M.runner = function(opts)
     -- if window is visible
   elseif vim.fn.bufwinid(x.bufnr) ~= -1 then
     local job_id = vim.b[x.bufnr].terminal_job_id
-    vim.api.nvim_chan_send(job_id, "clear; " .. handle_cmd(opts.cmd) .. " \n")
+    vim.api.nvim_chan_send(job_id, clear_cmd .. handle_cmd(opts.cmd) .. " \n")
 
     -- if window is not visible
   elseif vim.fn.bufwinid(x.bufnr) == -1 then
