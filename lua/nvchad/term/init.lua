@@ -65,11 +65,8 @@ local function handle_cmd(cmd)
   return type(cmd) == "string" and cmd or cmd()
 end
 
-------------------------- user api -------------------------------
-M.new = function(opts, existing_buf, toggleStatus)
-  toggleStatus = toggleStatus or "notToggle"
-
-  local buf = existing_buf or vim.api.nvim_create_buf(false, true)
+local function create(opts, buf, toggleStatus)
+  buf = buf or vim.api.nvim_create_buf(false, true)
 
   local isFloat = opts.pos == "float"
 
@@ -115,13 +112,18 @@ M.new = function(opts, existing_buf, toggleStatus)
   vim.g.nvvterm = opts.pos == "vsp"
 end
 
+------------------------- user api -------------------------------
+M.new = function(opts)
+  create(opts, nil, "notToggle")
+end
+
 M.toggle = function(opts)
   local x = g.nvchad_terms[opts.id]
 
   if x == nil or not api.nvim_buf_is_valid(x.bufnr) then
-    M.new(opts, nil, "notToggle")
+    create(opts, nil, "notToggle")
   elseif vim.fn.bufwinid(x.bufnr) == -1 then
-    M.new(opts, x.bufnr, "isToggle")
+    create(opts, x.bufnr, "isToggle")
   else
     api.nvim_win_close(x.win, true)
   end
@@ -132,7 +134,7 @@ M.runner = function(opts)
   local x = g.nvchad_terms[opts.id]
 
   if x == nil then
-    M.new(opts, nil, "notToggle")
+    create(opts, nil, "notToggle")
 
     -- if window is visible
   elseif vim.fn.bufwinid(x.bufnr) ~= -1 then
@@ -148,11 +150,11 @@ M.runner = function(opts)
       termbufs[x.bufnr] = nil
       g.nvchad_terms = termbufs
 
-      M.new(opts, nil, "notToggle")
+      create(opts, nil, "notToggle")
       return
     end
 
-    M.new(opts, x.bufnr)
+    create(opts, x.bufnr)
   end
 end
 
