@@ -71,7 +71,7 @@ M.style_buf = function(nr, i)
 
   name = strep(" ", pad) .. (icon_hl .. icon .. name) .. strep(" ", pad - 1)
 
-  local close_btn = btn(" 󰅖 ", nil, "TbKillBuf", nr)
+  local close_btn = btn(" 󰅖 ", nil, "KillBuf", nr)
   name = btn(name, nil, "GoToBuf", nr)
 
   -- modified bufs icon or close icon
