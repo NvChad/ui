@@ -3,10 +3,10 @@ local fn = vim.fn
 
 M.list_themes = function()
   local default_themes = vim.fn.readdir(vim.fn.stdpath "data" .. "/lazy/base46/lua/base46/themes")
-  local custom_themes = vim.loop.fs_stat(fn.stdpath "config" .. "/lua/custom/themes")
+  local custom_themes = vim.loop.fs_stat(fn.stdpath "config" .. "/lua/themes")
 
   if custom_themes and custom_themes.type == "directory" then
-    local themes_tb = fn.readdir(fn.stdpath "config" .. "/lua/custom/themes")
+    local themes_tb = fn.readdir(fn.stdpath "config" .. "/lua/themes")
     for _, value in ipairs(themes_tb) do
       table.insert(default_themes, value)
     end
