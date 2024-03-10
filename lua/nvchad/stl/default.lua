@@ -52,7 +52,7 @@ end
 
 M.cwd = function()
   local icon = "%#St_cwd_icon#" .. "󰉋 "
-  local name = "%#St_cwd_text#" .. " " .. vim.loop.cwd():match ".+/(.-)$" .. " "
+  local name = "%#St_cwd_text#" .. " " .. vim.loop.cwd():match ".+[\\/](.-)$" .. " "
   return (vim.o.columns > 85 and ("%#St_cwd_sep#" .. sep_l .. icon .. name)) or ""
 end
 
