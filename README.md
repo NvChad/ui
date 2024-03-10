@@ -4,13 +4,14 @@ Lightweight &amp; performant ui plugin for nvchad providing the following :
 - Tabufline ( manages buffers per tab ) 
 - NvDash ( dashboard ) 
 - NvCheatsheet ( auto-generates cheatsheet based on default & user mappings in nice grid (Masonry layout) / column layout )
-- basic Lsp signature 
+- Basic Lsp signature 
 - Lsp renamer window
+- Term module ( toggle, spawn, code runner etc )
 
 # Default config 
 
 - Refer [NvChad docs](https://nvchad.com/docs/config/nvchad_ui) for detailed info
-- Or check the `core/default_config.lua` file in your nvchad config for quick info.
+- Also check the [nvconfig.lua](https://github.com/NvChad/NvChad/blob/v2.5/lua/nvconfig.lua)
 
 # Credits
 
