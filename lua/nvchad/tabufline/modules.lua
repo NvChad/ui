@@ -70,7 +70,7 @@ M.buffers = function()
       table.remove(buffers, 1)
     end
 
-    has_current = cur_buf() == nr
+    has_current = cur_buf() == nr or has_current
     table.insert(buffers, style_buf(nr, i))
   end
 
