@@ -35,7 +35,10 @@ M.get_mappings = function(mappings, tb_to_add)
 
     desc = v.desc:match "%s(.+)" -- remove first word from desc
 
-    table.insert(tb_to_add[heading], { desc, keybind })
+    -- dont include desc which have \n
+    if not string.find(desc, "\n") then
+      table.insert(tb_to_add[heading], { desc, keybind })
+    end
 
     ::continue::
   end
@@ -54,7 +57,7 @@ M.organize_mappings = function(tb_to_add)
 
   -- remove groups which have only 1 mapping
   for key, x in pairs(tb_to_add) do
-    if(#x <=1) then
+    if #x <= 1 then
       tb_to_add[key] = nil
     end
   end
