@@ -124,7 +124,7 @@ M.move_buf = function(n)
   local bufs = vim.t.bufs
 
   for i, bufnr in ipairs(bufs) do
-    if bufnr == vim.cur_buf() then
+    if bufnr == cur_buf() then
       if n < 0 and i == 1 or n > 0 and i == #bufs then
         bufs[1], bufs[#bufs] = bufs[#bufs], bufs[1]
       else
