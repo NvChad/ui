@@ -18,36 +18,18 @@ vim.g.nvhterm = false
 vim.g.nvvterm = false
 
 -------------------------- util funcs -----------------------------
-local function resize(opts)
-  local type = pos_data[opts.pos]
-  local size = opts.size and opts.size or config.sizes[opts.pos]
-  local new_size = vim.o[type.area] * size
-  api["nvim_win_set_" .. type.resize](0, math.floor(new_size))
-end
-
-local function prettify(winnr, bufnr, hl)
-  vim.wo[winnr].number = false
-  vim.wo[winnr].relativenumber = false
-  vim.wo[winnr].foldcolumn = "0"
-  vim.wo[winnr].signcolumn = "no"
-  vim.bo[bufnr].buflisted = false
-
-  -- custom highlight
-  vim.wo[winnr].winhl = hl or config.hl
-  vim.cmd "startinsert"
-end
-
-local function save_term_info(opts, bufnr)
+local function save_term_info(index, val)
   local terms_list = g.nvchad_terms
-  terms_list[tostring(bufnr)] = opts
-
-  -- store ids for toggledterms instead of bufnr
-  if opts.id then
-    opts.bufnr = bufnr
-    terms_list[opts.id] = opts
-  end
-
+  terms_list[tostring(index)] = val
   g.nvchad_terms = terms_list
+end
+
+local function opts_to_id(id)
+  for _, opts in pairs(g.nvchad_terms) do
+    if opts.id == id then
+      return opts
+    end
+  end
 end
 
 local function create_float(buffer, float_opts)
@@ -61,18 +43,13 @@ local function create_float(buffer, float_opts)
   vim.api.nvim_open_win(buffer, true, opts)
 end
 
-local function handle_cmd(cmd)
+local function format_cmd(cmd)
   return type(cmd) == "string" and cmd or cmd()
 end
 
-local function create(opts, buf, toggleStatus)
-  buf = buf or vim.api.nvim_create_buf(false, true)
-
-  local isFloat = opts.pos == "float"
-
-  -- create window
-  if isFloat then
-    create_float(buf, opts.float_opts)
+local function display(opts)
+  if opts.pos == "float" then
+    create_float(opts.buf, opts.float_opts)
   else
     vim.cmd(opts.pos)
   end
@@ -80,31 +57,42 @@ local function create(opts, buf, toggleStatus)
   local win = api.nvim_get_current_win()
   opts.win = win
 
-  prettify(win, buf, opts.hl)
+  vim.wo[win].number = false
+  vim.wo[win].relativenumber = false
+  vim.wo[win].foldcolumn = "0"
+  vim.wo[win].signcolumn = "no"
+  vim.bo[opts.buf].buflisted = false
+  vim.wo[win].winhl = opts.hl or config.hl
+  vim.cmd "startinsert"
 
   -- resize non floating wins initially + or only when they're toggleable
-  if
-    (opts.pos == "sp" and not vim.g.nvhterm)
-    or (opts.pos == "vsp" and not vim.g.nvvterm)
-    or (toggleStatus and opts.pos ~= "float")
-  then
-    resize(opts)
+  if (opts.pos == "sp" and not vim.g.nvhterm) or (opts.pos == "vsp" and not vim.g.nvvterm) or (opts.pos ~= "float") then
+    local pos_type = pos_data[opts.pos]
+    local size = opts.size and opts.size or config.sizes[opts.pos]
+    local new_size = vim.o[pos_type.area] * size
+    api["nvim_win_set_" .. pos_type.resize](0, math.floor(new_size))
   end
 
-  api.nvim_win_set_buf(win, buf)
+  api.nvim_win_set_buf(win, opts.buf)
+end
+
+local function create(opts)
+  local buf_exists = opts.buf
+  opts.buf = opts.buf or vim.api.nvim_create_buf(false, true)
+
+  display(opts)
 
   -- handle cmd opt
   local shell = vim.o.shell
   local cmd = shell
 
-  if opts.cmd and (toggleStatus == "notToggle") then
-    cmd = { shell, "-c", handle_cmd(opts.cmd) .. "; " .. shell }
+  if opts.cmd and opts.buf then
+    cmd = { shell, "-c", format_cmd(opts.cmd) .. "; " .. shell }
   end
 
-  save_term_info(opts, buf)
+  save_term_info(opts.buf, opts)
 
-  -- use termopen only for non toggled terms
-  if toggleStatus == "notToggle" then
+  if not buf_exists then
     vim.fn.termopen(cmd)
   end
 
@@ -112,52 +100,42 @@ local function create(opts, buf, toggleStatus)
   vim.g.nvvterm = opts.pos == "vsp"
 end
 
-------------------------- user api -------------------------------
+--------------------------- user api -------------------------------
 M.new = function(opts)
-  create(opts, nil, "notToggle")
+  create(opts)
 end
 
 M.toggle = function(opts)
-  local x = g.nvchad_terms[opts.id]
+  local x = opts_to_id(opts.id)
+  opts.buf = x and x.buf or nil
 
-  if x == nil or not api.nvim_buf_is_valid(x.bufnr) then
-    create(opts, nil, "notToggle")
-  elseif vim.fn.bufwinid(x.bufnr) == -1 then
-    create(opts, x.bufnr, "isToggle")
+  if (x == nil or not api.nvim_buf_is_valid(x.buf)) or vim.fn.bufwinid(x.buf) == -1 then
+    create(opts)
   else
     api.nvim_win_close(x.win, true)
   end
 end
 
 -- spawns term with *cmd & runs the *cmd if the keybind is run again
-M.runner = function(opts, clear_cmd)
-  clear_cmd = clear_cmd or "clear; "
+M.runner = function(opts)
+  local x = opts_to_id(opts.id)
+  local clear_cmd = opts.clear_cmd or "clear; "
+  opts.buf = x and x.buf or nil
 
-  local x = g.nvchad_terms[opts.id]
-
-  if x == nil then
-    create(opts, nil, "notToggle")
-
-    -- if window is visible
-  elseif vim.fn.bufwinid(x.bufnr) ~= -1 then
-    local job_id = vim.b[x.bufnr].terminal_job_id
-    vim.api.nvim_chan_send(job_id, clear_cmd .. handle_cmd(opts.cmd) .. " \n")
-
-    -- if window is not visible
-  elseif vim.fn.bufwinid(x.bufnr) == -1 then
-    -- if term window is closed by bd or killed
-    if not api.nvim_buf_is_valid(x.bufnr) then
-      -- delete that bufnr val
-      local termbufs = g.nvchad_terms
-      termbufs[x.bufnr] = nil
-      g.nvchad_terms = termbufs
-
-      create(opts, nil, "notToggle")
-      return
-    end
-
-    create(opts, x.bufnr)
+  -- if buf doesnt exist or window isnt visible
+  if x == nil or vim.fn.bufwinid(x.buf) == -1 then
+    create(opts)
+  else
+    local job_id = vim.b[x.buf].terminal_job_id
+    vim.api.nvim_chan_send(job_id, clear_cmd .. format_cmd(opts.cmd) .. " \n")
   end
 end
+
+--------------------------- autocmds -------------------------------
+api.nvim_create_autocmd("TermClose", {
+  callback = function(args)
+    save_term_info(args.buf, nil)
+  end,
+})
 
 return M
