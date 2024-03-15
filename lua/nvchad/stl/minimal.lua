@@ -59,7 +59,7 @@ M.lsp = function()
 end
 
 M.cwd = function()
-  local name = vim.loop.cwd():match ".+[\\/](.-)$"
+  local name = vim.loop.cwd():match "([^/\\]+)[/\\]*$"
   return gen_block("", name, "%#St_cwd_sep#", "%#St_cwd_bg#", "%#St_cwd_txt#")
 end
 
