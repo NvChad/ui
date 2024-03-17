@@ -8,6 +8,10 @@
 --- Lazy.nvim setup opts
 --- Check `:h lazy.nvim-configuration` for the exact options
 ---@field lazy_nvim? LazyConfig
+---@field base46? Base46Config
+
+---@class Base46Config
+---@field integrations? ExtendedModules[]
 
 --- UI related configuration
 --- e.g. colorschemes, statusline themes, cmp themes, dashboard, some LSP ui related
@@ -57,7 +61,6 @@
 --- Whether to enable LSP Semantic Tokens highlighting
 ---@field lsp_semantic_tokens? boolean
 --- List of extras themes for other plugins not in NvChad that you want to compile
----@field extended_integrations? ExtendedModules[]
 
 --- Options for stylings of nvim-cmp 
 ---@class NvCmpConfig
