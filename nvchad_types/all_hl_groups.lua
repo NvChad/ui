@@ -1,7 +1,7 @@
 ---@meta
 
 --- Don't edit or require this file
-error("Requring a meta file")
+error "Requring a meta file"
 
 ---@class HLGroups
 ---@field nvUpdaterTitleFAIL Base46HLGroups # highlight group for nvchad_updater
@@ -596,13 +596,29 @@ error("Requring a meta file")
 
 ---@alias ExtendedModules
 ---| "'alpha'"
+---| "'blankline'"
 ---| "'bufferline'"
+---| "'cmp'"
 ---| "'codeactionmenu'"
 ---| "'dap'"
+---| "'defaults'"
+---| "'devicons'"
 ---| "'hop'"
+---| "'lsp'"
 ---| "'lspsaga'"
+---| "'mason'"
 ---| "'navic'"
 ---| "'notify'"
+---| "'nvcheatsheet'"
+---| "'nvdash'"
+---| "'nvimtree'"
 ---| "'rainbowdelimiters'"
+---| "'semantic_tokens'"
+---| "'syntax'"
+---| "'tbline'"
+---| "'telescope'"
 ---| "'todo'"
+---| "'treesitter'"
 ---| "'trouble'"
+---| "'vim-illuminate'"
+---| "'whichkey'"
