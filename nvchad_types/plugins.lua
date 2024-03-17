@@ -2,7 +2,7 @@
 
 ---@alias PluginName string
 
----@class NvImportSpec: LazySpecImport
+---@class (exact) NvImportSpec: LazySpecImport
 --- Name of the module to be imported.
 --- It should be a string for `require()`, and it should return a table containing the plugin config
 --- If this field is inside a table, all other keys inside such table will not be used, except for `enabled`
@@ -31,8 +31,15 @@
 ---     keys = {
 ---       {"foo", "bar", desc = "Some keymaps", mode = {"n", "i"}}
 ---     }
+---     keys = function (_, keys)
+---       ---@type (string|LazyKeymaps)[]
+---       return {
+---         { "foo", mode = { "n", "i" } },
+---         "bar"
+---       }
+---     end
 --- ```
----@field keys? string|string[]|LazyKeymaps[]|fun(_:LazyPlugin, keys:string[]):(string|LazyKeymaps)[] 
+---@field keys? string|string[]|LazyKeymaps[]|fun(_:LazyPlugin, keys:string[]):((string|LazyKeymaps)[])
 --- Will be executed when this plugin is loaded. 
 --- - If `config` is `true`, then `require("plugin").setup(opts)` will be run.  
 --- - If a function, then `opts` argument will be the table from `opts` field
@@ -118,13 +125,8 @@
 ---@alias NvPluginSpec string|LazyPluginSpecExtra|NvImportSpec|NvPluginSpec[]
 
 ---Check `:h vim.keymap.set()` for more information
----@class LazyKeymaps
+---@class LazyKeymaps: LazyKeysBase
 ---@field [1] string lhs of the mapping. Must always exist
 ---@field [2]? string|fun()|false rhs. Can be a vimscript string or a Lua function
----@field desc? string
 ---@field mode? VimKeymapMode|VimKeymapMode[]
----@field noremap? boolean
----@field remap? boolean
----@field expr? boolean
 ---@field id? string
-
