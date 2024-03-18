@@ -30,7 +30,8 @@ M.cursor = "%#StText# Ln %l, Col %c "
 M["%="] = "%="
 
 M.cwd = function()
-  local name = "%#St_cwd# 󰉖 " .. vim.loop.cwd():match "([^/\\]+)[/\\]*$" .. " "
+  local cwd = vim.loop.cwd()
+  local name = "%#St_cwd# 󰉖 " .. (cwd:match "([^/\\]+)[/\\]*$" or cwd) .. " "
   return (vim.o.columns > 85 and name) or ""
 end
 
