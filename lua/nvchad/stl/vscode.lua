@@ -1,4 +1,3 @@
-local fn = vim.fn
 local utils = require "nvchad.stl.utils"
 
 local M = {}
@@ -28,8 +27,8 @@ M.cursor = "%#StText# Ln %l, Col %c  "
 M["%="] = "%="
 
 M.cwd = function()
-  local cwd = vim.loop.cwd()
-  local name = "%#st_mode# 󰉖 " .. (cwd:match "([^/\\]+)[/\\]*$" or cwd) .. " "
+  local name = vim.loop.cwd()
+  name = "%#st_mode# 󰉖 " .. (name:match "([^/\\]+)[/\\]*$" or name) .. " "
   return (vim.o.columns > 85 and name) or ""
 end
 
