@@ -62,7 +62,7 @@
 ---@field lsp_semantic_tokens? boolean
 --- List of extras themes for other plugins not in NvChad that you want to compile
 
---- Options for stylings of nvim-cmp 
+--- Options for stylings of nvim-cmp
 ---@class NvCmpConfig
 --- Whether to add colors to icons in nvim-cmp popup menu
 ---@field icons? boolean
@@ -85,10 +85,18 @@
 --- Separator style for NvChad Statusline
 ---     - Only when the *theme* is `minimal`, "round" or "block" will be having effect
 ---@field separator_style? '"default"'|'"round"'|'"block"'|'"arrow"'
---- Function that overirde the modules
---- Try to `vim.print(table.concat(modules))` to see what they are
---- Check https://github.com/NvChad/ui/tree/main/lua/nvchad/statusline for the modules of each statusline theme
----@field overriden_modules? fun(modules: table)
+--- The list of module names from default modules + your modules
+--- Check https://github.com/NvChad/ui/blob/v2.5/lua/nvchad/stl/utils.lua#L12 for the modules of each statusline theme
+---@field order? string[]
+--- Your modules to be added to the statusline
+--- ```lua
+--- modules = {
+---   abc = function()
+---       return "hi"
+---     end,
+--- }
+--- ```
+---@field moules? table<string, fun(): string>
 --- Maximum length for the progress messages section
 ---@field lspprogress_len? integer
 
@@ -99,15 +107,22 @@
 --- If false, load tabufline on startup
 --- If true, load tabufline when there is at least 2 buffers opened
 ---@field lazyload? boolean
---- Function that overirde the modules
---- Try to `vim.print(table.concat(modules))` to see what they are
---- Check https://github.com/NvChad/ui/blob/v2.0/lua/nvchad/tabufline/modules.lua for the list of modules
----@field overriden_modules? fun(modules: table)
+--- The order is a list of module names from default modules + your modules
+---@field order? ('"available_space"'|'"treeOffset"'|'"buffers"'|'"tabs"'|'"btns"')[] | string[]
 --- Show numbers on tabufline buffer tabs
---- @field show_numbers? boolean
+---@field show_numbers? boolean
+--- Your modules to be added to the tabufline
+--- ```lua
+--- modules = {
+---   abc = function()
+---       return "hi"
+---     end,
+--- }
+--- ```
+---@field modules? table<string, fun(): string>
 
 ---@class NvDashboardConfig
---- Whether to open dashboard on opening nvim 
+--- Whether to open dashboard on opening nvim
 ---@field load_on_startup? boolean
 --- Your ascii art
 --- Each string is one line
@@ -125,7 +140,7 @@
 ---@field [3] string|fun() A Vim Command/A Lua function to be triggered when pressing the keybind/pressing enter on the line with the description on the dashboard
 
 ---Options for NvChad/ui lsp configuration
----@class NvLspConfig 
+---@class NvLspConfig
 ---@field signature? boolean showing LSP function signatures as you type
 ---@field semantic_tokens? boolean Lsp semantic_tokens highlighting
 
@@ -164,7 +179,7 @@
 --- @field gitsigns?   KeymapsTable Keymaps for gitsigns.nvim
 
 --- List of keymaps that is part of `core/mappings.lua` that will be removed
----@class DisabledTable 
+---@class DisabledTable
 ---@field n?   table<string, '""'|false> Normal Mode keymaps to remove
 ---@field x?   table<string, '""'|false> Visual Mode keymaps to remove
 ---@field s?   table<string, '""'|false> Select Mode keymaps to remove
