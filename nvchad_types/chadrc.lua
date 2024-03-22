@@ -127,7 +127,7 @@
 --- Each string is one line
 ---@field header? string[],
 --- List of buttons to show on the dashboard
----@field buttons? NvDashButtonConfig[]
+---@field buttons? NvDashButtonConfig[] | function[]
 
 ---@class NvCheatsheetConfig
 --- Cheatsheet theme

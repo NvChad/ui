@@ -31,8 +31,6 @@ end
 
 M.open = function()
   local buttons = config.buttons
-  buttons = type(buttons) == "table" and buttons or buttons()
-
   local nvdashWidth = #headerAscii[1] + 3
 
   local max_height = #headerAscii + 4 + (2 * #buttons) -- 4  = extra spaces i.e top/bottom
@@ -71,7 +69,7 @@ M.open = function()
   end
 
   for _, val in ipairs(buttons) do
-    local str = type(val) ~= "table" and (type(val) == "string" and val or val()) or nil
+    local str = type(val) ~= "table" and val() or nil
     table.insert(dashboard, str or addSpacing_toBtns(val[1], val[2]) .. " ")
     table.insert(dashboard, header[1] .. " ")
   end
