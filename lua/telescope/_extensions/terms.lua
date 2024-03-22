@@ -11,41 +11,30 @@ local action_state = require "telescope.actions.state"
 
 local api = vim.api
 
-local function term_picker()
-  local get_bufnrs = function()
-    return vim.tbl_filter(function(bufnr)
-      return api.nvim_buf_get_option(bufnr, "buftype") == "terminal"
-    end, api.nvim_list_bufs())
+local function wrapper()
+  local term_bufs = vim.g.nvchad_terms or {}
+  local buffers = {}
+
+  for buf, _ in pairs(vim.g.nvchad_terms) do
+    buf = tonumber(buf)
+    local element = { bufnr = buf, flag = "", info = vim.fn.getbufinfo(buf)[1] }
+    table.insert(buffers, element)
   end
 
-  local get_buffers = function()
-    local buffers = {}
+  local bufnrs = vim.tbl_keys(term_bufs)
 
-    for _, bufnr in ipairs(get_bufnrs()) do
-      local flag = (bufnr == vim.fn.bufnr "" and "%") or (bufnr == vim.fn.bufnr "#" and "#" or " ")
-      local element = { bufnr = bufnr, flag = flag, info = vim.fn.getbufinfo(bufnr)[1] }
-
-      table.insert(buffers, element)
-    end
-
-    return buffers
-  end
-
-  if #get_bufnrs() == 0 then
+  if #bufnrs == 0 then
     print "no terminal buffers are opened/hidden!"
     return
   end
 
-  local opts = {}
-  local max_bufnr = math.max(unpack(get_bufnrs()))
-  opts.bufnr_width = #tostring(max_bufnr)
+  local opts = { bufnr_width = math.max(unpack(bufnrs)) }
 
-  -- our picker function: colors
   local picker = pickers.new {
     prompt_title = " Pick Term",
     previewer = conf.grep_previewer(opts),
     finder = finders.new_table {
-      results = get_buffers(),
+      results = buffers,
       entry_maker = make_entry.gen_from_buffer(opts),
     },
     sorter = conf.generic_sorter(),
@@ -69,5 +58,5 @@ local function term_picker()
 end
 
 return require("telescope").register_extension {
-  exports = { terms = term_picker },
+  exports = { terms = wrapper },
 }
