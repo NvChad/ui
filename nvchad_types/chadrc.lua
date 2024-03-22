@@ -2,7 +2,6 @@
 
 ---@class ChadrcConfig
 ---@field ui? UIConfig
----@field mappings? MappingsTable
 --- The module to be imported and merged with the default plugin settings
 ---@field plugins? string
 --- Lazy.nvim setup opts
@@ -62,7 +61,7 @@
 ---@field lsp_semantic_tokens? boolean
 --- List of extras themes for other plugins not in NvChad that you want to compile
 
---- Options for stylings of nvim-cmp 
+--- Options for stylings of nvim-cmp
 ---@class NvCmpConfig
 --- Whether to add colors to icons in nvim-cmp popup menu
 ---@field icons? boolean
@@ -85,10 +84,18 @@
 --- Separator style for NvChad Statusline
 ---     - Only when the *theme* is `minimal`, "round" or "block" will be having effect
 ---@field separator_style? '"default"'|'"round"'|'"block"'|'"arrow"'
---- Function that overirde the modules
---- Try to `vim.print(table.concat(modules))` to see what they are
---- Check https://github.com/NvChad/ui/tree/main/lua/nvchad/statusline for the modules of each statusline theme
----@field overriden_modules? fun(modules: table)
+--- The list of module names from default modules + your modules
+--- Check https://github.com/NvChad/ui/blob/v2.5/lua/nvchad/stl/utils.lua#L12 for the modules of each statusline theme
+---@field order? string[]
+--- Your modules to be added to the statusline
+--- ```lua
+---     modules = {
+---       abc = function()
+---           return "hi"
+---         end,
+---     }
+--- ```
+---@field modules? table<string, fun(): string>
 --- Maximum length for the progress messages section
 ---@field lspprogress_len? integer
 
@@ -99,15 +106,22 @@
 --- If false, load tabufline on startup
 --- If true, load tabufline when there is at least 2 buffers opened
 ---@field lazyload? boolean
---- Function that overirde the modules
---- Try to `vim.print(table.concat(modules))` to see what they are
---- Check https://github.com/NvChad/ui/blob/v2.0/lua/nvchad/tabufline/modules.lua for the list of modules
----@field overriden_modules? fun(modules: table)
+--- The order is a list of module names from default modules + your modules
+---@field order? ('"available_space"'|'"treeOffset"'|'"buffers"'|'"tabs"'|'"btns"')[] | string[]
 --- Show numbers on tabufline buffer tabs
---- @field show_numbers? boolean
+---@field show_numbers? boolean
+--- Your modules to be added to the tabufline
+--- ```lua
+---     modules = {
+---       abc = function()
+---           return "hi"
+---         end,
+---     }
+--- ```
+---@field modules? table<string, fun(): string>
 
 ---@class NvDashboardConfig
---- Whether to open dashboard on opening nvim 
+--- Whether to open dashboard on opening nvim
 ---@field load_on_startup? boolean
 --- Your ascii art
 --- Each string is one line
@@ -125,73 +139,6 @@
 ---@field [3] string|fun() A Vim Command/A Lua function to be triggered when pressing the keybind/pressing enter on the line with the description on the dashboard
 
 ---Options for NvChad/ui lsp configuration
----@class NvLspConfig 
+---@class NvLspConfig
 ---@field signature? boolean showing LSP function signatures as you type
 ---@field semantic_tokens? boolean Lsp semantic_tokens highlighting
-
---- A table of mappings
----     - `disabled` is used to define the keymaps that you don't want to keep
----     - Other keys are the list of default tables that is with NvChad
----     - You can define your custom table, such as the example below
---- ```lua
---- M.mappings = {
----   ["some table name"] = {
----     -- plugin = true, -- will make this table load only when you specify it to
----     ["some vim mode"] = {
----       ["some lhs"] = {
----         "rhs of a keymap", -- this must be here. This can also be a Lua function
----         "Description for the keymap",
----         opts = {}, -- Other opts for the keymaps
----       }
----     }
----   }
---- }
---- ```
---- see lua/core/mappings.lua for more information
----@alias MappingsTable DefaultMappingsTable | table<string, KeymapsTable>
-
---- @class DefaultMappingsTable
---- @field disabled?   DisabledTable Keymaps to be removed
---- @field general?    KeymapsTable Keymaps that will be load on startup
---- @field tabufline?  KeymapsTable Keymaps that will be load with NvChad's tabline
---- @field comment?    KeymapsTable Keymaps for Comment.nvim
---- @field lspconfig?  KeymapsTable Keymaps for nvim-lspconfig
---- @field nvimtree?   KeymapsTable Keymaps for nvim-tree.lua
---- @field telescope?  KeymapsTable Keymaps for telescope.nvim
---- @field nvterm?     KeymapsTable Keymaps for NvChad/nvterm
---- @field whichkey?   KeymapsTable Keymaps for which-key.nvim
---- @field blankline?  KeymapsTable Keymaps for indent-blankline.nvim
---- @field gitsigns?   KeymapsTable Keymaps for gitsigns.nvim
-
---- List of keymaps that is part of `core/mappings.lua` that will be removed
----@class DisabledTable 
----@field n?   table<string, '""'|false> Normal Mode keymaps to remove
----@field x?   table<string, '""'|false> Visual Mode keymaps to remove
----@field s?   table<string, '""'|false> Select Mode keymaps to remove
----@field v?   table<string, '""'|false> Visual + Select Mode keymaps to remove
----@field o?   table<string, '""'|false> Operator-Pending Mode keymaps to remove
----@field i?   table<string, '""'|false> Insert Mode keymaps to remove
----@field c?   table<string, '""'|false> Command-Line Mode keymaps to remove
----@field l?   table<string, '""'|false> Insert + Command-Line + Lang-Arg Mode keymaps to remove
----@field t?   table<string, '""'|false> Terminal Mode keymaps to remove
----@field ['"!"']? table<string, '""'|false> Insert + Command-Line Mode keymaps to remove
----@field ['""']?  table<string, '""'|false> Normal, Visual and Operating-Pending Mode keymaps to remove
-
----@class KeymapsTable
----@field plugin? boolean Whether this whole table will be loaded on startup or not
----@field n?   table<string, KeymapConfig> Normal Mode keymaps
----@field x?   table<string, KeymapConfig> Visual Mode keymaps
----@field s?   table<string, KeymapConfig> Select Mode keymaps
----@field v?   table<string, KeymapConfig> Visual + Select Mode keymaps
----@field o?   table<string, KeymapConfig> Operator-Pending Mode keymaps
----@field i?   table<string, KeymapConfig> Insert Mode keymaps
----@field c?   table<string, KeymapConfig> Command-Line Mode keymaps
----@field l?   table<string, KeymapConfig> Insert + Command-Line + Lang-Arg Mode keymaps
----@field t?   table<string, KeymapConfig> Terminal Mode keymaps
----@field ['"!"']? table<string, KeymapConfig> Insert + Command-Line Mode keymaps
----@field ['""']? table<string, KeymapConfig> Normal, Visual and Operating-Pending Mode keymaps
-
----@class KeymapConfig
----@field [1] string|fun() A Vimscript string or a Lua function. `rhs` of the keymap
----@field [2] string Description for the keymap
----@field opts? NvKeymapOpts? List of additional options for the keymap
