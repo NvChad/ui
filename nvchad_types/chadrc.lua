@@ -2,7 +2,6 @@
 
 ---@class ChadrcConfig
 ---@field ui? UIConfig
----@field mappings? MappingsTable
 --- The module to be imported and merged with the default plugin settings
 ---@field plugins? string
 --- Lazy.nvim setup opts
@@ -90,13 +89,13 @@
 ---@field order? string[]
 --- Your modules to be added to the statusline
 --- ```lua
---- modules = {
----   abc = function()
----       return "hi"
----     end,
---- }
+---     modules = {
+---       abc = function()
+---           return "hi"
+---         end,
+---     }
 --- ```
----@field moules? table<string, fun(): string>
+---@field modules? table<string, fun(): string>
 --- Maximum length for the progress messages section
 ---@field lspprogress_len? integer
 
@@ -113,11 +112,11 @@
 ---@field show_numbers? boolean
 --- Your modules to be added to the tabufline
 --- ```lua
---- modules = {
----   abc = function()
----       return "hi"
----     end,
---- }
+---     modules = {
+---       abc = function()
+---           return "hi"
+---         end,
+---     }
 --- ```
 ---@field modules? table<string, fun(): string>
 
@@ -143,70 +142,3 @@
 ---@class NvLspConfig
 ---@field signature? boolean showing LSP function signatures as you type
 ---@field semantic_tokens? boolean Lsp semantic_tokens highlighting
-
---- A table of mappings
----     - `disabled` is used to define the keymaps that you don't want to keep
----     - Other keys are the list of default tables that is with NvChad
----     - You can define your custom table, such as the example below
---- ```lua
---- M.mappings = {
----   ["some table name"] = {
----     -- plugin = true, -- will make this table load only when you specify it to
----     ["some vim mode"] = {
----       ["some lhs"] = {
----         "rhs of a keymap", -- this must be here. This can also be a Lua function
----         "Description for the keymap",
----         opts = {}, -- Other opts for the keymaps
----       }
----     }
----   }
---- }
---- ```
---- see lua/core/mappings.lua for more information
----@alias MappingsTable DefaultMappingsTable | table<string, KeymapsTable>
-
---- @class DefaultMappingsTable
---- @field disabled?   DisabledTable Keymaps to be removed
---- @field general?    KeymapsTable Keymaps that will be load on startup
---- @field tabufline?  KeymapsTable Keymaps that will be load with NvChad's tabline
---- @field comment?    KeymapsTable Keymaps for Comment.nvim
---- @field lspconfig?  KeymapsTable Keymaps for nvim-lspconfig
---- @field nvimtree?   KeymapsTable Keymaps for nvim-tree.lua
---- @field telescope?  KeymapsTable Keymaps for telescope.nvim
---- @field nvterm?     KeymapsTable Keymaps for NvChad/nvterm
---- @field whichkey?   KeymapsTable Keymaps for which-key.nvim
---- @field blankline?  KeymapsTable Keymaps for indent-blankline.nvim
---- @field gitsigns?   KeymapsTable Keymaps for gitsigns.nvim
-
---- List of keymaps that is part of `core/mappings.lua` that will be removed
----@class DisabledTable
----@field n?   table<string, '""'|false> Normal Mode keymaps to remove
----@field x?   table<string, '""'|false> Visual Mode keymaps to remove
----@field s?   table<string, '""'|false> Select Mode keymaps to remove
----@field v?   table<string, '""'|false> Visual + Select Mode keymaps to remove
----@field o?   table<string, '""'|false> Operator-Pending Mode keymaps to remove
----@field i?   table<string, '""'|false> Insert Mode keymaps to remove
----@field c?   table<string, '""'|false> Command-Line Mode keymaps to remove
----@field l?   table<string, '""'|false> Insert + Command-Line + Lang-Arg Mode keymaps to remove
----@field t?   table<string, '""'|false> Terminal Mode keymaps to remove
----@field ['"!"']? table<string, '""'|false> Insert + Command-Line Mode keymaps to remove
----@field ['""']?  table<string, '""'|false> Normal, Visual and Operating-Pending Mode keymaps to remove
-
----@class KeymapsTable
----@field plugin? boolean Whether this whole table will be loaded on startup or not
----@field n?   table<string, KeymapConfig> Normal Mode keymaps
----@field x?   table<string, KeymapConfig> Visual Mode keymaps
----@field s?   table<string, KeymapConfig> Select Mode keymaps
----@field v?   table<string, KeymapConfig> Visual + Select Mode keymaps
----@field o?   table<string, KeymapConfig> Operator-Pending Mode keymaps
----@field i?   table<string, KeymapConfig> Insert Mode keymaps
----@field c?   table<string, KeymapConfig> Command-Line Mode keymaps
----@field l?   table<string, KeymapConfig> Insert + Command-Line + Lang-Arg Mode keymaps
----@field t?   table<string, KeymapConfig> Terminal Mode keymaps
----@field ['"!"']? table<string, KeymapConfig> Insert + Command-Line Mode keymaps
----@field ['""']? table<string, KeymapConfig> Normal, Visual and Operating-Pending Mode keymaps
-
----@class KeymapConfig
----@field [1] string|fun() A Vimscript string or a Lua function. `rhs` of the keymap
----@field [2] string Description for the keymap
----@field opts? NvKeymapOpts? List of additional options for the keymap
