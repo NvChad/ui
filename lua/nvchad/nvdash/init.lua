@@ -71,7 +71,8 @@ M.open = function()
   end
 
   for _, val in ipairs(buttons) do
-    table.insert(dashboard, addSpacing_toBtns(val[1], val[2]) .. " ")
+    local str = type(val) ~= "table" and (type(val) == "string" and val or val()) or nil
+    table.insert(dashboard, str or addSpacing_toBtns(val[1], val[2]) .. " ")
     table.insert(dashboard, header[1] .. " ")
   end
 
