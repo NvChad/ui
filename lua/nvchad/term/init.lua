@@ -3,6 +3,7 @@ require "base46.term"
 local api = vim.api
 local g = vim.g
 local M = {}
+local set_buf = api.nvim_set_current_buf
 
 g.nvchad_terms = {}
 
@@ -126,8 +127,16 @@ M.runner = function(opts)
   if x == nil or vim.fn.bufwinid(x.buf) == -1 then
     create(opts)
   else
+    local cmd = format_cmd(opts.cmd)
+
+    if x.buf == api.nvim_get_current_buf() then
+      set_buf(g.buf_history[#g.buf_history -1])
+      cmd = format_cmd(opts.cmd)
+      set_buf(x.buf)
+    end
+
     local job_id = vim.b[x.buf].terminal_job_id
-    vim.api.nvim_chan_send(job_id, clear_cmd .. format_cmd(opts.cmd) .. " \n")
+    vim.api.nvim_chan_send(job_id, clear_cmd .. cmd .. " \n")
   end
 end
 

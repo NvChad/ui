@@ -45,6 +45,13 @@ vim.api.nvim_create_autocmd({ "BufAdd", "BufEnter", "tabnew" }, {
     end
 
     vim.t.bufs = bufs
+
+    -- used for knowing previous active buf for term module's runner func
+    if args.event == "BufEnter" then
+      local buf_history = vim.g.buf_history or {}
+      table.insert(buf_history, args.buf)
+      vim.g.buf_history = buf_history
+    end
   end,
 })
 
