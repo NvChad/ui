@@ -162,7 +162,7 @@ M.diagnostics = function()
   local info = #vim.diagnostic.get(M.stbufnr(), { severity = vim.diagnostic.severity.INFO })
 
   err = (err and err > 0) and ("%#St_lspError#" .. " " .. err .. " ") or ""
-  warn = (warn and warn > 0) and ("%#St_lspWarning#" .. "  " .. warn .. " ") or ""
+  warn = (warn and warn > 0) and ("%#St_lspWarning#" .. " " .. warn .. " ") or ""
   hints = (hints and hints > 0) and ("%#St_lspHints#" .. "󰛩 " .. hints .. " ") or ""
   info = (info and info > 0) and ("%#St_lspInfo#" .. "󰋼 " .. info .. " ") or ""
 
