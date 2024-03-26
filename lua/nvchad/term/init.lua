@@ -142,6 +142,11 @@ M.runner = function(opts)
 
     local job_id = vim.b[x.buf].terminal_job_id
     vim.api.nvim_chan_send(job_id, clear_cmd .. cmd .. " \n")
+
+    local win = vim.fn.bufwinid(x.buf)
+    vim.fn.win_gotoid(win)
+    vim.cmd "startinsert"
+
   end
 end
 
