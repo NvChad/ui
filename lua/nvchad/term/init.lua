@@ -123,10 +123,15 @@ M.runner = function(opts)
   local clear_cmd = opts.clear_cmd or "clear; "
   opts.buf = x and x.buf or nil
 
-  -- if buf doesnt exist or window isnt visible
-  if x == nil or vim.fn.bufwinid(x.buf) == -1 then
+  -- if buf doesnt exist
+  if x == nil then
     create(opts)
   else
+    -- window isnt visible 
+    if vim.fn.bufwinid(x.buf) == -1 then
+      display(opts)
+    end
+    
     local cmd = format_cmd(opts.cmd)
 
     if x.buf == api.nvim_get_current_buf() then
