@@ -15,7 +15,7 @@ local function wrapper()
   local term_bufs = vim.g.nvchad_terms or {}
   local buffers = {}
 
-  for buf, _ in pairs(vim.g.nvchad_terms) do
+  for buf, _ in pairs(term_bufs) do
     buf = tonumber(buf)
     local element = { bufnr = buf, flag = "", info = vim.fn.getbufinfo(buf)[1] }
     table.insert(buffers, element)
