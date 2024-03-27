@@ -62,7 +62,7 @@ M.buffers = function()
   local has_current = false -- have we seen current buffer yet?
 
   for i, nr in ipairs(vim.t.bufs) do
-    if ((#buffers + 1) * 23) > available_space() then
+    if ((#buffers + 1) * 21) > available_space() then
       if has_current then
         break
       end
