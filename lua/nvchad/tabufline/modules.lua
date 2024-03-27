@@ -43,9 +43,9 @@ local M = {}
 local function available_space()
   local str = ""
 
-  for key, value in pairs(M) do
+  for _, key in ipairs(config.order) do
     if key ~= "buffers" then
-      str = str .. value()
+      str = str .. M[key]()
     end
   end
 
