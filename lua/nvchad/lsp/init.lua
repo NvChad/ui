@@ -14,7 +14,11 @@ vim.diagnostic.config {
   },
   signs = true,
   underline = true,
-  update_in_insert = false,
+  -- update_in_insert = false,
+
+  float = {
+    border = "single",
+  },
 }
 
 --  LspInfo window borders
