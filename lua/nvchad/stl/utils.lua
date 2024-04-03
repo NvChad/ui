@@ -1,5 +1,4 @@
 local M = {}
-local config = require("nvconfig").ui.statusline
 
 M.stbufnr = function()
   return vim.api.nvim_win_get_buf(vim.g.statusline_winid or 0)
@@ -15,6 +14,7 @@ local orders = {
 }
 
 M.generate = function(theme, modules)
+  local config = require("nvconfig").ui.statusline
   local order = config.order or orders[theme]
   local result = {}
 
