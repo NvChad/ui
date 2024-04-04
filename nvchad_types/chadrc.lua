@@ -105,6 +105,9 @@
 ---@field enabled? boolean
 --- If false, load tabufline on startup
 --- If true, load tabufline when there is at least 2 buffers opened
+---@field show_tabs_always? boolean
+--- If false, draw the tabs only when there are at least 2 buffers opened
+--- If true, always draw the tabs
 ---@field lazyload? boolean
 --- The order is a list of module names from default modules + your modules
 ---@field order? ('"available_space"'|'"treeOffset"'|'"buffers"'|'"tabs"'|'"btns"')[] | string[]

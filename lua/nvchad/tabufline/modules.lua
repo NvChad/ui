@@ -16,7 +16,7 @@ local config = require("nvconfig").ui.tabufline
 vim.cmd "function! TbGoToBuf(bufnr,b,c,d) \n execute 'b'..a:bufnr \n endfunction"
 
 vim.cmd [[
-   function! TbKillBuf(bufnr,b,c,d) 
+   function! TbKillBuf(bufnr,b,c,d)
         call luaeval('require("nvchad.tabufline").close_buffer(_A)', a:bufnr)
   endfunction]]
 
@@ -82,7 +82,7 @@ g.TbTabsToggled = 0
 M.tabs = function()
   local result, tabs = "", fn.tabpagenr "$"
 
-  if tabs > 1 then
+  if config.show_tabs_always == true or tabs > 1 then
     for nr = 1, tabs, 1 do
       local tab_hl = "TabO" .. (nr == fn.tabpagenr() and "n" or "ff")
       result = result .. btn(" " .. nr .. " ", tab_hl, "GotoTab", nr)
