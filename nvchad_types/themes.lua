@@ -55,6 +55,7 @@ vim.g.nvchad_theme = 'onedark'
 ---| '"dark_horizon"'
 ---| '"chocolate"'
 ---| '"chadtain"'
+---| '"chadracula-evondev"'
 ---| '"chadracula"'
 ---| '"catppuccin"'
 ---| '"blossom_light"'
@@ -75,6 +76,7 @@ vim.g.nvchad_theme = 'onedark'
 ---@field blossom_light ThemeTable # Changes for blossom_light theme
 ---@field catppuccin ThemeTable # Changes for catppuccin theme
 ---@field chadracula ThemeTable # Changes for chadracula theme
+---@field ["chadracula-evondev"] ThemeTable # Changes for chadracula-evondev theme
 ---@field chadtain ThemeTable # Changes for chadtain theme
 ---@field chocolate ThemeTable # Changes for chocolate theme
 ---@field dark_horizon ThemeTable # Changes for dark_horizon theme
