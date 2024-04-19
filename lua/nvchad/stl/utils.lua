@@ -10,7 +10,7 @@ end
 
 local orders = {
   default = { "mode", "file", "git", "%=", "lsp_msg", "%=", "diagnostics", "lsp", "cwd", "cursor" },
-  vscode = { "mode", "file", "diagnostics", "git", "%=", "lsp_msg", "%=", "lsp", "cursor", "cwd" },
+  vscode = { "mode", "file", "git", "%=", "lsp_msg", "%=",  "diagnostics", "lsp", "cursor", "cwd" },
 }
 
 M.generate = function(theme, modules)
