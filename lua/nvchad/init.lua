@@ -32,7 +32,7 @@ end
 -- command to toggle cheatsheet
 new_cmd("NvCheatsheet", function()
   if vim.g.nvcheatsheet_displayed then
-    require("nvchad.tabufline").close_buffer()
+    vim.cmd "q"
   else
     require("nvchad.cheatsheet." .. config.cheatsheet.theme)()
   end

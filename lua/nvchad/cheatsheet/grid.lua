@@ -1,6 +1,7 @@
 dofile(vim.g.base46_cache .. "nvcheatsheet")
+local api = vim.api
 
-vim.api.nvim_create_autocmd("BufWinLeave", {
+api.nvim_create_autocmd("BufWinLeave", {
   callback = function()
     if vim.bo.ft == "nvcheatsheet" then
       vim.g.nvcheatsheet_displayed = false
@@ -22,28 +23,32 @@ local ascii = {
 
 -- basically the draw function
 return function()
-  local nvcheatsheet = vim.api.nvim_create_namespace "nvcheatsheet"
-
+  local nvcheatsheet = api.nvim_create_namespace "nvcheatsheet"
   local mappings_tb = {}
+
   require("nvchad.cheatsheet").organize_mappings(mappings_tb)
 
-  vim.g.nv_previous_buf = vim.api.nvim_get_current_buf()
-  local buf = vim.api.nvim_create_buf(false, true)
+  vim.g.nv_previous_buf = api.nvim_get_current_buf()
+
+  local buf = api.nvim_create_buf(false, true)
+  require("nvchad.cheatsheet").create_fullsize_win(buf)
 
   -- add left padding (strs) to ascii so it looks centered
   local ascii_header = vim.tbl_values(ascii)
 
-  local win = require("nvchad.cheatsheet").getLargestWin()
-  vim.api.nvim_set_current_win(win)
+  local win = api.nvim_get_current_win()
+  api.nvim_set_current_win(win)
 
-  local ascii_padding = (vim.api.nvim_win_get_width(win) / 2) - (#ascii_header[1] / 2)
+  vim.wo[win].winhl = "NormalFloat:Normal"
+
+  local ascii_padding = (api.nvim_win_get_width(win) / 2) - (#ascii_header[1] / 2)
 
   for i, str in ipairs(ascii_header) do
     ascii_header[i] = string.rep(" ", ascii_padding) .. str
   end
 
   -- set ascii
-  vim.api.nvim_buf_set_lines(buf, 0, -1, false, ascii_header)
+  api.nvim_buf_set_lines(buf, 0, -1, false, ascii_header)
 
   -- column width
   local column_width = 0
@@ -57,8 +62,10 @@ return function()
   -- 10 = space between mapping txt , 4 = 2 & 2 space around mapping txt
   column_width = column_width + 10
 
-  local win_width = vim.api.nvim_win_get_width(win) - vim.fn.getwininfo(vim.api.nvim_get_current_win())[1].textoff - 4
+  local win_width = vim.o.columns - vim.fn.getwininfo(api.nvim_get_current_win())[1].textoff - 4
+
   local columns_qty = math.floor(win_width / column_width)
+  columns_qty = (win_width / column_width < 10 and columns_qty == 0) and 1 or columns_qty
 
   column_width = math.floor((win_width - (column_width * columns_qty)) / columns_qty) + column_width
 
@@ -88,6 +95,7 @@ return function()
 
       table.insert(cards[name], "  " .. pretty_mapping .. "  ")
     end
+
     table.insert(cards[name], string.rep(" ", column_width))
     table.insert(cards[name], string.rep(" ", column_width))
   end
@@ -124,11 +132,13 @@ return function()
         columns[1][1] = cards_headings_sorted[1]
         append_table(columns[1], cards[cards_headings_sorted[1]])
         break
-      elseif column == 1 and getColumn_height(mappings) < getColumn_height(columns[#columns]) then
-        columns[column][#columns[column] + 1] = heading
-        append_table(columns[column], cards[heading])
-        break
-      elseif column == 1 and getColumn_height(mappings) == getColumn_height(columns[#columns]) then
+      elseif
+        column == 1
+        and (
+          getColumn_height(mappings) < getColumn_height(columns[#columns])
+          or getColumn_height(mappings) == getColumn_height(columns[#columns])
+        )
+      then
         columns[column][#columns[column] + 1] = heading
         append_table(columns[column], cards[heading])
         break
@@ -165,7 +175,6 @@ return function()
 
   local result = vim.tbl_values(columns[1])
 
-
   -- merge all the column strings
   for index, value in ipairs(result) do
     local line = value
@@ -177,11 +186,11 @@ return function()
     result[index] = line
   end
 
-  vim.api.nvim_buf_set_lines(buf, #ascii_header, -1, false, result)
+  api.nvim_buf_set_lines(buf, #ascii_header, -1, false, result)
 
   -- list all hl groups that start with NvChHead
   -- thanks to @max397574 for teaching me
-  local highlights_raw = vim.split(vim.api.nvim_exec("filter " .. "NvChHead" .. " hi", true), "\n")
+  local highlights_raw = vim.split(api.nvim_exec("filter " .. "NvChHead" .. " hi", true), "\n")
   local highlight_groups = {}
 
   for _, raw_hi in ipairs(highlights_raw) do
@@ -196,10 +205,10 @@ return function()
       if columns[column_i][i] then
         -- highlight headings & one line after it
         if vim.tbl_contains(card_headings, columns[column_i][i]) then
-          local lines = vim.api.nvim_buf_get_lines(buf, i + #ascii_header - 1, i + #ascii_header + 1, false)
+          local lines = api.nvim_buf_get_lines(buf, i + #ascii_header - 1, i + #ascii_header + 1, false)
 
           -- highlight area around card heading
-          vim.api.nvim_buf_add_highlight(
+          api.nvim_buf_add_highlight(
             buf,
             nvcheatsheet,
             "NvChSection",
@@ -211,7 +220,7 @@ return function()
               - vim.fn.strdisplaywidth(columns[column_i][i])
           )
           -- highlight card heading & randomize hl groups for colorful colors
-          vim.api.nvim_buf_add_highlight(
+          api.nvim_buf_add_highlight(
             buf,
             nvcheatsheet,
             highlight_groups[math.random(1, #highlight_groups)],
@@ -221,7 +230,7 @@ return function()
               + vim.fn.strlen(vim.trim(columns[column_i][i]))
               + 1
           )
-          vim.api.nvim_buf_add_highlight(
+          api.nvim_buf_add_highlight(
             buf,
             nvcheatsheet,
             "NvChSection",
@@ -232,8 +241,8 @@ return function()
 
           -- highlight mappings & one line after it
         elseif string.match(columns[column_i][i], "%s+") ~= columns[column_i][i] then
-          local lines = vim.api.nvim_buf_get_lines(buf, i + #ascii_header - 1, i + #ascii_header + 1, false)
-          vim.api.nvim_buf_add_highlight(
+          local lines = api.nvim_buf_get_lines(buf, i + #ascii_header - 1, i + #ascii_header + 1, false)
+          api.nvim_buf_add_highlight(
             buf,
             nvcheatsheet,
             "NvChSection",
@@ -241,7 +250,7 @@ return function()
             vim.fn.stridx(lines[1], columns[column_i][i], col_start),
             vim.fn.stridx(lines[1], columns[column_i][i], col_start) + vim.fn.strlen(columns[column_i][i])
           )
-          vim.api.nvim_buf_add_highlight(
+          api.nvim_buf_add_highlight(
             buf,
             nvcheatsheet,
             "NvChSection",
@@ -256,10 +265,10 @@ return function()
 
   -- set highlights for  ascii header
   for i = 0, #ascii_header - 1, 1 do
-    vim.api.nvim_buf_add_highlight(buf, nvcheatsheet, "NvChAsciiHeader", i, 0, -1)
+    api.nvim_buf_add_highlight(buf, nvcheatsheet, "NvChAsciiHeader", i, 0, -1)
   end
 
-  vim.api.nvim_set_current_buf(buf)
+  api.nvim_set_current_buf(buf)
 
   require("nvchad.utils").set_cleanbuf_opts "nvcheatsheet"
 
