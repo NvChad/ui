@@ -11,7 +11,7 @@ M.create_fullsize_win = function(buf)
 end
 
 M.get_mappings = function(mappings, tb_to_add)
-  local excluded_groups = require("nvconfig").ui.cheatsheet.excluded_groups
+  local excluded_groups = require("nvconfig").ui.cheatsheet.excluded_groups or {}
 
   for _, v in ipairs(mappings) do
     local desc = v.desc
