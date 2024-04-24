@@ -10,7 +10,7 @@ end
 
 local orders = {
   default = { "mode", "file", "git", "%=", "lsp_msg", "%=", "diagnostics", "lsp", "cwd", "cursor" },
-  vscode = { "mode", "file", "git", "%=", "lsp_msg", "%=",  "diagnostics", "lsp", "cursor", "cwd" },
+  vscode = { "mode", "file", "git", "%=", "lsp_msg", "%=", "diagnostics", "lsp", "cursor", "cwd" },
 }
 
 M.generate = function(theme, modules)
@@ -82,7 +82,7 @@ M.modes = {
 M.file = function()
   local icon = "󰈚"
   local path = vim.api.nvim_buf_get_name(M.stbufnr())
-  local name = (path == "" and "Empty ") or path:match "([^/\\]+)[/\\]*$"
+  local name = (path == "" and "Empty") or path:match "([^/\\]+)[/\\]*$"
 
   if name ~= "Empty " then
     local devicons_present, devicons = pcall(require, "nvim-web-devicons")
@@ -92,7 +92,20 @@ M.file = function()
       icon = (ft_icon ~= nil and ft_icon) or icon
     end
   end
-
+  if vim.o.columns < 50 then
+    name = ""
+  elseif vim.o.columns < 100 then
+    local prefix = ""
+    if name:match "^%." then
+      prefix = "."
+      name = name:sub(2) or ""
+    end
+    name = name:gsub("%.[^%.]*$", "") or ""
+    if vim.o.columns < 75 and string.len(name) > 2 then
+      name = name:sub(1, 1) .. "" .. name:sub(name:len())
+    end
+    name = prefix .. name
+  end
   return { icon, name }
 end
 
@@ -102,12 +115,20 @@ M.git = function()
   end
 
   local git_status = vim.b[M.stbufnr()].gitsigns_status_dict
-
-  local added = (git_status.added and git_status.added ~= 0) and ("  " .. git_status.added) or ""
-  local changed = (git_status.changed and git_status.changed ~= 0) and ("  " .. git_status.changed) or ""
-  local removed = (git_status.removed and git_status.removed ~= 0) and ("  " .. git_status.removed) or ""
-  local branch_name = " " .. git_status.head
-
+  local blank = " "
+  if vim.o.columns < 120 then
+    blank = ""
+  end
+  local added = (git_status.added and git_status.added ~= 0) and (" " .. blank .. git_status.added) or ""
+  local changed = (git_status.changed and git_status.changed ~= 0) and (" " .. blank .. git_status.changed) or ""
+  local removed = (git_status.removed and git_status.removed ~= 0) and (" " .. blank .. git_status.removed) or ""
+  local branch_name = "" .. blank .. git_status.head
+  if vim.o.columns < 40 then
+    return " "
+  end
+  if vim.o.columns < 80 then
+    return "" .. added .. changed .. removed
+  end
   return " " .. branch_name .. added .. changed .. removed
 end
 
@@ -118,7 +139,7 @@ M.lsp_msg = function()
 
   local Lsp = vim.lsp.util.get_progress_messages()[1]
 
-  if vim.o.columns < 120 or not Lsp then
+  if vim.o.columns < 50 or not Lsp then
     return ""
   end
 
@@ -135,7 +156,22 @@ M.lsp_msg = function()
   local ms = vim.loop.hrtime() / 1000000
   local frame = math.floor(ms / 120) % #spinners
   local content = string.format(" %%<%s %s %s (%s%%%%) ", spinners[frame + 1], title, msg, percentage)
-
+  local pp = math.floor((percentage % 100) * 8 / 100)
+  if vim.o.columns < 100 then
+    local waiting = { " ", ".", ":", "" }
+    local frame2 = math.floor(ms / 120) % #waiting
+    local mini_title = ""
+    for word in title:gmatch "([^%s]+)" do
+      if mini_title:len() > 4 then
+        break
+      end
+      mini_title = mini_title .. word:sub(0, 2)
+    end
+    content = string.format(" %%<%s%s%s ", spinners[pp + 1], mini_title, waiting[frame2 + 1])
+  end
+  if vim.o.columns < 50 then
+    content = string.format(" %%<%s ", spinners[pp + 1])
+  end
   return content or ""
 end
 
@@ -143,7 +179,7 @@ M.lsp = function()
   if rawget(vim, "lsp") then
     for _, client in ipairs(vim.lsp.get_active_clients()) do
       if client.attached_buffers[M.stbufnr()] and client.name ~= "null-ls" then
-        return (vim.o.columns > 100 and "   LSP ~ " .. client.name .. " ") or "   LSP "
+        return (vim.o.columns > 100 and "   LSP ~ " .. client.name .. " ") or "  "
       end
     end
   end
@@ -160,11 +196,36 @@ M.diagnostics = function()
   local warn = #vim.diagnostic.get(M.stbufnr(), { severity = vim.diagnostic.severity.WARN })
   local hints = #vim.diagnostic.get(M.stbufnr(), { severity = vim.diagnostic.severity.HINT })
   local info = #vim.diagnostic.get(M.stbufnr(), { severity = vim.diagnostic.severity.INFO })
+  local err_tag = ""
+  local warn_tag = ""
+  local hints_tag = "󰛩"
+  local info_tag = "󰋼"
 
-  err = (err and err > 0) and ("%#St_lspError#" .. " " .. err .. " ") or ""
-  warn = (warn and warn > 0) and ("%#St_lspWarning#" .. " " .. warn .. " ") or ""
-  hints = (hints and hints > 0) and ("%#St_lspHints#" .. "󰛩 " .. hints .. " ") or ""
-  info = (info and info > 0) and ("%#St_lspInfo#" .. "󰋼 " .. info .. " ") or ""
+  if vim.o.columns > 90 then
+    err_tag = err_tag .. " " .. err .. " "
+    warn_tag = warn_tag .. " " .. warn .. " "
+    hints_tag = hints_tag .. " " .. hints .. " "
+    info_tag = info_tag .. " " .. info .. " "
+  elseif vim.o.columns > 60 then
+    err_tag = err_tag .. err .. " "
+    warn_tag = warn_tag .. warn .. " "
+    hints_tag = hints_tag .. hints .. " "
+    info_tag = info_tag .. info .. " "
+  elseif vim.o.columns > 40 then
+    err_tag = err_tag .. err
+    warn_tag = warn_tag .. warn
+    hints_tag = hints_tag .. hints
+    info_tag = info_tag .. info
+  else
+    err_tag = "" .. err
+    warn_tag = "" .. warn
+    hints_tag = "" .. hints
+    info_tag = "" .. info
+  end
+  err = (err and err > 0) and ("%#St_lspError#" .. err_tag) or ""
+  warn = (warn and warn > 0) and ("%#St_lspWarning#" .. warn_tag) or ""
+  hints = (hints and hints > 0) and ("%#St_lspHints#" .. hints_tag) or ""
+  info = (info and info > 0) and ("%#St_lspInfo#" .. info_tag) or ""
 
   return " " .. err .. warn .. hints .. info
 end

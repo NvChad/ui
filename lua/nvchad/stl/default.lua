@@ -58,6 +58,11 @@ M.cwd = function()
 end
 
 M.cursor = "%#St_pos_sep#" .. sep_l .. "%#St_pos_icon# %#St_pos_text# %p %% "
+if vim.o.columns < 50 then
+  M.cursor = "%#St_pos_text#%p%%"
+elseif vim.o.columns < 90 then
+  M.cursor = "%#St_pos_sep#" .. sep_l .. "%#St_pos_icon# %#St_pos_text#%p%%"
+end
 M["%="] = "%="
 
 return function()
