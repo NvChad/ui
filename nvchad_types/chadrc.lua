@@ -132,6 +132,7 @@
 ---@class NvCheatsheetConfig
 --- Cheatsheet theme
 ---@field theme? '"grid"'|'"simple"'
+---@field excluded_groups? string[]
 
 ---@class NvDashButtonConfig
 ---@field [1] string Description for the button
