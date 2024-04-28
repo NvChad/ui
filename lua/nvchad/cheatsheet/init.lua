@@ -1,22 +1,20 @@
 local M = {}
 
-M.getLargestWin = function()
-  local largest_win_width = 0
-  local largest_win_id = 0
+M.create_fullsize_win = function(buf)
+  local tbline_height = #vim.o.tabline == 0 and -1 or 0
 
-  for _, winid in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-    local tmp_width = vim.api.nvim_win_get_width(winid)
-
-    if tmp_width > largest_win_width then
-      largest_win_width = tmp_width
-      largest_win_id = winid
-    end
-  end
-
-  return largest_win_id
+  vim.api.nvim_open_win(buf, true, {
+    row = 1 + tbline_height,
+    col = 0,
+    width = vim.o.columns,
+    height = vim.o.lines - (3 + tbline_height),
+    relative = "editor",
+  })
 end
 
 M.get_mappings = function(mappings, tb_to_add)
+  local excluded_groups = require("nvconfig").ui.cheatsheet.excluded_groups or {}
+
   for _, v in ipairs(mappings) do
     local desc = v.desc
 
@@ -26,6 +24,15 @@ M.get_mappings = function(mappings, tb_to_add)
 
     local heading = desc:match "%S+" -- get first word
     heading = (v.mode ~= "n" and heading .. " (" .. v.mode .. ")") or heading
+
+    -- useful for removing groups || <Plug> lhs keymaps from cheatsheet
+    if
+      vim.tbl_contains(excluded_groups, heading)
+      or vim.tbl_contains(excluded_groups, desc:match "%S+")
+      or string.find(v.lhs, "<Plug>")
+    then
+      goto continue
+    end
 
     if not tb_to_add[heading] then
       tb_to_add[heading] = {}
@@ -56,11 +63,11 @@ M.organize_mappings = function(tb_to_add)
   end
 
   -- remove groups which have only 1 mapping
-  for key, x in pairs(tb_to_add) do
-    if #x <= 1 then
-      tb_to_add[key] = nil
-    end
-  end
+  -- for key, x in pairs(tb_to_add) do
+  --   if #x <= 1 then
+  --     tb_to_add[key] = nil
+  --   end
+  -- end
 end
 
 return M
