@@ -32,8 +32,7 @@ return function()
 
   for _, section in pairs(mappings_tb) do
     for _, keymap in ipairs(section) do
-      largest_str = largest_str > #keymap[1] + #keymap[2] and largest_str
-        or #keymap[2] + #keymap[2]
+      largest_str = largest_str > #keymap[1] + #keymap[2] and largest_str or #keymap[2] + #keymap[2]
     end
   end
 
@@ -142,6 +141,6 @@ return function()
   require("nvchad.utils").set_cleanbuf_opts "nvcheatsheet"
 
   vim.keymap.set("n", "<ESC>", function()
-    require("nvchad.tabufline").close_buffer(buf)
+    vim.cmd "q"
   end, { buffer = buf })
 end

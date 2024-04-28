@@ -273,6 +273,6 @@ return function()
   require("nvchad.utils").set_cleanbuf_opts "nvcheatsheet"
 
   vim.keymap.set("n", "<ESC>", function()
-    require("nvchad.tabufline").close_buffer(buf)
+    vim.cmd "q"
   end, { buffer = buf })
 end
