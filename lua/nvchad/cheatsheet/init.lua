@@ -1,5 +1,9 @@
 local M = {}
 
+local function capitalize(str)
+  return (str:gsub("^%l", string.upper))
+end
+
 M.create_fullsize_win = function(buf)
   local tbline_height = #vim.o.tabline == 0 and -1 or 0
 
@@ -18,7 +22,8 @@ M.get_mappings = function(mappings, tb_to_add)
   for _, v in ipairs(mappings) do
     local desc = v.desc
 
-    if not desc or (select(2, desc:gsub("%S+", "")) <= 1) then
+    -- dont include mappings which have \n in their desc
+    if not desc or (select(2, desc:gsub("%S+", "")) <= 1) or string.find(desc, "\n") then
       goto continue
     end
 
@@ -34,6 +39,8 @@ M.get_mappings = function(mappings, tb_to_add)
       goto continue
     end
 
+    heading = capitalize(heading)
+
     if not tb_to_add[heading] then
       tb_to_add[heading] = {}
     end
@@ -41,11 +48,9 @@ M.get_mappings = function(mappings, tb_to_add)
     local keybind = string.sub(v.lhs, 1, 1) == " " and "<leader> +" .. v.lhs or v.lhs
 
     desc = v.desc:match "%s(.+)" -- remove first word from desc
+    desc = capitalize(desc)
 
-    -- dont include desc which have \n
-    if not string.find(desc, "\n") then
-      table.insert(tb_to_add[heading], { desc, keybind })
-    end
+    table.insert(tb_to_add[heading], { desc, keybind })
 
     ::continue::
   end
