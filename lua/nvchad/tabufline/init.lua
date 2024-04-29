@@ -50,7 +50,7 @@ M.close_buffer = function(bufnr)
     local bufhidden = vim.bo.bufhidden
 
     -- force close floating wins
-    if bufhidden == "wipe" then
+    if vim.api.nvim_win_get_config(0).zindex then
       vim.cmd "bw"
       return
 

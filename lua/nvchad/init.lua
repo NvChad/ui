@@ -32,7 +32,7 @@ end
 -- command to toggle cheatsheet
 new_cmd("NvCheatsheet", function()
   if vim.g.nvcheatsheet_displayed then
-    vim.cmd "q"
+    vim.cmd "bw"
   else
     require("nvchad.cheatsheet." .. config.cheatsheet.theme)()
   end
@@ -46,7 +46,7 @@ vim.api.nvim_create_autocmd("VimResized", {
       vim.api.nvim_buf_set_lines(0, 0, -1, false, { "" })
       require("nvchad.nvdash").open()
     elseif vim.bo.filetype == "nvcheatsheet" then
-      vim.cmd"q"
+      vim.cmd "bw"
       require("nvchad.cheatsheet." .. config.cheatsheet.theme)()
     end
   end,
