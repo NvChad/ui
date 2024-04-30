@@ -15,7 +15,7 @@ M.check_triggeredChars = function(triggerChars)
   local cur_line = vim.api.nvim_get_current_line()
   local pos = vim.api.nvim_win_get_cursor(0)[2]
 
-  cur_line = cur_line:gsub("%s+", "") -- rm trailing spaces
+  cur_line = cur_line:gsub("%s+$", "") -- rm trailing spaces
 
   for _, char in ipairs(triggerChars) do
     if cur_line:sub(pos, pos) == char then
