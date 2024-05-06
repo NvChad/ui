@@ -132,14 +132,12 @@ M.runner = function(opts)
       display(opts)
     end
     
-    local cmd = format_cmd(opts.cmd)
-
     if x.buf == api.nvim_get_current_buf() then
       set_buf(g.buf_history[#g.buf_history -1])
-      cmd = format_cmd(opts.cmd)
       set_buf(x.buf)
     end
-
+    
+    local cmd = format_cmd(opts.cmd)
     local job_id = vim.b[x.buf].terminal_job_id
     vim.api.nvim_chan_send(job_id, clear_cmd .. cmd .. " \n")
   end
