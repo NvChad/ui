@@ -107,7 +107,7 @@
 --- If true, load tabufline when there is at least 2 buffers opened
 ---@field lazyload? boolean
 --- The order is a list of module names from default modules + your modules
----@field order? ('"available_space"'|'"treeOffset"'|'"buffers"'|'"tabs"'|'"btns"')[] | string[]
+---@field order? ('"treeOffset"'|'"buffers"'|'"tabs"'|'"btns"')[] | string[]
 --- Show numbers on tabufline buffer tabs
 ---@field show_numbers? boolean
 --- Your modules to be added to the tabufline
