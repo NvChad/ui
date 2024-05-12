@@ -71,6 +71,7 @@ M.modes = {
   ["c"] = { "COMMAND", "Command" },
   ["cv"] = { "COMMAND", "Command" },
   ["ce"] = { "COMMAND", "Command" },
+  ["cr"] = { "COMMAND", "Command" },
   ["r"] = { "PROMPT", "Confirm" },
   ["rm"] = { "MORE", "Confirm" },
   ["r?"] = { "CONFIRM", "Confirm" },
