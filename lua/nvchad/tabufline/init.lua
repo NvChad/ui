@@ -49,8 +49,8 @@ M.close_buffer = function(bufnr)
     local curBufIndex = buf_index(bufnr)
     local bufhidden = vim.bo.bufhidden
 
-    -- force close floating wins
-    if vim.api.nvim_win_get_config(0).zindex then
+    -- force close floating wins or nonbuflisted
+    if (not vim.bo[bufnr].buflisted) or api.nvim_win_get_config(0).zindex then
       vim.cmd "bw"
       return
 
@@ -63,7 +63,7 @@ M.close_buffer = function(bufnr)
     elseif not vim.bo.buflisted then
       local tmpbufnr = vim.t.bufs[1]
 
-      if vim.g.nv_previous_buf and vim.api.nvim_buf_is_valid(vim.g.nv_previous_buf) then
+      if vim.g.nv_previous_buf and api.nvim_buf_is_valid(vim.g.nv_previous_buf) then
         tmpbufnr = vim.g.nv_previous_buf
       end
 
@@ -102,7 +102,7 @@ end
 M.closeOtherBufs = function()
   for _, buf in ipairs(vim.t.bufs) do
     if buf ~= cur_buf() then
-      vim.api.nvim_buf_delete(buf, {})
+      api.nvim_buf_delete(buf, {})
     end
   end
 
