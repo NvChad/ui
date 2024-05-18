@@ -10,7 +10,7 @@ end
 
 local orders = {
   default = { "mode", "file", "git", "%=", "lsp_msg", "%=", "diagnostics", "lsp", "cwd", "cursor" },
-  vscode = { "mode", "file", "git", "%=", "lsp_msg", "%=",  "diagnostics", "lsp", "cursor", "cwd" },
+  vscode = { "mode", "file", "git", "%=", "lsp_msg", "%=", "diagnostics", "lsp", "cursor", "cwd" },
 }
 
 M.generate = function(theme, modules)
@@ -113,37 +113,23 @@ M.git = function()
 end
 
 M.lsp_msg = function()
-  if not rawget(vim, "lsp") or vim.lsp.status or not M.is_activewin() then
+  local msg = vim.lsp.status()
+
+  if #msg == 0 or vim.o.columns < 120 then
     return ""
   end
 
-  local Lsp = vim.lsp.util.get_progress_messages()[1]
-
-  if vim.o.columns < 120 or not Lsp then
-    return ""
-  end
-
-  if Lsp.done then
-    vim.defer_fn(function()
-      vim.cmd.redrawstatus()
-    end, 1000)
-  end
-
-  local msg = Lsp.message or ""
-  local percentage = Lsp.percentage or 0
-  local title = Lsp.title or ""
   local spinners = { "", "󰪞", "󰪟", "󰪠", "󰪢", "󰪣", "󰪤", "󰪥" }
-  local ms = vim.loop.hrtime() / 1000000
-  local frame = math.floor(ms / 120) % #spinners
-  local content = string.format(" %%<%s %s %s (%s%%%%) ", spinners[frame + 1], title, msg, percentage)
+  local ms = vim.loop.hrtime() / 1e6
+  local frame = math.floor(ms / 100) % #spinners
 
-  return content or ""
+  return spinners[frame + 1] .. " " .. msg
 end
 
 M.lsp = function()
   if rawget(vim, "lsp") then
-    for _, client in ipairs(vim.lsp.get_active_clients()) do
-      if client.attached_buffers[M.stbufnr()] and client.name ~= "null-ls" then
+    for _, client in ipairs(vim.lsp.get_clients()) do
+      if client.attached_buffers[M.stbufnr()] then
         return (vim.o.columns > 100 and "   LSP ~ " .. client.name .. " ") or "   LSP "
       end
     end
