@@ -52,10 +52,11 @@ vim.api.nvim_create_autocmd("VimResized", {
   end,
 })
 
--- redraw statusline on LspProgressUpdate event & fixes #145
-vim.api.nvim_create_autocmd("User", {
-  pattern = "LspProgressUpdate",
-  callback = function()
+vim.api.nvim_create_autocmd("LspProgress", {
+  callback = function(args)
+    if string.find(args.match, "end") then
+      vim.cmd "redrawstatus"
+    end
     vim.cmd "redrawstatus"
   end,
 })
