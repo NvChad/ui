@@ -52,11 +52,13 @@ vim.api.nvim_create_autocmd("VimResized", {
   end,
 })
 
-vim.api.nvim_create_autocmd("LspProgress", {
-  callback = function(args)
-    if string.find(args.match, "end") then
+if vim.version().minor >= 10 then
+  vim.api.nvim_create_autocmd("LspProgress", {
+    callback = function(args)
+      if string.find(args.match, "end") then
+        vim.cmd "redrawstatus"
+      end
       vim.cmd "redrawstatus"
-    end
-    vim.cmd "redrawstatus"
-  end,
-})
+    end,
+  })
+end
