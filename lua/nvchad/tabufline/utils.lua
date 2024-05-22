@@ -1,7 +1,7 @@
 local M = {}
 local api = vim.api
 local fn = vim.fn
-local buf_opt = api.nvim_buf_get_option
+local get_opt = api.nvim_get_option_value
 local strep = string.rep
 local cur_buf = api.nvim_get_current_buf
 local buf_name = api.nvim_buf_get_name
@@ -75,8 +75,8 @@ M.style_buf = function(nr, i)
   name = btn(name, nil, "GoToBuf", nr)
 
   -- modified bufs icon or close icon
-  local mod = buf_opt(nr, "mod")
-  local cur_mod = buf_opt(0, "mod")
+  local mod = get_opt("mod", { buf = nr })
+  local cur_mod = get_opt("mod", { buf = 0 })
 
   -- color close btn for focused / hidden  buffers
   if is_curbuf then
