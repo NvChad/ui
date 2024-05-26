@@ -1,27 +1,15 @@
 local api = vim.api
-local ns = api.nvim_create_namespace "HexColorHighlight"
+local ns = api.nvim_create_namespace "Colorify"
 
 api.nvim_set_hl_ns(ns)
 
 local utils = require "colorify.utils"
+local conf = utils.config
+local needs_hl = utils.not_colored
 local set_extmark = api.nvim_buf_set_extmark
 local get_extmarks = api.nvim_buf_get_extmarks
-local conf = utils.config
 
-local function not_colored(buf, linenr, col, hl_group, opts)
-  local ms = get_extmarks(buf, ns, { linenr, col }, { linenr, opts.end_col }, { details = true })
-  ms = #ms == 0 and {} or ms[1]
-
-  local old_hl
-
-  if #ms > 0 then
-    opts.id = ms[1]
-    old_hl = ms[4].hl_group or ms[4].virt_text[1][2]
-  end
-
-  return #ms == 0 or old_hl ~= hl_group
-end
-
+---------------------------------- highlighters -----------------------------------------------
 local function highlight_hex(buf, line, str)
   for col, hex in str:gmatch "()(#%x%x%x%x%x%x)" do
     local hl_group = utils.add_hl(ns, hex)
@@ -36,25 +24,29 @@ local function highlight_hex(buf, line, str)
       opts.virt_text = { { conf.virt_txt, hl_group } }
     end
 
-    local colorit = not_colored(buf, linenr, col - 1, hl_group, opts)
-
-    if colorit then
+    if needs_hl(buf, ns, linenr, col - 1, hl_group, opts) then
       set_extmark(buf, ns, linenr, col - 1, opts)
     end
   end
 end
 
-local function highlight_lspvars(buf, line)
+local function highlight_lspvars(buf, line, rows)
   local param = { textDocument = vim.lsp.util.make_text_document_params() }
 
   for _, client in pairs(vim.lsp.get_clients { bufnr = buf }) do
     if client.server_capabilities.colorProvider then
       client.request("textDocument/documentColor", param, function(_, resp)
-        -- if resp and line then
-        --   resp = vim.tbl_filter(function(v)
-        --     return v.range["start"].line == line
-        --   end, resp)
-        -- end
+        if resp and line then
+          resp = vim.tbl_filter(function(v)
+            return v.range["start"].line == line
+          end, resp)
+        end
+
+        if resp and rows then
+          resp = vim.tbl_filter(function(v)
+            return v.range["start"].line >= rows.min and v.range["end"].line <= rows.max
+          end, resp)
+        end
 
         for _, match in ipairs(resp or {}) do
           local color = match.color
@@ -72,9 +64,7 @@ local function highlight_lspvars(buf, line)
             virt_text = { { "󱓻 ", hl_group } },
           }
 
-          local colorit = not_colored(buf, range_start.line, range_start.character, hl_group, opts)
-
-          if colorit then
+          if needs_hl(buf, ns, range_start.line, range_start.character, hl_group, opts) then
             set_extmark(buf, ns, range_start.line, range_start.character, opts)
           end
         end
@@ -83,22 +73,30 @@ local function highlight_lspvars(buf, line)
   end
 end
 
+------------------------------- main function ------------------------------------------------
 local function colorify(args)
   local buf = args.buf
+  local line = vim.fn.line
+  local winid = vim.fn.bufwinid(buf)
+
+  local rows = {
+    min = line("w0", winid) - 1,
+    max = line("w$", winid) + 1,
+  }
 
   if args.event == "TextChangedI" then
     local cur_line = api.nvim_get_current_line()
-    highlight_hex(buf, vim.fn.line ".", cur_line)
-    highlight_lspvars(buf, vim.fn.line "." - 1)
+    highlight_hex(buf, line ".", cur_line)
+    highlight_lspvars(buf, line "." - 1)
   else
-    local lines = api.nvim_buf_get_lines(buf, 0, -1, false)
+    local lines = api.nvim_buf_get_lines(buf, rows.min, rows.max, false)
 
-    for i, line in ipairs(lines) do
-      highlight_hex(buf, i, line)
+    for i, str in ipairs(lines) do
+      highlight_hex(buf, i, str)
     end
 
     if vim.bo[buf].buflisted then
-      highlight_lspvars(buf)
+      highlight_lspvars(buf, nil, rows)
     end
   end
 
@@ -107,8 +105,8 @@ local function colorify(args)
       vim.b[buf].colorify_attached = true
 
       api.nvim_buf_attach(args.buf, false, {
-        on_bytes = function(_, b, _, line, col, _, _, _, old_endcol)
-          local ms = get_extmarks(b, ns, { line, col }, { line, col + old_endcol }, { overlap = true })
+        on_bytes = function(_, b, _, linenr, col, _, _, _, old_endcol)
+          local ms = get_extmarks(b, ns, { linenr, col }, { linenr, col + old_endcol }, { overlap = true })
 
           for _, mark in ipairs(ms) do
             api.nvim_buf_del_extmark(b, ns, mark[1])
