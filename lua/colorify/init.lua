@@ -8,13 +8,7 @@ local set_extmark = api.nvim_buf_set_extmark
 local get_extmarks = api.nvim_buf_get_extmarks
 local conf = utils.config
 
-local new_hlgroup = function(ns_id, hex)
-  local name = "hex_" .. hex:sub(2)
-  api.nvim_set_hl(ns_id, name, { fg = hex })
-  return name
-end
-
-local function needs_highlighting(buf, linenr, col, hl_group, opts)
+local function not_colored(buf, linenr, col, hl_group, opts)
   local ms = get_extmarks(buf, ns, { linenr, col }, { linenr, opts.end_col }, { details = true })
   ms = #ms == 0 and {} or ms[1]
 
@@ -30,7 +24,7 @@ end
 
 local function highlight_hex(buf, line, str)
   for col, hex in str:gmatch "()(#%x%x%x%x%x%x)" do
-    local hl_group = utils.new_hlgroup(ns, hex)
+    local hl_group = utils.add_hl(ns, hex)
     local linenr = line - 1
     local end_col = col + #hex - 1
 
@@ -42,9 +36,9 @@ local function highlight_hex(buf, line, str)
       opts.virt_text = { { conf.virt_txt, hl_group } }
     end
 
-    local can_color = needs_highlighting(buf, linenr, col - 1, hl_group, opts)
+    local colorit = not_colored(buf, linenr, col - 1, hl_group, opts)
 
-    if can_color then
+    if colorit then
       set_extmark(buf, ns, linenr, col - 1, opts)
     end
   end
@@ -56,7 +50,6 @@ local function highlight_lspvars(buf, line)
   for _, client in pairs(vim.lsp.get_clients { bufnr = buf }) do
     if client.server_capabilities.colorProvider then
       client.request("textDocument/documentColor", param, function(_, resp)
-
         -- if resp and line then
         --   resp = vim.tbl_filter(function(v)
         --     return v.range["start"].line == line
@@ -68,7 +61,7 @@ local function highlight_lspvars(buf, line)
           local r, g, b, a = color.red, color.green, color.blue, color.alpha
           local hex = string.format("#%02x%02x%02x", r * a * 255, g * a * 255, b * a * 255)
 
-          local hl_group = new_hlgroup(ns, hex)
+          local hl_group = utils.add_hl(ns, hex)
 
           local range_start = match.range.start
           local range_end = match.range["end"]
@@ -79,9 +72,9 @@ local function highlight_lspvars(buf, line)
             virt_text = { { "󱓻 ", hl_group } },
           }
 
-          local can_color = needs_highlighting(buf, range_start.line, range_start.character, hl_group, opts)
+          local colorit = not_colored(buf, range_start.line, range_start.character, hl_group, opts)
 
-          if can_color then
+          if colorit then
             set_extmark(buf, ns, range_start.line, range_start.character, opts)
           end
         end
@@ -90,7 +83,7 @@ local function highlight_lspvars(buf, line)
   end
 end
 
-local function color_lines(args)
+local function colorify(args)
   local buf = args.buf
 
   if args.event == "TextChangedI" then
@@ -131,5 +124,5 @@ api.nvim_create_autocmd({
   "WinScrolled",
   "BufEnter",
 }, {
-  callback = color_lines,
+  callback = colorify,
 })

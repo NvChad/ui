@@ -21,7 +21,7 @@ M.is_dark = function(hex)
   return brightness < 128
 end
 
-M.new_hlgroup = function(namespace, hex)
+M.add_hl = function(ns, hex)
   local name = "hex_" .. hex:sub(2)
 
   local fg, bg = hex, hex
@@ -32,7 +32,7 @@ M.new_hlgroup = function(namespace, hex)
     bg = "none"
   end
 
-  api.nvim_set_hl(namespace, name, { fg = fg, bg = bg })
+  api.nvim_set_hl(ns, name, { fg = fg, bg = bg })
   return name
 end
 
