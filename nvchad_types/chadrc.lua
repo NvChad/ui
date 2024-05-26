@@ -10,7 +10,7 @@
 ---@field base46? Base46Config
 
 ---@class Base46Config
----@field integrations? ExtendedModules[]
+---@field integrations? Base46Integrations[]
 
 --- UI related configuration
 --- e.g. colorschemes, statusline themes, cmp themes, dashboard, some LSP ui related
