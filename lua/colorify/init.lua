@@ -103,15 +103,22 @@ local function colorify(args)
   end
 
   if args.event == "BufEnter" then
-    api.nvim_buf_attach(args.buf, false, {
-      on_bytes = function(_, b, _, line, col, _, _, _, old_endcol)
-        local ms = get_extmarks(b, ns, { line, col }, { line, col + old_endcol }, { overlap = true })
+    if not vim.b[buf].colorify_attached then
+      vim.b[buf].colorify_attached = true
 
-        for _, mark in ipairs(ms) do
-          api.nvim_buf_del_extmark(b, ns, mark[1])
-        end
-      end,
-    })
+      api.nvim_buf_attach(args.buf, false, {
+        on_bytes = function(_, b, _, line, col, _, _, _, old_endcol)
+          local ms = get_extmarks(b, ns, { line, col }, { line, col + old_endcol }, { overlap = true })
+
+          for _, mark in ipairs(ms) do
+            api.nvim_buf_del_extmark(b, ns, mark[1])
+          end
+        end,
+        on_detach = function()
+          vim.b[buf].colorify_attached = false
+        end,
+      })
+    end
   end
 end
 
