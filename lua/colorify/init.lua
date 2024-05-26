@@ -104,11 +104,11 @@ local function colorify(args)
 
   if args.event == "BufEnter" then
     api.nvim_buf_attach(args.buf, false, {
-      on_bytes = function(_, b, _, line)
-        local ms = get_extmarks(b, ns, { line, 0 }, { line, -1 }, {})
+      on_bytes = function(_, b, _, line, col)
+        local ms = get_extmarks(b, ns, { line, col }, { line, -1 }, { limit = 1 })
 
-        for _, v in ipairs(ms) do
-          api.nvim_buf_del_extmark(b, ns, v[1])
+        if #ms > 0 then
+          api.nvim_buf_del_extmark(b, ns, ms[1][1])
         end
       end,
     })
