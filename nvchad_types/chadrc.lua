@@ -95,7 +95,7 @@
 ---         end,
 ---     }
 --- ```
----@field modules? table<string, fun(): string>
+---@field modules? table<string, string | fun(): string>
 --- Maximum length for the progress messages section
 ---@field lspprogress_len? integer
 
