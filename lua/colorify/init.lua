@@ -13,8 +13,9 @@ local get_extmarks = api.nvim_buf_get_extmarks
 ---------------------------------- highlighters -----------------------------------------------
 local function highlight_hex(buf, line, str)
   for col, hex in str:gmatch "()(#%x%x%x%x%x%x)" do
+    col = col - 1
     local hl_group = utils.add_hl(ns, hex)
-    local end_col = col + #hex - 1
+    local end_col = col + 7
 
     local opts = { end_col = end_col, hl_group = hl_group }
 
@@ -24,8 +25,8 @@ local function highlight_hex(buf, line, str)
       opts.virt_text = { { conf.virt_txt, hl_group } }
     end
 
-    if needs_hl(buf, ns, line, col - 1, hl_group, opts) then
-      set_extmark(buf, ns, line, col - 1, opts)
+    if needs_hl(buf, ns, line, col, hl_group, opts) then
+      set_extmark(buf, ns, line, col, opts)
     end
   end
 end
@@ -106,6 +107,7 @@ api.nvim_create_autocmd({
   "VimResized",
   "LspAttach",
   "WinScrolled",
+  "BufEnter",
 }, {
   callback = colorify_lines,
 })
@@ -120,24 +122,21 @@ local handle_deletions = function(args)
   vim.b[buf].colorify_attached = true
 
   api.nvim_buf_attach(args.buf, false, {
-    -- del extmarks of all lines except the current
-    on_lines = function(_, b, _, first_line, last_line)
-      local ms = get_extmarks(b, ns, { first_line, 0 }, { last_line, 0 }, {})
-
-      for _, mark in ipairs(ms) do
-        if mark[2] ~= (fn.line "." - 1) then
-          api.nvim_buf_del_extmark(b, ns, mark[1])
-        end
-      end
-    end,
-
-    -- handle only current line extmarks
-    on_bytes = function(_, b, _, line, col, _, _, _, endcol)
-      if line ~= fn.line "." - 1 then
+    -- s = start, e == end
+    on_bytes = function(_, b, _, s_row, s_col, _, old_e_row, old_e_col, _, _, new_e_col, _)
+      if new_e_col == 0 and old_e_col == 0 then
         return
       end
 
-      local ms = get_extmarks(b, ns, { line, col }, { line, col + endcol }, { overlap = true })
+      local row1, col1, row2, col2
+
+      if old_e_row > 0 then
+        row1, col1, row2, col2 = s_row, 0, s_row + old_e_row, 0
+      else
+        row1, col1, row2, col2 = s_row, s_col, s_row, s_col + old_e_col
+      end
+
+      local ms = get_extmarks(b, ns, { row1, col1 }, { row2, col2 }, { overlap = true })
 
       for _, mark in ipairs(ms) do
         api.nvim_buf_del_extmark(b, ns, mark[1])
