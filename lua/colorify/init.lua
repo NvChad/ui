@@ -74,56 +74,15 @@ local function highlight_lspvars(buf, line, min, max)
   end
 end
 
-------------------------------- main function ------------------------------------------------
-local function colorify_lines(args)
-  local buf = args.buf
-  local winid = vim.fn.bufwinid(buf)
-
-  local min = fn.line("w0", winid) - 1
-  local max = fn.line("w$", winid) + 1
-
-  if args.event == "TextChangedI" then
-    local cur_linenr = fn.line(".", winid) - 1
-    local cur_line = api.nvim_get_current_line()
-    highlight_hex(buf, cur_linenr, cur_line)
-    highlight_lspvars(buf, cur_linenr)
-  else
-    local lines = api.nvim_buf_get_lines(buf, min, max, false)
-
-    for i, str in ipairs(lines) do
-      highlight_hex(buf, i - 1, str)
-    end
-
-    if vim.bo[buf].buflisted then
-      highlight_lspvars(buf, nil, min, max)
-    end
-  end
-end
-
-api.nvim_create_autocmd({
-  "TextChanged",
-  "TextChangedI",
-  "TextChangedP",
-  "VimResized",
-  "LspAttach",
-  "WinScrolled",
-  "BufEnter",
-}, {
-  callback = colorify_lines,
-})
-
-local handle_deletions = function(args)
-  local buf = args.buf
-
-  if vim.b[buf].colorify_attached then
-    return
-  end
-
+--------------------------   DELETE EXTMARKS --------------------------------------
+local del_extmarks_on_textchange = function(buf)
   vim.b[buf].colorify_attached = true
 
-  api.nvim_buf_attach(args.buf, false, {
+  api.nvim_buf_attach(buf, false, {
     -- s = start, e == end
     on_bytes = function(_, b, _, s_row, s_col, _, old_e_row, old_e_col, _, _, new_e_col, _)
+      -- old_e_row = old deleted lines!
+      -- new_e_col isnt 0 when cursor pos has changed
       if old_e_row == 0 and new_e_col == 0 and old_e_col == 0 then
         return
       end
@@ -148,4 +107,48 @@ local handle_deletions = function(args)
   })
 end
 
-api.nvim_create_autocmd("BufEnter", { callback = handle_deletions })
+local function colorify_lines(args)
+  local buf = args.buf
+
+  if not vim.bo[buf].buflisted then
+    return
+  end
+
+  local winid = vim.fn.bufwinid(buf)
+
+  local min = fn.line("w0", winid) - 1
+  local max = fn.line("w$", winid) + 1
+
+  if args.event == "TextChangedI" then
+    local cur_linenr = fn.line(".", winid) - 1
+    highlight_hex(buf, cur_linenr, api.nvim_get_current_line())
+    highlight_lspvars(buf, cur_linenr)
+    return
+  end
+
+  local lines = api.nvim_buf_get_lines(buf, min, max, false)
+
+  for i, str in ipairs(lines) do
+    highlight_hex(buf, i - 1, str)
+  end
+
+  if vim.bo[buf].buflisted then
+    highlight_lspvars(buf, nil, min, max)
+  end
+
+  if args.event == "BufEnter" and not vim.b[buf].colorify_attached then
+    del_extmarks_on_textchange(buf)
+  end
+end
+
+api.nvim_create_autocmd({
+  "TextChanged",
+  "TextChangedI",
+  "TextChangedP",
+  "VimResized",
+  "LspAttach",
+  "WinScrolled",
+  "BufEnter",
+}, {
+  callback = colorify_lines,
+})
