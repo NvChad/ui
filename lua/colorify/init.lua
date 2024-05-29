@@ -129,7 +129,7 @@ local function colorify_lines(args)
   local lines = api.nvim_buf_get_lines(buf, min, max, false)
 
   for i, str in ipairs(lines) do
-    highlight_hex(buf, i - 1, str)
+    highlight_hex(buf, min + i - 1, str)
   end
 
   highlight_lspvars(buf, nil, min, max)
