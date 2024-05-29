@@ -124,7 +124,7 @@ local handle_deletions = function(args)
   api.nvim_buf_attach(args.buf, false, {
     -- s = start, e == end
     on_bytes = function(_, b, _, s_row, s_col, _, old_e_row, old_e_col, _, _, new_e_col, _)
-      if new_e_col == 0 and old_e_col == 0 then
+      if old_e_row == 0 and new_e_col == 0 and old_e_col == 0 then
         return
       end
 
