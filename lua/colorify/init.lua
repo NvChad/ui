@@ -132,9 +132,7 @@ local function colorify_lines(args)
     highlight_hex(buf, i - 1, str)
   end
 
-  if vim.bo[buf].buflisted then
-    highlight_lspvars(buf, nil, min, max)
-  end
+  highlight_lspvars(buf, nil, min, max)
 
   if args.event == "BufEnter" and not vim.b[buf].colorify_attached then
     del_extmarks_on_textchange(buf)
