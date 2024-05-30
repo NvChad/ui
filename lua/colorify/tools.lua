@@ -26,13 +26,13 @@ M.lighten = function(n)
       vim.g.hex = vim.g.hex or hex
 
       -- reset step
-      if (hex == "#ffffff" and n > 0) or (hex == "#000000" and n < 0) then
+      if (hex:lower() == "#ffffff" and n > 0) or (hex == "#000000" and n < 0) then
         vim.g.hex_n = nil
         return
       end
 
       local new_color = lighten_hex(vim.g.hex, vim.g.hex_n)
-      new_color = vim.g.hex:match "%u" and new_color:upper() or new_color -- maintain the case
+      new_color = vim.g.hex:match "%u" and new_color:upper() or new_color:lower() -- maintain the case
 
       local newline = line:sub(1, col - 1) .. new_color .. line:sub(col + 7)
 
