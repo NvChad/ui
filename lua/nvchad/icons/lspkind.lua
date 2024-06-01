@@ -37,6 +37,7 @@ return {
   Watch = "󰥔",
   Package = "",
   Copilot = "",
-  Codeium = "",
+  Codeium = "",
   TabNine = "",
+  Supermaven = "",
 }
