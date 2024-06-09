@@ -48,7 +48,7 @@ local function format_cmd(cmd)
   return type(cmd) == "string" and cmd or cmd()
 end
 
-local function display(opts)
+M.display = function(opts)
   if opts.pos == "float" then
     create_float(opts.buf, opts.float_opts)
   else
@@ -89,7 +89,7 @@ local function create(opts)
     cmd = { shell, "-c", format_cmd(opts.cmd) .. "; " .. shell }
   end
 
-  display(opts)
+  M.display(opts)
 
   save_term_info(opts.buf, opts)
 
@@ -127,15 +127,15 @@ M.runner = function(opts)
   if x == nil then
     create(opts)
   else
-    -- window isnt visible 
+    -- window isnt visible
     if vim.fn.bufwinid(x.buf) == -1 then
-      display(opts)
+      M.display(opts)
     end
-    
+
     local cmd = format_cmd(opts.cmd)
 
     if x.buf == api.nvim_get_current_buf() then
-      set_buf(g.buf_history[#g.buf_history -1])
+      set_buf(g.buf_history[#g.buf_history - 1])
       cmd = format_cmd(opts.cmd)
       set_buf(x.buf)
     end

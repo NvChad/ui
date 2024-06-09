@@ -9,8 +9,6 @@ local actions = require "telescope.actions"
 local make_entry = require "telescope.make_entry"
 local action_state = require "telescope.actions.state"
 
-local api = vim.api
-
 local function wrapper()
   local term_bufs = vim.g.nvchad_terms or {}
   local buffers = {}
@@ -45,9 +43,9 @@ local function wrapper()
         actions.close(prompt_bufnr)
 
         -- open term only if its window isnt opened
-        if not vim.tbl_contains(api.nvim_list_wins(), vim.fn.bufwinid(entry.bufnr)) then
+        if vim.fn.bufwinid(entry.bufnr) == -1 then
           local termopts = vim.g.nvchad_terms[tostring(entry.bufnr)]
-          require("nvchad.term").toggle(termopts)
+          require("nvchad.term").display(termopts)
         end
       end)
       return true
