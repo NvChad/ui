@@ -36,10 +36,15 @@ end
 local function create_float(buffer, float_opts)
   local opts = vim.tbl_deep_extend("force", config.float, float_opts or {})
 
-  opts.width = math.ceil(opts.width * vim.o.columns)
-  opts.height = math.ceil(opts.height * vim.o.lines)
-  opts.row = math.ceil(opts.row * vim.o.lines)
-  opts.col = math.ceil(opts.col * vim.o.columns)
+  opts.width = opts.width_raw or math.ceil(opts.width * vim.o.columns)
+  opts.height = opts.height_raw or math.ceil(opts.height * vim.o.lines)
+  opts.row = opts.row_raw or math.ceil(opts.row * vim.o.lines)
+  opts.col = opts.col_raw or math.ceil(opts.col * vim.o.columns)
+  -- unset the variable to prevent potential complaints from the system
+  opts.width_raw = nil
+  opts.height_raw = nil
+  opts.row_raw = nil
+  opts.col_raw = nil
 
   vim.api.nvim_open_win(buffer, true, opts)
 end
@@ -127,15 +132,15 @@ M.runner = function(opts)
   if x == nil then
     create(opts)
   else
-    -- window isnt visible 
+    -- window isn't visible
     if vim.fn.bufwinid(x.buf) == -1 then
       display(opts)
     end
-    
+
     local cmd = format_cmd(opts.cmd)
 
     if x.buf == api.nvim_get_current_buf() then
-      set_buf(g.buf_history[#g.buf_history -1])
+      set_buf(g.buf_history[#g.buf_history - 1])
       cmd = format_cmd(opts.cmd)
       set_buf(x.buf)
     end
