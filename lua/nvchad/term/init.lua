@@ -60,11 +60,14 @@ M.display = function(opts)
 
   vim.wo[win].number = false
   vim.wo[win].relativenumber = false
-  -- vim.wo[win].foldcolumn = "0"
-  -- vim.wo[win].signcolumn = "no"
   vim.bo[opts.buf].buflisted = false
   vim.wo[win].winhl = opts.hl or config.hl
   vim.cmd "startinsert"
+
+  if opts.padding == false or (not config.padding and opts.padding == nil) then
+    vim.wo[win].foldcolumn = "0"
+    vim.wo[win].signcolumn = "no"
+  end
 
   -- resize non floating wins initially + or only when they're toggleable
   if (opts.pos == "sp" and not vim.g.nvhterm) or (opts.pos == "vsp" and not vim.g.nvvterm) or (opts.pos ~= "float") then
