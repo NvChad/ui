@@ -1127,6 +1127,7 @@ error("Requring a meta file")
 ---| "'mason'"
 ---| "'navic'"
 ---| "'notify'"
+---| "'neogit'"
 ---| "'nvcheatsheet'"
 ---| "'nvdash'"
 ---| "'nvimtree'"
