@@ -10,6 +10,8 @@ g.nvchad_terms = {}
 local pos_data = {
   sp = { resize = "height", area = "lines" },
   vsp = { resize = "width", area = "columns" },
+  ["bo sp"] = { resize = "height", area = "lines" },
+  ["bo vsp"] = { resize = "width", area = "columns" },
 }
 
 local config = require("nvconfig").ui.term
