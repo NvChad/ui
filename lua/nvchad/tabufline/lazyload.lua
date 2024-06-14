@@ -55,6 +55,25 @@ vim.api.nvim_create_autocmd({ "BufAdd", "BufEnter", "tabnew" }, {
   end,
 })
 
+-- preserve buffer order in tabufline on file write
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    local bufs_new_order
+
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      callback = function()
+        bufs_new_order = vim.t.bufs
+      end,
+    })
+
+    vim.api.nvim_create_autocmd("BufWritePost", {
+      callback = function()
+        vim.t.bufs = bufs_new_order
+      end,
+    })
+  end,
+})
+
 vim.api.nvim_create_autocmd("BufDelete", {
   callback = function(args)
     for _, tab in ipairs(vim.api.nvim_list_tabpages()) do
