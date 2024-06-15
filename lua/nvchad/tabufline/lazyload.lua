@@ -4,7 +4,7 @@ local get_opt = api.nvim_get_option_value
 local cur_buf = api.nvim_get_current_buf
 
 -- store listed buffers in tab local var
-vim.t.bufs = vim.api.nvim_list_bufs()
+vim.t.bufs = vim.t.bufs or vim.api.nvim_list_bufs()
 
 local listed_bufs = {}
 
