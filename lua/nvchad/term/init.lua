@@ -12,7 +12,8 @@ local pos_data = {
   vsp = { resize = "width", area = "columns" },
 }
 
-local config = require("nvconfig").ui.term
+local nvconfig = require "nvconfig"
+local config = nvconfig.term or nvconfig.ui.term
 
 -- used for initially resizing terms
 vim.g.nvhterm = false
@@ -127,15 +128,15 @@ M.runner = function(opts)
   if x == nil then
     create(opts)
   else
-    -- window isnt visible 
+    -- window isnt visible
     if vim.fn.bufwinid(x.buf) == -1 then
       display(opts)
     end
-    
+
     local cmd = format_cmd(opts.cmd)
 
     if x.buf == api.nvim_get_current_buf() then
-      set_buf(g.buf_history[#g.buf_history -1])
+      set_buf(g.buf_history[#g.buf_history - 1])
       cmd = format_cmd(opts.cmd)
       set_buf(x.buf)
     end
