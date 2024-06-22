@@ -14,7 +14,8 @@ local pos_data = {
   ["bo vsp"] = { resize = "width", area = "columns" },
 }
 
-local config = require("nvconfig").ui.term
+local nvconfig = require "nvconfig"
+local config = nvconfig.term or nvconfig.ui.term
 
 -- used for initially resizing terms
 vim.g.nvhterm = false
