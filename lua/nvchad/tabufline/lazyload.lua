@@ -2,6 +2,7 @@ local opts = require("nvconfig").ui.tabufline
 local api = vim.api
 local get_opt = api.nvim_get_option_value
 local cur_buf = api.nvim_get_current_buf
+local autocmd = vim.api.nvim_create_autocmd
 
 -- store listed buffers in tab local var
 vim.t.bufs = vim.t.bufs or vim.api.nvim_list_bufs()
@@ -18,7 +19,7 @@ vim.t.bufs = listed_bufs
 
 -- autocmds for tabufline -> store bufnrs on bufadd, bufenter events
 -- thx to https://github.com/ii14 & stores buffer per tab -> table
-vim.api.nvim_create_autocmd({ "BufAdd", "BufEnter", "tabnew" }, {
+autocmd({ "BufAdd", "BufEnter", "tabnew" }, {
   callback = function(args)
     local bufs = vim.t.bufs
     local is_curbuf = cur_buf() == args.buf
@@ -55,7 +56,7 @@ vim.api.nvim_create_autocmd({ "BufAdd", "BufEnter", "tabnew" }, {
   end,
 })
 
-vim.api.nvim_create_autocmd("BufDelete", {
+autocmd("BufDelete", {
   callback = function(args)
     for _, tab in ipairs(vim.api.nvim_list_tabpages()) do
       local bufs = vim.t[tab].bufs
@@ -88,3 +89,10 @@ else
   vim.o.showtabline = 2
   vim.o.tabline = "%!v:lua.require('nvchad.tabufline.modules')()"
 end
+
+autocmd("FileType", {
+  pattern = "qf",
+  callback = function()
+    vim.opt_local.buflisted = false
+  end,
+})
