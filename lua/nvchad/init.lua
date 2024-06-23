@@ -62,3 +62,7 @@ if vim.version().minor >= 10 then
     end,
   })
 end
+
+vim.schedule(function()
+  require("nvconfig_reload")
+end)
