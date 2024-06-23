@@ -61,10 +61,14 @@ local function display(opts)
 
   vim.wo[win].number = false
   vim.wo[win].relativenumber = false
-  -- vim.wo[win].foldcolumn = "0"
-  -- vim.wo[win].signcolumn = "no"
+
+  local winops = opts.winopts or config.winopts or {}
+
+  for k, v in pairs(winops) do
+    vim.wo[win][k] = v
+  end
+
   vim.bo[opts.buf].buflisted = false
-  vim.wo[win].winhl = opts.hl or config.hl
   vim.cmd "startinsert"
 
   -- resize non floating wins initially + or only when they're toggleable
