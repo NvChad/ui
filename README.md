@@ -11,7 +11,7 @@ Lightweight &amp; performant ui plugin for nvchad providing the following :
 # Default config 
 
 - Refer [NvChad docs](https://nvchad.com/docs/config/nvchad_ui) for detailed info
-- Also check the [nvconfig.lua](https://github.com/NvChad/NvChad/blob/v2.5/lua/nvconfig.lua)
+- Also check the [nvconfig.lua](https://github.com/NvChad/ui/blob/v2.5/lua/nvconfig.lua)
 
 # Credits
 
