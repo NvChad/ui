@@ -1,3 +1,4 @@
+---@type ChadrcConfig
 local options = {
 
   ui = {
