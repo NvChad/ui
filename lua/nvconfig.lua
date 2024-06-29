@@ -2,7 +2,6 @@
 local options = {
 
   ui = {
-    ------------------------------- base46 -------------------------------------
     -- hl = highlights
     hl_add = {},
     hl_override = {},
@@ -19,7 +18,6 @@ local options = {
 
     telescope = { style = "borderless" }, -- borderless / bordered
 
-    ------------------------------- nvchad_ui modules -----------------------------
     statusline = {
       theme = "default", -- default/vscode/vscode_colored/minimal
       -- default/round/block/arrow separators work only for default statusline theme

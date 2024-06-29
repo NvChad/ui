@@ -1,30 +1,44 @@
 local M = {}
-local conform_pkgs = require "nvchad.mason.pkgnames.conform"
-local lsp_pkgs = require "nvchad.mason.pkgnames.lsp"
+local masonames = require "nvchad.mason.names"
 
 local get_pkgs = function(data)
+  local tools = data or {}
+
   local lsps = require("lspconfig.util").available_servers()
-  local formatters = require("conform").list_all_formatters()
+  tools = vim.list_extend(tools, lsps)
 
-  local pkgnames = data or {}
+  local conform_exists, conform = pcall(require, "conform")
 
-  -- conform formatters
-  for _, v in ipairs(formatters) do
-    local pkg = conform_pkgs[v.name]
+  if conform_exists then
+    local formatters = conform.list_all_formatters()
 
-    if pkg then
-      table.insert(pkgnames, pkg)
+    local formatters_names = vim.tbl_map(function(formatter)
+      return formatter.name
+    end, formatters)
+
+    tools = vim.list_extend(tools, formatters_names)
+  end
+
+  local lint_exists, lint = pcall(require, "lint")
+
+  if lint_exists then
+    local linters = lint.linters_by_ft
+
+    for _, v in pairs(linters) do
+      table.insert(tools, v[1])
     end
   end
 
-  -- lspconfig lsps
-  for _, v in ipairs(lsps) do
-    if lsp_pkgs[v] then
-      table.insert(pkgnames, lsp_pkgs[v])
+  -- rm duplicates
+  local pkgs = {}
+
+  for _, v in pairs(tools) do
+    if not (vim.tbl_contains(pkgs, masonames[v])) then
+      table.insert(pkgs, masonames[v])
     end
   end
 
-  return pkgnames
+  return pkgs
 end
 
 M.install_all = function(data)
