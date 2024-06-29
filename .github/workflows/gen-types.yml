@@ -1,0 +1,52 @@
+name: Generate nvchad_types
+
+on:
+  schedule:
+    - cron: "30 6 * * *"
+  workflow_dispatch:
+
+jobs:
+  update-types:
+    name: Update NvChad Types
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: v2.5
+      
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ vars.TOKEN_ID }}
+          private-key: ${{ secrets.TOKEN_PRIVATE_KEY }}
+
+      - name: Prepare
+        env:
+          NVIM_TAG: stable
+        run: |
+          wget https://github.com/neovim/neovim/releases/download/${NVIM_TAG}/nvim-linux64.tar.gz
+          tar -zxf nvim-linux64.tar.gz
+          sudo ln -s "$PWD"/nvim-linux64/bin/nvim /usr/local/bin
+          mkdir -p ~/.local/share/nvim/site/pack/ui/start
+          ln -s "$PWD" ~/.local/share/nvim/site/pack/ui/start
+          mkdir -p ~/.local/share/nvim/site/pack/base46/start
+          cd ~/.local/share/nvim/site/pack/base46/start
+          git clone https://github.com/NvChad/base46
+      
+      - name: Update Types
+        run: nvim -l scripts/update-types.lua
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          author: "NvChad-bot[bot]"
+          commit-message: "bot(types): update types"
+          title: "Update nvchad_types"
+          branch: update-nvchad-types
+          base: ${{ github.head_ref }}
+
+      - name: Enable Pull Request Automerge
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: gh pr merge --rebase --auto update-nvchad-types
