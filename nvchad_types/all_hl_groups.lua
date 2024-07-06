@@ -1231,7 +1231,6 @@ error("Requring a meta file")
 ---@field ["'@comment.note'"] Base46HLGroups # highlight group for treesitter
 ---@field ["'@comment.danger'"] Base46HLGroups # highlight group for treesitter
 ---@field ["'@comment'"] Base46HLGroups # highlight group for treesitter
----@field ["'@character.special'"] Base46HLGroups # highlight group for treesitter
 ---@field ["'@character'"] Base46HLGroups # highlight group for treesitter
 ---@field ["'@attribute'"] Base46HLGroups # highlight group for treesitter
 ---@field ["'@annotation'"] Base46HLGroups # highlight group for treesitter
