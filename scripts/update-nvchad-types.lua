@@ -1,3 +1,5 @@
+-- All credits to @lucario as he has made all of this type stuff
+
 local chadrc = pcall(require, "chadrc")
 
 if not chadrc then
