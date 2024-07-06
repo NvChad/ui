@@ -1,17 +1,6 @@
-vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-  border = "single",
-})
-
-vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
-  border = "single",
-  focusable = false,
-  relative = "cursor",
-  silent = true,
-})
-
 local M = {}
 
-M.check_triggeredChars = function(triggerChars)
+local function check_triggeredChars(triggerChars)
   local cur_line = vim.api.nvim_get_current_line()
   local pos = vim.api.nvim_win_get_cursor(0)[2]
 
@@ -34,7 +23,7 @@ M.setup = function(client, bufnr)
     group = group,
     buffer = bufnr,
     callback = function()
-      if M.check_triggeredChars(triggerChars) then
+      if check_triggeredChars(triggerChars) then
         vim.lsp.buf.signature_help()
       end
     end,
