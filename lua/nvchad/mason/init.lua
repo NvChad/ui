@@ -31,15 +31,6 @@ local get_pkgs = function(data)
 
   local pkgs = {}
 
-  -- add data to pkgs and remove duplicates
-  if data then
-    for _, v in pairs(data) do
-      if not (vim.tbl_contains(pkgs, v)) then
-        table.insert(pkgs, v)
-      end
-    end
-  end
-
   -- add tools corresponding packages to pkgs
   for _, v in pairs(tools) do
     if not (vim.tbl_contains(pkgs, masonames[v])) then
@@ -47,7 +38,7 @@ local get_pkgs = function(data)
     end
   end
 
-  return pkgs
+  return vim.list_extend(pkgs, data or {})
 end
 
 M.install_all = function(data)
