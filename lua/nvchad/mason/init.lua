@@ -31,7 +31,7 @@ local get_pkgs = function(data)
 
   local pkgs = {}
 
-  -- add tools corresponding packages to pkgs
+  -- rm duplicates
   for _, v in pairs(tools) do
     if not (vim.tbl_contains(pkgs, masonames[v])) then
       table.insert(pkgs, masonames[v])
