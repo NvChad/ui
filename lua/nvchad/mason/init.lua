@@ -2,7 +2,7 @@ local M = {}
 local masonames = require "nvchad.mason.names"
 
 local get_pkgs = function(data)
-  local tools = data or {}
+  local tools = {}
 
   local lsps = require("lspconfig.util").available_servers()
   tools = vim.list_extend(tools, lsps)
@@ -29,16 +29,16 @@ local get_pkgs = function(data)
     end
   end
 
-  -- rm duplicates
   local pkgs = {}
 
+  -- rm duplicates
   for _, v in pairs(tools) do
     if not (vim.tbl_contains(pkgs, masonames[v])) then
       table.insert(pkgs, masonames[v])
     end
   end
 
-  return pkgs
+  return vim.list_extend(pkgs, data or {})
 end
 
 M.install_all = function(data)
