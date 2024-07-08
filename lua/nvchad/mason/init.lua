@@ -25,7 +25,7 @@ local get_pkgs = function(data)
     local linters = lint.linters_by_ft
 
     for _, v in pairs(linters) do
-      table.insert(tools, v[1])
+      vim.list_extend(tools, v)
     end
   end
 
