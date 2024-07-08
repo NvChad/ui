@@ -332,7 +332,7 @@ return {
 
   -- nvim-lint
   actionlint = "actionlint",
-  ansible_lint = "ansible_lint",
+  ansible_lint = "ansible-lint",
   buf_lint = "buf",
   ["cfn_lint"] = "cfn-lint",
   checkstyle = "checkstyle",
@@ -346,6 +346,7 @@ return {
   gdlint = "gdtoolkit",
   golangcilint = "golangci-lint",
   hadolint = "hadolint",
+  htmlhint = "htmlhint",
   jsonlint = "jsonlint",
   luacheck = "luacheck",
   mypy = "mypy",
@@ -358,6 +359,7 @@ return {
   revive = "revive",
   rstcheck = "rstcheck",
   selene = "selene",
+  snyk = "snyk",
   solhint = "solhint",
   tfsec = "tfsec",
   trivy = "trivy",
@@ -365,4 +367,5 @@ return {
   vint = "vint",
   vulture = "vulture",
   yamllint = "yamllint",
+  checkmake = "checkmake",
 }

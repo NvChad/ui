@@ -12,11 +12,11 @@ local get_pkgs = function(data)
   if conform_exists then
     local formatters = conform.list_all_formatters()
 
-    local formatters_names = vim.tbl_map(function(formatter)
+    local formatter_names = vim.tbl_map(function(formatter)
       return formatter.name
     end, formatters)
 
-    tools = vim.list_extend(tools, formatters_names)
+    tools = vim.list_extend(tools, formatter_names)
   end
 
   local lint_exists, lint = pcall(require, "lint")
