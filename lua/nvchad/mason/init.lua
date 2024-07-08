@@ -1,7 +1,7 @@
 local M = {}
 local masonames = require "nvchad.mason.names"
 
-local get_pkgs = function(data)
+M.get_pkgs = function(data)
   local tools = {}
 
   local lsps = require("lspconfig.util").available_servers()
@@ -47,7 +47,7 @@ M.install_all = function(data)
   local mr = require "mason-registry"
 
   mr.refresh(function()
-    for _, tool in ipairs(get_pkgs(data)) do
+    for _, tool in ipairs(M.get_pkgs(data)) do
       local p = mr.get_package(tool)
 
       if not p:is_installed() then
