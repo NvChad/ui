@@ -29,7 +29,7 @@ M.get_pkgs = function(data)
     end
   end
 
-  local pkgs = {}
+  local pkgs = data or {}
 
   -- rm duplicates
   for _, v in pairs(tools) do
@@ -38,7 +38,7 @@ M.get_pkgs = function(data)
     end
   end
 
-  return vim.list_extend(pkgs, data or {})
+  return pkgs
 end
 
 M.install_all = function(data)
