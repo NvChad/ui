@@ -1,22 +1,22 @@
 local M = {}
 local masonames = require "nvchad.mason.names"
 
-local get_pkgs = function(data)
+M.get_pkgs = function(data)
   local tools = {}
 
   local lsps = require("lspconfig.util").available_servers()
-  tools = vim.list_extend(tools, lsps)
+  vim.list_extend(tools, lsps)
 
   local conform_exists, conform = pcall(require, "conform")
 
   if conform_exists then
     local formatters = conform.list_all_formatters()
 
-    local formatters_names = vim.tbl_map(function(formatter)
+    local formatter_names = vim.tbl_map(function(formatter)
       return formatter.name
     end, formatters)
 
-    tools = vim.list_extend(tools, formatters_names)
+    vim.list_extend(tools, formatter_names)
   end
 
   local lint_exists, lint = pcall(require, "lint")
@@ -25,11 +25,11 @@ local get_pkgs = function(data)
     local linters = lint.linters_by_ft
 
     for _, v in pairs(linters) do
-      table.insert(tools, v[1])
+      vim.list_extend(tools, v)
     end
   end
 
-  local pkgs = {}
+  local pkgs = data or {}
 
   -- rm duplicates
   for _, v in pairs(tools) do
@@ -38,7 +38,7 @@ local get_pkgs = function(data)
     end
   end
 
-  return vim.list_extend(pkgs, data or {})
+  return pkgs
 end
 
 M.install_all = function(data)
@@ -47,7 +47,7 @@ M.install_all = function(data)
   local mr = require "mason-registry"
 
   mr.refresh(function()
-    for _, tool in ipairs(get_pkgs(data)) do
+    for _, tool in ipairs(M.get_pkgs(data)) do
       local p = mr.get_package(tool)
 
       if not p:is_installed() then
