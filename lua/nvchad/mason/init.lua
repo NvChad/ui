@@ -5,7 +5,7 @@ M.get_pkgs = function(data)
   local tools = {}
 
   local lsps = require("lspconfig.util").available_servers()
-  tools = vim.list_extend(tools, lsps)
+  vim.list_extend(tools, lsps)
 
   local conform_exists, conform = pcall(require, "conform")
 
@@ -16,7 +16,7 @@ M.get_pkgs = function(data)
       return formatter.name
     end, formatters)
 
-    tools = vim.list_extend(tools, formatter_names)
+    vim.list_extend(tools, formatter_names)
   end
 
   local lint_exists, lint = pcall(require, "lint")
