@@ -17,8 +17,11 @@ if config.lsp.signature then
     callback = function(args)
       local client = vim.lsp.get_client_by_id(args.data.client_id)
 
-      if client and client.server_capabilities.signatureHelpProvider then
-        require("nvchad.lsp.signature").setup(client, args.buf)
+      if client then
+        local signatureProvider = client.server_capabilities.signatureHelpProvider
+        if signatureProvider and signatureProvider.triggerCharacters then
+          require("nvchad.lsp.signature").setup(client, args.buf)
+        end
       end
     end,
   })
