@@ -82,6 +82,7 @@ M.display = function(opts)
   end
 
   api.nvim_win_set_buf(win, opts.buf)
+  save_term_info(opts.buf, opts)
 end
 
 local function create(opts)
