@@ -32,6 +32,7 @@ return {
   Boolean = "",
   Number = "",
   Null = "󰟢",
+  Supermaven = "",
   String = "󰉿",
   Calendar = "",
   Watch = "󰥔",
