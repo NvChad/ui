@@ -1,4 +1,7 @@
 local M = {}
+vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+  focusable = false,
+})
 
 local function check_triggeredChars(triggerChars)
   local cur_line = vim.api.nvim_get_current_line()
