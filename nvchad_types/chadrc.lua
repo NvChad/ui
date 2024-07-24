@@ -135,9 +135,6 @@
 ---@class NvLspConfig
 ---@field signature? boolean showing LSP function signatures as you type
 
----@class TermWinOpts
----@field winhl string
-
 ---@class TermSizes
 ---@field sp number
 ---@field vsp number
@@ -153,6 +150,6 @@
 ---@field border string
 
 ---@class TermConfig
----@field winopts TermWinOpts
----@field sizes TermSizes
----@field float TermFloat
+---@field winopts? table
+---@field sizes? TermSizes
+---@field float? TermFloat
