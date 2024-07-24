@@ -61,15 +61,6 @@ M.display = function(opts)
   local win = api.nvim_get_current_win()
   opts.win = win
 
-  vim.wo[win].number = false
-  vim.wo[win].relativenumber = false
-
-  local winops = opts.winopts or config.winopts or {}
-
-  for k, v in pairs(winops) do
-    vim.wo[win][k] = v
-  end
-
   vim.bo[opts.buf].buflisted = false
   vim.cmd "startinsert"
 
@@ -82,6 +73,12 @@ M.display = function(opts)
   end
 
   api.nvim_win_set_buf(win, opts.buf)
+
+  local winopts = vim.tbl_deep_extend("force", config.winopts, opts.winopts or {})
+
+  for k, v in pairs(winopts) do
+    vim.wo[win][k] = v
+  end
 end
 
 local function create(opts)

@@ -62,7 +62,7 @@ local options = {
   },
 
   term = {
-    winopts = { winhl = "Normal:term,WinSeparator:WinSeparator" },
+    winopts = { number = false, relativenumber = false },
     sizes = { sp = 0.3, vsp = 0.2, ["bo sp"] = 0.3, ["bo vsp"] = 0.2 },
     float = {
       relative = "editor",
