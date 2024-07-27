@@ -81,6 +81,8 @@ local options = {
     theme = "grid", -- simple/grid
     excluded_groups = { "terminal (t)", "autopairs", "Nvim", "Opens" }, -- can add group name or with mode
   },
+
+  mason = { cmd = true, pkgs = {} },
 }
 
 return vim.tbl_deep_extend("force", options, require "chadrc")

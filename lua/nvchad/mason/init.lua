@@ -19,6 +19,7 @@ M.get_pkgs = function(data)
     vim.list_extend(tools, formatter_names)
   end
 
+  -- nvim-lint
   local lint_exists, lint = pcall(require, "lint")
 
   if lint_exists then

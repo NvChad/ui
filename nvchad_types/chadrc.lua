@@ -6,6 +6,7 @@
 ---@field lsp? NvLspConfig
 ---@field term? TermConfig
 ---@field cheatsheet? NvCheatsheetConfig
+---@field mason? MasonConfig
 
 ---@class Base46Config
 --- List of highlights group to add.
@@ -153,3 +154,7 @@
 ---@field winopts? table
 ---@field sizes? TermSizes
 ---@field float? TermFloat
+
+---@class MasonConfig
+---@field command? boolean
+---@field pkgs? string[]
