@@ -1,15 +1,16 @@
----@type ChadrcConfig
 local options = {
 
-  ui = {
-    -- hl = highlights
+  base46 = {
+    theme = "onedark", -- default theme
     hl_add = {},
     hl_override = {},
+    integrations = {},
     changed_themes = {},
-    theme_toggle = { "onedark", "one_light" },
-    theme = "onedark", -- default theme
     transparency = false,
+    theme_toggle = { "onedark", "one_light" },
+  },
 
+  ui = {
     cmp = {
       icons = true,
       lspkind_text = true,
@@ -72,10 +73,6 @@ local options = {
       height = 0.4,
       border = "single",
     },
-  },
-
-  base46 = {
-    integrations = {},
   },
 
   lsp = { signature = true },
