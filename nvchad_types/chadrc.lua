@@ -120,17 +120,18 @@
 --- Each string is one line
 ---@field header? string[],
 --- List of buttons to show on the dashboard
----@field buttons? NvDashButtonConfig[] | function[]
+---@field buttons? NvDashButtonConfig[]
+
+---@class NvDashButtonConfig
+---@field txt string | function
+---@field hl? string name of the highlight group
+---@field no_gap? boolean true by default, this wont make next line empty
+---@field rep? boolean used to repeat txt till space available, use only when txt is 1 char
 
 ---@class NvCheatsheetConfig
 --- Cheatsheet theme
 ---@field theme? '"grid"'|'"simple"'
 ---@field excluded_groups? string[]
-
----@class NvDashButtonConfig
----@field [1] string Description for the button
----@field [2] string sequence of keys to press to trigger the keybind
----@field [3] string|fun() A Vim Command/A Lua function to be triggered when pressing the keybind/pressing enter on the line with the description on the dashboard
 
 ---Options for NvChad/ui lsp configuration
 ---@class NvLspConfig
