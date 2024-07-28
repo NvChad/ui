@@ -28,8 +28,6 @@ return function()
 
   require("nvchad.cheatsheet").organize_mappings(mappings_tb)
 
-  vim.g.nv_previous_buf = api.nvim_get_current_buf()
-
   local buf = api.nvim_create_buf(false, true)
   require("nvchad.cheatsheet").create_fullsize_win(buf)
 
