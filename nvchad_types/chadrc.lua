@@ -123,7 +123,7 @@
 ---@field buttons? NvDashButtonConfig[]
 
 ---@class NvDashButtonConfig
----@field txt string | function
+---@field txt string | (fun(): string) # Descrption of the button
 ---@field hl? string name of the highlight group
 ---@field no_gap? boolean true by default, this wont make next line empty
 ---@field rep? boolean used to repeat txt till space available, use only when txt is 1 char
