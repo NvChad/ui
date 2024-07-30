@@ -61,7 +61,7 @@ local options = {
         { txt = "󱥚  Themes", keys = "Spc t h", cmd = "Telescope themes" },
         { txt = "  Mappings", keys = "Spc c h", cmd = "NvCheatsheet" },
 
-        { txt = "-", hl = "NvDashLazy", no_gap = true, rep = true },
+        { txt = "─", hl = "NvDashLazy", no_gap = true, rep = true },
 
         {
           txt = function()
@@ -73,7 +73,7 @@ local options = {
           no_gap = true,
         },
 
-        { txt = "-", hl = "NvDashLazy", no_gap = true, rep = true },
+        { txt = "─", hl = "NvDashLazy", no_gap = true, rep = true },
       },
     },
   },
