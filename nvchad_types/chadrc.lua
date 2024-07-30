@@ -7,6 +7,7 @@
 ---@field term? TermConfig
 ---@field cheatsheet? NvCheatsheetConfig
 ---@field mason? MasonConfig
+---@field colorify? ColorifyConfig
 
 ---@class Base46Config
 --- List of highlights group to add.
@@ -159,3 +160,13 @@
 ---@class MasonConfig
 ---@field command? boolean
 ---@field pkgs? string[]
+
+---@class ColorifyConfig
+---@field enabled? boolean
+---@field mode? "fg"|"bg"|"virtual"
+---@field virt_text? string
+---@field highlight? ColorifyHL
+
+---@class ColorifyHL
+---@field hex? boolean
+---@field lspvars? boolean
