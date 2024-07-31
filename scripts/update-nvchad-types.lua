@@ -27,7 +27,7 @@ local gen_themes = function()
   local contents = {
     "---@meta",
     "--- Don't edit or require this file",
-    "error(\"Requring a meta file\")",
+    "error(\"Requiring a meta file\")",
     "",
     "---@type ThemeName",
     "vim.g.nvchad_theme = 'onedark'",
@@ -61,7 +61,7 @@ local gen_highlights = function()
     "---@meta",
     "",
     "--- Don't edit or require this file",
-    "error(\"Requring a meta file\")",
+    "error(\"Requiring a meta file\")",
     "",
     "---@class HLGroups",
     "",
