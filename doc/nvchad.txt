@@ -16,7 +16,7 @@ https://github.com/NvChad/base46
 1. Introduction                                            *nvchad.chadrc.intro*
 
 The file `lua/chadrc.lua` is a config file used to customize NvChad's Base46
-& UI plugin and it needs to return a table.
+& UI plugin and it needs to return a table, example :
 >lua
  local M = {}
 
@@ -28,16 +28,26 @@ The file `lua/chadrc.lua` is a config file used to customize NvChad's Base46
  return M
 
 ------------------------------------------------------------------------------
-2.1 UI & Base46 plugin setup                               *nvchad.plugin-setup*
+2.1 UI & Base46 plugin setup                             *nvchad.plugin-install*
 >lua
  { "nvim-lua/plenary.nvim", lazy = true },
+
  { "NvChad/ui", lazy = false },
+
  {
     "NvChad/base46",
     lazy = true,
     build = function()
       require("base46").load_all_highlights()
     end,
+ },
+
+ {
+   "nvim-tree/nvim-web-devicons",
+   opts = function()
+     dofile(vim.g.base46_cache .. "devicons")
+     return { override = require "nvchad.icons.devicons" }
+   end,
  },
 
 ==============================================================================
@@ -138,6 +148,15 @@ options.
    cheatsheet = {
      theme = "grid", -- simple/grid
      excluded_groups = { "terminal (t)", "autopairs", "Nvim", "Opens" }, -- can add group name or with mode
+   },
+
+   mason = { cmd = true, pkgs = {} },
+
+   colorify = {
+     enabled = true,
+     mode = "virtual", -- fg, bg, virtual
+     virt_text = "󱓻 ",
+     highlight = { hex = true, lspvars = true },
    },
  }
 
@@ -405,14 +424,50 @@ As Cmd can be a function too, here's a complex example :
 ==============================================================================
 7. Base46 theming                                                *nvchad.base46*
 
+			     How does it work?
+                             ─────────────────
+
+             |Functionality|                           
+┌──────────────────────────────────────┐              Base46 compiles them
+│  Theme file with colors             │            ┌───────────────────────┬┐
+│  Integrations i.e highlight groups  ├───────────►│ `Highlight cache files` ││
+│  User highlight groups & overrides  │            └────┬──────────────────┴┘
+│  Theme specific highlight overrides │                 │
+└──────────────────────────────────────┘                 │
+                                                         │ (example)  
+                                             ┌───────┬───┴───┬────────┐
+                                             │       │       │        │
+                                             ▼       ▼       ▼        ▼
+                                         defaults   cmp  treesitter  nvim-tree
+
+
+- So basically base46 compiles the highlight groups with modifications into 
+  cache files. Running the cache file will load highlight groups.
+
+Note:
+To load the cache file, use the |dofile| function
+>lua
+ dofile(vim.g.base46_cache .. "syntax")
+
 Set the |base46_cache| global before initializing plugins.
 >lua
  vim.g.base46_cache = vim.fn.stdpath "data" .. "/base46" 
 
-In main init.lua
+These are the default highlight groups, load them in init.lua
 >lua
+ dofile(vim.g.base46_cache .. "syntax")
  dofile(vim.g.base46_cache .. "defaults")
  dofile(vim.g.base46_cache .. "statusline")
+
+Then load the cache files individually, like : 
+>lua
+  {
+    "nvim-treesitter/nvim-treesitter",
+    config = function()
+      dofile(vim.g.base46_cache .. "treesitter")
+      require("nvim-treesitter.configs").setup()
+    end,
+  }
 
 Note: You can load all cache files at once instead of lazyloding them
 >lua
