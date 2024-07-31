@@ -1,7 +1,7 @@
 ---@meta
 
 --- Don't edit or require this file
-error("Requring a meta file")
+error "Requiring a meta file"
 
 ---@class HLGroups
 ---@field healthSuccess Base46HLGroups # highlight group for defaults
