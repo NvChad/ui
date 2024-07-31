@@ -65,7 +65,7 @@ local function switcher()
         if action_state.get_selected_entry() then
           local chadrc = dofile(vim.fn.stdpath "config" .. "/lua/chadrc.lua")
 
-          local old_theme = chadrc.ui.theme or chadrc.base46.theme
+          local old_theme = chadrc.ui and chadrc.ui.theme or chadrc.base46.theme
           old_theme = 'theme = "' .. old_theme .. '"'
 
           local theme = 'theme = "' .. action_state.get_selected_entry()[1] .. '"'
