@@ -43,10 +43,8 @@ end
 autocmd("VimResized", {
   callback = function()
     if vim.bo.ft == "nvdash" then
-      vim.cmd "bw"
       require("nvchad.nvdash").open()
     elseif vim.bo.ft == "nvcheatsheet" then
-      vim.cmd "bw"
       require("nvchad.cheatsheet." .. config.cheatsheet.theme)()
     end
   end,

@@ -16,8 +16,6 @@ return function()
   require("nvchad.cheatsheet").organize_mappings(mappings_tb)
 
   local buf = api.nvim_create_buf(false, true)
-  require("nvchad.cheatsheet").create_fullsize_win(buf)
-
   local win = api.nvim_get_current_win()
 
   api.nvim_set_current_win(win)
@@ -139,6 +137,6 @@ return function()
   require("nvchad.utils").set_cleanbuf_opts "nvcheatsheet"
 
   vim.keymap.set("n", "<ESC>", function()
-    vim.cmd "q"
+    require("nvchad.tabufline").close_buffer()
   end, { buffer = buf })
 end
