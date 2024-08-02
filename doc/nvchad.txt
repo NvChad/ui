@@ -1,7 +1,7 @@
-*nvchad* Base46 and UI plugin config file
+*nvchad* base46 and UI 
 
-https://github.com/NvChad/ui 
-https://github.com/NvChad/base46
+These are docs for configuring both
+
 
                            `  ▄▄         ▄ ▄▄▄▄▄▄▄  `
                            `▄▀███▄     ▄██ █████▀ `
@@ -13,7 +13,41 @@ https://github.com/NvChad/base46
                            `  ▀ ▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀`
 
 ==============================================================================
-1. Introduction                                            *nvchad.chadrc.intro*
+CONTENTS                                                       *nvchad-contents* 
+
+ 1. `Introduction`                                      |nvchad.intro|
+    1.1 UI & Base46 Plugin Install                    |nvchad.plugin-install|
+ 
+ 2. `Default Chadrc Options`                            |nvchad.chadrc.options|
+ 
+ 3. `Tabufline`                                         |nvchad.ui.tabufline|
+    3.1 Api functions                                 |nvchad.ui.tabufline.api|
+ 
+ 4. `Statusline`                                        |nvchad.ui.statusline|
+ 
+ 5. `Lsp`                                               |nvchad.lsp|
+    5.1 Signature Help                                |nvchad.lsp.signature|
+    5.2 Renamer                                       |nvchad.lsp.renamer|
+ 
+ 6. `Cheatsheet`                                        |nvchad.cheatsheet|
+ 
+ 7. `Term`                                              |nvchad.term|
+    7.1 New Window                                    |nvchad.term.new|
+    7.2 Toggle Window                                 |nvchad.term.toggle|
+    7.3 Code Runner                                   |nvchad.term.runner|
+ 
+ 8. `Base46 Theming`                                    |nvchad.base46|
+    8.1 Highlight Override                            |nvchad.base46.highlights|
+    8.2 Customize Themes                              |nvchad.base46.edit_themes|
+    8.3 Integrations                                  |nvchad.base46.integrations|
+    8.4 Local Themes                                  |nvchad.base46.local_themes|
+ 
+ 9. `Telescope Extensions`                              |nvchad.telescope|
+    9.1 Base46 Themes                                 |nvchad.telescope.themes|
+    9.2 Term Picker                                   |nvchad.telescope.terms|
+
+==============================================================================
+1. Introduction                                                   *nvchad.intro*
 
 			     How does it work?
                              ─────────────────
@@ -50,7 +84,7 @@ The file `lua/chadrc.lua` is user's config file used to customize NvChad's Base4
  return M
 <
 ------------------------------------------------------------------------------
-2.1 UI & Base46 plugin setup                             *nvchad.plugin-install*
+1.1 UI & Base46 plugin setup                             *nvchad.plugin-install*
 >lua
  { "nvim-lua/plenary.nvim", lazy = true },
 
@@ -184,7 +218,7 @@ options.
 <
  
 ==============================================================================
-2. Tabufline                                               *nvchad.ui.tabufline*
+3. Tabufline                                               *nvchad.ui.tabufline*
 
 A tabline which shows UI for `buffers` & `tabs`
 
@@ -227,7 +261,7 @@ OR You can use our util functions
  txt("hi", "HlGroup")
 <
 -----------------------------------------------------------------------------
-2.1 Tabufline API                                     *nvchad.ui.tabufline.api*
+3.1 Tabufline API                                     *nvchad.ui.tabufline.api*
 
 These are some useful |functions| to use the tabufline
 
@@ -265,7 +299,7 @@ This example maps Alt+number keys to switch buffer
  end
 <
 ==============================================================================
-3. Statusline                                             *nvchad.ui.statusline*
+4. Statusline                                             *nvchad.ui.statusline*
 
 NvChad's statusline is minimal & customizable with least amount of abstraction
 for custom modules, it has 4 themes.
@@ -305,10 +339,10 @@ Order: ~
     `https://github.com/NvChad/ui/blob/v2.5/lua/nvchad/stl/utils.lua#L12`
 
 ==============================================================================
-4. LSP                                                              *nvchad.lsp*
+5. LSP                                                              *nvchad.lsp*
 
 ------------------------------------------------------------------------------
-4.1 Signature Help                                        *nvchad.lsp.signature*
+5.1 Signature Help                                        *nvchad.lsp.signature*
 
 Enables signature help for LSP, whenever you're inside a function call, the
 signature popup window will be shown.
@@ -318,14 +352,14 @@ signature popup window will be shown.
  }
 <
 ------------------------------------------------------------------------------
-4.2 Renamer                                                 *nvchad.lsp.renamer*
+5.2 Renamer                                                 *nvchad.lsp.renamer*
 
 This is a function will will rename variable under cursor
 >lua
  require "nvchad.lsp.renamer"()
 
 ==============================================================================
-5. Cheatsheet                                                *nvchad.cheatsheet*
+6. Cheatsheet                                                *nvchad.cheatsheet*
 
 This shows mappings in a pretty cheatsheet format on the buffer
 >lua
@@ -343,7 +377,7 @@ Notes:
   which had |(t)| in it.
 
 ==============================================================================
-6. Term                                                            *nvchad.term*
+7. Term                                                            *nvchad.term*
 
 Terminal module with useful functions to spawn & toggle terminals at different
 positions & with commands 
@@ -374,7 +408,7 @@ winopts: ~
 
 
 ------------------------------------------------------------------------------
-6.1 Terminal API                                               *nvchad.term.api*
+7.1 Terminal API                                               *nvchad.term.api*
 
 These are the functions which open the terminal based on options provided
 
@@ -391,13 +425,13 @@ Available options are:
  }
 <
 ------------------------------------------------------------------------------
-`New Window`                                                     *nvchad.term.new*
+7.2 New Window                                                 *nvchad.term.new*
 >lua
  require("nvchad.term").new { pos = "sp", size = 0.3 }
  require("nvchad.term").new { pos = "vsp", cmd = "neofetch"}
 <
 -------------------------------------------------------------------------------
-`Toggle Window`                                                *nvchad.term.toggle*
+7.3 Toggle Window                                            *nvchad.term.toggle*
 
 This function toggles the terminal window, make sure to provide an unique id.
 >lua
@@ -411,7 +445,7 @@ This function toggles the terminal window, make sure to provide an unique id.
  end)
 <
 -------------------------------------------------------------------------------
-`Code Runner`                                                  *nvchad.term.runner*
+7.4 Code Runner                                              *nvchad.term.runner*
 
 This function will first open a terminal + runs the cmd.
 Calling the function again will run the cmd in that terminal window
@@ -444,7 +478,7 @@ As Cmd can be a function too, here's a complex example :
  }
 <
 ==============================================================================
-7. Base46 theming                                                *nvchad.base46*
+8. Base46 theming                                                *nvchad.base46*
 
 			     How does it work?
                              ─────────────────
@@ -498,7 +532,7 @@ Note: You can load all cache files at once instead of lazyloding them
  end
 <
 ------------------------------------------------------------------------------
-7.1 Highlight override                                *nvchad.base46.highlights*
+8.1 Highlight override                                *nvchad.base46.highlights*
 
 - Make sure you use a valid highlight group.
 - Check your theme colors in the base46 theme dir
@@ -524,7 +558,7 @@ Note: You can load all cache files at once instead of lazyloding them
 - To add new highlight groups, use |hl_add|
 
 ------------------------------------------------------------------------------
-7.2 Customize themes                                 *nvchad.base46.edit_themes*
+8.2 Customize themes                                 *nvchad.base46.edit_themes*
 
 If you just want to customize an already existing theme, you can use
 `base46.changed_themes` option
@@ -544,7 +578,7 @@ If you just want to customize an already existing theme, you can use
  }
 <
 ------------------------------------------------------------------------------
-7.2 Base46 integrations                             *nvchad.base46.integrations*
+8.3 Base46 integrations                             *nvchad.base46.integrations*
 
 An integration file is a group of highlight groups, for example cmp
 integration, telescope etc.
@@ -576,7 +610,7 @@ It's preferred to just put the dofile code in your plugin's config func
  }
 <
 ------------------------------------------------------------------------------
-7.3 Local themes                                    *nvchad.base46.local_themes*
+8.4 Local themes                                    *nvchad.base46.local_themes*
 
 Just put the theme file in `lua/themes/` folder 
 
@@ -585,13 +619,13 @@ and check the base46 readme for theme file structure
 |https://github.com/NvChad/base46?tab=readme-ov-file#understanding-theme-variables|
 
 ==============================================================================
-8. Telescope extensions                                       *nvchad.telescope*
+9. Telescope extensions                                       *nvchad.telescope*
 
 There are 2 telescope extensions available : 
  |themes|, |terms|
 
 ------------------------------------------------------------------------------
-8.1 Base46 themes                                       *nvchad.telescope.themes*
+9.1 Base46 themes                                       *nvchad.telescope.themes*
 
 - This will list all base46 themes in telescope window and cycling over them
   will change themes on fly, pressing enter will save the theme to chadrc.lua
@@ -599,12 +633,11 @@ There are 2 telescope extensions available :
 Command : `Telescope themes`
 
 ------------------------------------------------------------------------------
-8.2 Term picker                                          *nvchad.telescope.terms*
+9.2 Term picker                                          *nvchad.telescope.terms*
 
 - Terminals closed with |require("nvchad.tabufline").close_buffer()| will be
   hidden, you can check `Telescope terms` command to view them back and
   pressing |enter| or |C-v| or |C-x| will unhide the terminal.
-
 
 
 vim:tw=78:ts=8:noet:ft=help:norl:
