@@ -37,8 +37,8 @@ https://github.com/NvChad/base46
      	             Then used by UI & Base46 plugin
 
 
-The file `lua/chadrc.lua` is a config file used to customize NvChad's Base46
-& UI plugin and it needs to return a table, example :
+The file `lua/chadrc.lua` is user's config file used to customize NvChad's Base46
+& UI plugin and it needs to return a table, example:
 >lua
  local M = {}
 
@@ -48,7 +48,7 @@ The file `lua/chadrc.lua` is a config file used to customize NvChad's Base46
  }
 
  return M
-
+<
 ------------------------------------------------------------------------------
 2.1 UI & Base46 plugin setup                             *nvchad.plugin-install*
 >lua
@@ -71,7 +71,7 @@ The file `lua/chadrc.lua` is a config file used to customize NvChad's Base46
      return { override = require "nvchad.icons.devicons" }
    end,
  },
-
+<
 ==============================================================================
 2. Default Chadrc Options                                *nvchad.chadrc.options*
 
@@ -181,8 +181,8 @@ options.
      highlight = { hex = true, lspvars = true },
    },
  }
-
-< 
+<
+ 
 ==============================================================================
 2. Tabufline                                               *nvchad.ui.tabufline*
 
@@ -204,7 +204,7 @@ Example config to add `abc` module
      }
    }
  }
-
+<
 Notes:
 
 - To remove a module, just remove it from order.
@@ -225,7 +225,7 @@ OR You can use our util functions
  -- just define the function on the top!
  local txt = require("nvchad.tabufline.utils").txt
  txt("hi", "HlGroup")
-
+<
 -----------------------------------------------------------------------------
 2.1 Tabufline API                                     *nvchad.ui.tabufline.api*
 
@@ -235,7 +235,7 @@ These are some useful |functions| to use the tabufline
 >lua
  require("nvchad.tabufline").prev()
  require("nvchad.tabufline").next()
-
+<
 `Close Buffers`
 >lua
  require("nvchad.tabufline").close_buffer()
@@ -245,13 +245,13 @@ These are some useful |functions| to use the tabufline
  require("nvchad.tabufline").closeAllBufs(false) -- excludes current buf
 
  require('nvchad.tabufline').closeBufs_at_direction("left") -- or right
-
+<
 `Move Buffers`
 
 This moves the buffer's position to left/right (-1 for left)
 >lua
  require('nvchad.tabufline').move_buf(1) or -1
-
+<
 `API Recipe Example`
 
 All buffer numbers are stored in |vim.t.bufs| tab local variable
@@ -263,7 +263,7 @@ This example maps Alt+number keys to switch buffer
      vim.api.nvim_set_current_buf(vim.t.bufs[i])
    end)
  end
->
+<
 ==============================================================================
 3. Statusline                                             *nvchad.ui.statusline*
 
@@ -287,7 +287,7 @@ Managing modules example: ~
      }
    },
  }
-
+<
 Note:  The |"%F"| is a stl modifier, check `stl` to know list of modifiers
  - The module can be a string/function
  - |"%="| is a separator, modules before 1st separator will be on the left 
@@ -316,7 +316,7 @@ signature popup window will be shown.
  M.lsp = {
    signature = true,
  }
-
+<
 ------------------------------------------------------------------------------
 4.2 Renamer                                                 *nvchad.lsp.renamer*
 
@@ -333,7 +333,7 @@ This shows mappings in a pretty cheatsheet format on the buffer
    theme = "grid", -- simple/grid
    excluded_groups = { "terminal (t)", "autopairs", "Nvim", "Opens" }, -- can add group name or with mode
  }
-
+<
 Notes:
 
 - The excluded_groups will remove that group's column from the cheatsheet. 
@@ -359,7 +359,7 @@ This config applies for all terminals opened through our term functions:
      border = "single",
    },
  }
-
+<
 Currently only these positions are supported 
 
 - `"sp", "vsp", "bo sp", "bo vsp"` and float is an exception
@@ -389,13 +389,13 @@ Available options are:
    float_opts = {} -- # for floating window only, options of :h nvim_open_win 
    clear_cmd = true -- needed for runner func*
  }
-
+<
 ------------------------------------------------------------------------------
 `New Window`                                                     *nvchad.term.new*
 >lua
  require("nvchad.term").new { pos = "sp", size = 0.3 }
  require("nvchad.term").new { pos = "vsp", cmd = "neofetch"}
-
+<
 -------------------------------------------------------------------------------
 `Toggle Window`                                                *nvchad.term.toggle*
 
@@ -409,7 +409,7 @@ This function toggles the terminal window, make sure to provide an unique id.
  vim.keymap.set({ "n", "t" }, "<A-i>", function()
      require("nvchad.term").toggle { pos = "float", id = "floatTerm" }
  end)
-
+<
 -------------------------------------------------------------------------------
 `Code Runner`                                                  *nvchad.term.runner*
 
@@ -422,7 +422,7 @@ Calling the function again will run the cmd in that terminal window
     id = "ekk",
     clear_cmd = false
  }
-
+<
 NOTE:
 
 As Cmd can be a function too, here's a complex example :
@@ -442,7 +442,7 @@ As Cmd can be a function too, here's a complex example :
      return ft_cmds[vim.bo.ft]
    end,
  }
-
+<
 ==============================================================================
 7. Base46 theming                                                *nvchad.base46*
 
@@ -470,17 +470,17 @@ Note:
 To load the cache file, use the |dofile| function
 >lua
  dofile(vim.g.base46_cache .. "syntax")
-
+<
 Set the |base46_cache| global before initializing plugins.
 >lua
  vim.g.base46_cache = vim.fn.stdpath "data" .. "/base46" 
-
+<
 These are the default highlight groups, load them in init.lua
 >lua
  dofile(vim.g.base46_cache .. "syntax")
  dofile(vim.g.base46_cache .. "defaults")
  dofile(vim.g.base46_cache .. "statusline")
-
+<
 Then load the cache files individually, like : 
 >lua
   {
@@ -490,13 +490,13 @@ Then load the cache files individually, like :
       require("nvim-treesitter.configs").setup()
     end,
   }
-
+<
 Note: You can load all cache files at once instead of lazyloding them
 >lua
  for _, v in ipairs(vim.fn.readdir(vim.g.base46_cache)) do
    dofile(vim.g.base46_cache .. v)
  end
-
+<
 ------------------------------------------------------------------------------
 7.1 Highlight override                                *nvchad.base46.highlights*
 
@@ -520,7 +520,7 @@ Note: You can load all cache files at once instead of lazyloding them
       },
    },
  }
-
+<
 - To add new highlight groups, use |hl_add|
 
 ------------------------------------------------------------------------------
@@ -542,8 +542,7 @@ If you just want to customize an already existing theme, you can use
       onedark = { -- and so on! },
    },
  }
-
-
+<
 ------------------------------------------------------------------------------
 7.2 Base46 integrations                             *nvchad.base46.integrations*
 
@@ -575,7 +574,7 @@ It's preferred to just put the dofile code in your plugin's config func
        require("trouble").setup()
     end
  }
-
+<
 ------------------------------------------------------------------------------
 7.3 Local themes                                    *nvchad.base46.local_themes*
 
