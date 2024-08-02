@@ -3,17 +3,39 @@
 https://github.com/NvChad/ui 
 https://github.com/NvChad/base46
 
- `  ▄▄         ▄ ▄▄▄▄▄▄▄  `
- `▄▀███▄     ▄██ █████▀ `
- `██▄▀███▄   ███        `
- `███  ▀███▄ ███        `
- `███    ▀██ ███        `
- `███      ▀ ███        `
- `▀██ █████▄▀█▀▄██████▄ `
- `  ▀ ▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀`
+                           `  ▄▄         ▄ ▄▄▄▄▄▄▄  `
+                           `▄▀███▄     ▄██ █████▀ `
+                           `██▄▀███▄   ███        `
+                           `███  ▀███▄ ███        `
+                           `███    ▀██ ███        `
+                           `███      ▀ ███        `
+                           `▀██ █████▄▀█▀▄██████▄ `
+                           `  ▀ ▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀`
 
 ==============================================================================
 1. Introduction                                            *nvchad.chadrc.intro*
+
+			     How does it work?
+                             ─────────────────
+
+      ` ┌────────────────────────┐       ┌────────────────────────────┐
+      ` │      nvconfig.lua     │       │        chadrc.lua         │
+      ` ├────────────────────────┤       ├────────────────────────────┤
+       │  Has default options  │      │  User options             │
+       │                        │       │  These override nvconfig  │
+       │  {                     │       └────────────┬───────────────┘
+       │    ui = {...},         │                    │
+       │    base46 = {...},     │                    │
+       │  }                     │                    │
+       └────────────────────────┘                    │
+                    │                                │
+                    └───────────────┬────────────────┘
+                                    │      
+                                    ▼      
+                     The options are merged 
+                     Available in |require('nvconfig')|
+     	             Then used by UI & Base46 plugin
+
 
 The file `lua/chadrc.lua` is a config file used to customize NvChad's Base46
 & UI plugin and it needs to return a table, example :
