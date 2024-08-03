@@ -1,15 +1,12 @@
 local fn = vim.fn
 local api = vim.api
-local ns = api.nvim_create_namespace "Colorify"
 local conf = require("nvconfig").colorify
-
-api.nvim_set_hl_ns(ns)
 
 local get_extmarks = api.nvim_buf_get_extmarks
 
-local highlight = require "nvchad.colorify.highlight"
+local methods = require "nvchad.colorify.methods"
 
-local del_extmarks_on_textchange = function(buf)
+local del_extmarks_on_textchange = function(buf, ns)
   vim.b[buf].colorify_attached = true
 
   api.nvim_buf_attach(buf, false, {
@@ -41,11 +38,16 @@ local del_extmarks_on_textchange = function(buf)
   })
 end
 
-local function colorify_lines(args)
-  local buf = args.buf
+return function(buf, event)
+  local ns = api.nvim_get_namespaces().Colorify or api.nvim_create_namespace "Colorify"
+  api.nvim_set_hl_ns(ns)
 
-  if not vim.bo[buf].buflisted then
-    return
+  if not vim.bo[buf].bl then
+    if vim.tbl_contains(conf.nolisted_fts, vim.bo[buf].ft) then
+      api.nvim_win_set_hl_ns(0, ns)
+    else
+      return
+    end
   end
 
   local winid = vim.fn.bufwinid(buf)
@@ -53,15 +55,15 @@ local function colorify_lines(args)
   local min = fn.line("w0", winid) - 1
   local max = fn.line("w$", winid) + 1
 
-  if args.event == "TextChangedI" then
+  if event == "TextChangedI" then
     local cur_linenr = fn.line(".", winid) - 1
 
     if conf.highlight.hex then
-      highlight.hex(ns, buf, cur_linenr, api.nvim_get_current_line())
+      methods.hex(ns, buf, cur_linenr, api.nvim_get_current_line())
     end
 
     if conf.highlight.lspvars then
-      highlight.lsp_var(ns, buf, cur_linenr)
+      methods.lsp_var(ns, buf, cur_linenr)
     end
     return
   end
@@ -70,27 +72,15 @@ local function colorify_lines(args)
 
   if conf.highlight.hex then
     for i, str in ipairs(lines) do
-      highlight.hex(ns, buf, min + i - 1, str)
+      methods.hex(ns, buf, min + i - 1, str)
     end
   end
 
   if conf.highlight.lspvars then
-    highlight.lsp_var(ns, buf, nil, min, max)
+    methods.lsp_var(ns, buf, nil, min, max)
   end
 
-  if args.event == "BufEnter" and not vim.b[buf].colorify_attached then
-    del_extmarks_on_textchange(buf)
+  if event == "BufEnter" and not vim.b[buf].colorify_attached then
+    del_extmarks_on_textchange(buf, ns)
   end
 end
-
-api.nvim_create_autocmd({
-  "TextChanged",
-  "TextChangedI",
-  "TextChangedP",
-  "VimResized",
-  "LspAttach",
-  "WinScrolled",
-  "BufEnter",
-}, {
-  callback = colorify_lines,
-})

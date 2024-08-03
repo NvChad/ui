@@ -106,6 +106,7 @@ local options = {
     mode = "virtual", -- fg, bg, virtual
     virt_text = "󱓻 ",
     highlight = { hex = true, lspvars = true },
+    nolisted_fts = { "colortool" },
   },
 }
 
