@@ -16,8 +16,6 @@ M.hex = function(ns, buf, line, str)
 
     local opts = { end_col = end_col, hl_group = hl_group }
 
-    print(hl_group)
-
     if conf.mode == "virtual" then
       opts.hl_group = nil
       opts.virt_text_pos = "inline"

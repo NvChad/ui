@@ -166,7 +166,6 @@
 ---@field mode? "fg"|"bg"|"virtual"
 ---@field virt_text? string
 ---@field highlight? ColorifyHL
----@field nolisted_fts? string[]
 
 ---@class ColorifyHL
 ---@field hex? boolean

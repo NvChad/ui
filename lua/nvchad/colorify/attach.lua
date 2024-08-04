@@ -43,11 +43,7 @@ return function(buf, event)
   api.nvim_set_hl_ns(ns)
 
   if not vim.bo[buf].bl then
-    if vim.tbl_contains(conf.nolisted_fts, vim.bo[buf].ft) then
-      api.nvim_win_set_hl_ns(0, ns)
-    else
-      return
-    end
+    return
   end
 
   local winid = vim.fn.bufwinid(buf)
