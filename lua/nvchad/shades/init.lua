@@ -1,7 +1,7 @@
 local M = {}
 local api = vim.api
 local utils = require "nvchad.color.utils"
-local ns = api.nvim_create_namespace "ColorLighten"
+local ns = api.nvim_create_namespace "NvShades"
 local set_extmark = api.nvim_buf_set_extmark
 local get_extmarks = api.nvim_buf_get_extmarks
 local lighten_hex = require("base46.colors").change_hex_lightness
@@ -47,7 +47,7 @@ local function palette_lines(hex, intensity, palette_cols, sep_len)
     {
       { "Intensity : " .. intensity },
       { "         " },
-      { "  ", palette_cols == 12 and  "@function" or "Comment" },
+      { "  ", palette_cols == 12 and "@function" or "Comment" },
       { " ", palette_cols == 6 and "@function" or "Comment" },
       { " Columns" },
     },
@@ -68,6 +68,7 @@ local draw_blocks = function(buf, lines, xpad)
     end
   end
 end
+
 
 local slider = function(buf, w, lastline, xpad, col)
   local a = { { string.rep("━", col), "Sh_ActiveSlider" }, { string.rep("━", w - col), "comment" } }
@@ -148,8 +149,6 @@ M.open = function()
     title_pos = "center",
   })
   api.nvim_win_set_hl_ns(win, ns)
-
-  vim.bo[buf].ft = "colortool"
   api.nvim_set_hl(ns, "FloatBorder", { link = "NvColorBorder" })
 
   local function toggle_palette_cols()

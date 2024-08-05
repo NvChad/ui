@@ -30,10 +30,7 @@ vim.schedule(function()
 end)
 
 new_cmd("K", function()
-  if vim.bo.ft == "colorlighten" then
-    vim.cmd "bw"
-  end
-  require("plenary.reload").reload_module "nvchad.color.lighten"
-  require("nvchad.color.lighten").open()
+  require("plenary.reload").reload_module "nvchad.shades"
+  require("nvchad.shades").open()
 end, {})
 
