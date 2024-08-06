@@ -6,6 +6,8 @@ local palette = require "nvchad.shades.palette"
 local slider = require "nvchad.shades.slider"
 local results = require "nvchad.shades.results"
 
+local set_opt = api.nvim_set_option_value
+
 local v = require "nvchad.shades.state"
 v.ns = api.nvim_create_namespace "NvShades"
 
@@ -87,6 +89,8 @@ M.open = function()
   ----------------- keymaps --------------------------
   vim.keymap.set("n", "q", ":q<cr>", { buffer = v.buf })
   vim.keymap.set("n", "<esc>", ":q<cr>", { buffer = v.buf })
+
+  set_opt("modifiable", false, { buf = v.buf })
 end
 
 return M
