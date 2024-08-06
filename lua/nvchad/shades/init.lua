@@ -49,7 +49,7 @@ M.open = function()
   slider.draw(v.w_with_pad / 2)
   results.draw()
 
-  -------------------- interactivity ----------------------------------------
+  -------------- interactivity --------------------
   api.nvim_create_autocmd("CursorMoved", {
     buffer = v.buf,
     callback = function()
@@ -83,6 +83,10 @@ M.open = function()
       end
     end,
   })
+
+  ----------------- keymaps --------------------------
+  vim.keymap.set("n", "q", ":q<cr>", { buffer = v.buf })
+  vim.keymap.set("n", "<esc>", ":q<cr>", { buffer = v.buf })
 end
 
 return M
