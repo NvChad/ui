@@ -11,6 +11,13 @@ local set_opt = api.nvim_set_option_value
 local v = require "nvchad.shades.state"
 v.ns = api.nvim_create_namespace "NvShades"
 
+local function save_color()
+  vim.cmd "q"
+  local line = api.nvim_get_current_line()
+  line = line:gsub(v.hex, v.new_hex)
+  api.nvim_set_current_line(line)
+end
+
 M.open = function()
   v.hex = utils.hex_on_cursor()
 
@@ -58,6 +65,7 @@ M.open = function()
       local cursor_pos = api.nvim_win_get_cursor(0)
       local row, col = cursor_pos[1], cursor_pos[2]
       local slider_row = #v.palette_lines + 1
+      vim.print(cursor_pos)
 
       -- mode switcher
       if row == 2 then
@@ -87,6 +95,10 @@ M.open = function()
           v.new_hex = shade_row[col_pos][2]:sub(4)
           results.draw()
         end
+      end
+
+      if vim.tbl_contains(v.save_btn_pos.row, row) and col >= v.save_btn_pos.col then
+        save_color()
       end
     end,
   })

@@ -4,8 +4,6 @@ local set_extmark = api.nvim_buf_set_extmark
 
 local M = {}
 
-local result_id
-
 local results_ui = function()
   local col_len = 9
 
@@ -55,12 +53,19 @@ local results_ui = function()
   return results
 end
 
+local extmark_ids = {}
+
 M.draw = function()
-  result_id = set_extmark(v.buf, v.ns, #v.palette_lines, 0 + v.xpad, {
-    virt_text_pos = "overlay",
-    virt_lines = results_ui(),
-    id = result_id,
-  })
+  local result_lines = results_ui()
+
+  for i, value in ipairs(result_lines) do
+    local opts = { virt_text_pos = "overlay", virt_text = value, id = extmark_ids[i] }
+    local id = set_extmark(v.buf, v.ns, #v.palette_lines + i, 0, opts)
+
+    if #extmark_ids < #result_lines then
+      table.insert(extmark_ids, id)
+    end
+  end
 end
 
 return M
