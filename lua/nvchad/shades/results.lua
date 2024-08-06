@@ -13,7 +13,7 @@ local results_ui = function()
     return { string.rep(" ", v.xpad * (n or 1)) }
   end
 
-  local padding = gen_padding()
+  local space = gen_padding()
 
   api.nvim_set_hl(v.ns, "huefg_" .. v.hex, { fg = "#" .. v.hex })
   api.nvim_set_hl(v.ns, "huefg_" .. v.new_hex, { fg = "#" .. v.new_hex })
@@ -22,24 +22,34 @@ local results_ui = function()
   local results = {
     {},
     {
-      padding,
+      space,
       { "Old Color" },
-      padding,
+      space,
       { "New Color" },
       gen_padding(3),
-      { "┌" .. string.rep("─", 8) .. "┐", "@string" },
+      { "┌" .. string.rep("─", 8) .. "┐", "Comment" },
     },
-    { padding, underline, padding, underline, gen_padding(3), { "│" .. " 󰆓 Save " .. "│", "@string" } },
 
     {
-      padding,
+      space,
+      underline,
+      space,
+      underline,
+      gen_padding(3),
+      { "│", "Comment" },
+      { " 󰆓 Save " },
+      { "│", "Comment" },
+    },
+
+    {
+      space,
       { "󱓻 ", "huefg_" .. v.hex },
       { "#" .. v.hex },
-      padding,
+      space,
       { "󱓻 ", "huefg_" .. v.new_hex },
       { "#" .. v.new_hex },
       gen_padding(3),
-      { "└" .. string.rep("─", 8) .. "┘", "@string" },
+      { "└" .. string.rep("─", 8) .. "┘", "Comment" },
     },
   }
   return results

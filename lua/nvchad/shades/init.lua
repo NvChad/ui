@@ -19,7 +19,7 @@ M.open = function()
     return
   end
 
-  local h = 18
+  local h = 15
   v.new_hex = v.hex
   v.buf = api.nvim_create_buf(false, true)
 
@@ -41,7 +41,7 @@ M.open = function()
   -- set empty lines to make all cols/rows available
   local empty_lines = {}
 
-  for i = 1, h, 1 do
+  for _ = 1, h, 1 do
     table.insert(empty_lines, string.rep(" ", v.w))
   end
 
@@ -56,8 +56,14 @@ M.open = function()
     buffer = v.buf,
     callback = function()
       local cursor_pos = api.nvim_win_get_cursor(0)
-      local row, col = cursor_pos[1] - 1, cursor_pos[2]
-      local slider_row = #v.palette_lines
+      local row, col = cursor_pos[1], cursor_pos[2]
+      local slider_row = #v.palette_lines + 1
+
+      -- mode switcher
+      if row == 2 then
+        v.mode = v.mode == "lightner" and "saturater" or "lightner"
+        palette.draw()
+      end
 
       -- slider interactivity
       if row == slider_row then
@@ -74,11 +80,11 @@ M.open = function()
       end
 
       -- make color blocks clickable
-      if vim.tbl_contains(v.color_blocks_rows, row + 1) then
+      if vim.tbl_contains(v.color_blocks_rows, row) then
         local col_pos = math.floor((col - 2) / v.blocklen) + 1
 
         if col_pos > 0 and col_pos <= v.palette_cols then
-          local shade_row = v.palette_lines[row + 1]
+          local shade_row = v.palette_lines[row]
           v.new_hex = shade_row[col_pos][2]:sub(4)
           results.draw()
         end
