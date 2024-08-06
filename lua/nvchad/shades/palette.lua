@@ -3,8 +3,9 @@ local v = require "nvchad.shades.state"
 local set_extmark = api.nvim_buf_set_extmark
 
 local color_funcs = {
-  lightner = require("base46.colors").change_hex_lightness,
-  saturater = require("base46.colors").change_hex_saturation,
+  Variants = require("base46.colors").change_hex_lightness,
+  Saturation = require("base46.colors").change_hex_saturation,
+  Hues = require("base46.colors").change_hex_hue,
 }
 
 local function color_infos()
@@ -26,16 +27,33 @@ local function color_infos()
   return { light_blocks, dark_blocks }
 end
 
+--------------------------- header ----------------------------
+local checkbox = function(mode)
+  return {
+    icon = v.mode == mode and "  " or "  ",
+    hl = v.mode == mode and "String" or nil,
+  }
+end
+
+local tabs = function()
+  return {
+    { checkbox("Variants").icon .. "Variants  ", checkbox("Variants").hl },
+    { checkbox("Saturation").icon .. "Saturation  ", checkbox("Saturation").hl },
+    { checkbox("Hues").icon .. "Hues", checkbox("Hues").hl },
+  }
+end
+
+for _, value in ipairs(tabs()) do
+  table.insert(v.tab_items_pos, { len = #value[1], name = value[1]:match "%S+%s*(%S+)%s*$" })
+end
+
 local function palette_lines()
   local palettes = color_infos()
 
   local lines = {
     {},
-    {
-      { "    Lightner  ", "String" },
-      { "  Saturate  ", "Comment" },
-      { "  Hue", "Comment" },
-    },
+    tabs(),
+
     { { string.rep("-", v.w_with_pad), "Comment" } },
 
     palettes[1],
@@ -47,8 +65,8 @@ local function palette_lines()
     {
       { "Intensity : " .. v.intensity .. (v.intensity == 10 and "" or " ") },
       { "         " },
-      { "  ", v.palette_cols == 12 and "@function" or "Comment" },
-      { " ", v.palette_cols == 6 and "@function" or "Comment" },
+      { "  ", v.palette_cols == 12 and "Function" or "Comment" },
+      { " ", v.palette_cols == 6 and "Function" or "Comment" },
       { " Columns" },
     },
   }
@@ -69,6 +87,20 @@ M.draw = function()
 
     if #extmark_ids < #v.palette_lines then
       table.insert(extmark_ids, extmark_id)
+    end
+  end
+end
+
+M.tab_redraw = function(col)
+  local accu_w = 0
+
+  for _, item in ipairs(v.tab_items_pos) do
+    accu_w = accu_w + item.len
+
+    if col + 2 < accu_w then
+      v.mode = item.name
+      M.draw()
+      return
     end
   end
 end

@@ -61,8 +61,7 @@ M.open = function()
 
       -- mode switcher
       if row == 2 then
-        v.mode = v.mode == "lightner" and "saturater" or "lightner"
-        palette.draw()
+        palette.tab_redraw(col)
       end
 
       -- slider interactivity

@@ -7,8 +7,9 @@ local M = {
   step = 10,
   intensity = 5,
   palette_lines = {},
-  mode = "lightner",
+  mode = "Variants",
   color_blocks_rows = { 4, 5, 6, 7 },
+  tab_items_pos = {}
 }
 
 M.w = M.palette_cols * M.blocklen + (2 * M.xpad)
