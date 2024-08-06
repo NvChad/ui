@@ -11,7 +11,7 @@ M.draw = function(col)
   end
 
   local inactive = v.w_with_pad - col
-  local virt_txt = { { string.rep("━", col), "Sh_ActiveSlider" }, { string.rep("━", inactive), "comment" } }
+  local virt_txt = { { string.rep("━", col), "NvimInternalError" }, { string.rep("━", inactive), "LineNr" } }
 
   local opts = { virt_text_pos = "overlay", virt_text = virt_txt, id = slider_id }
   slider_id = set_extmark(v.buf, v.ns, #v.palette_lines, v.xpad, opts)

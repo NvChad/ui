@@ -15,7 +15,7 @@ local results_ui = function()
 
   api.nvim_set_hl(v.ns, "huefg_" .. v.hex, { fg = "#" .. v.hex })
   api.nvim_set_hl(v.ns, "huefg_" .. v.new_hex, { fg = "#" .. v.new_hex })
-  local underline = { string.rep("-", col_len), "Comment" }
+  local underline = { string.rep("-", col_len), "LineNr" }
 
   local results = {
     {},
@@ -25,7 +25,7 @@ local results_ui = function()
       space,
       { "New Color" },
       gen_padding(3),
-      { "┌" .. string.rep("─", 8) .. "┐", "Comment" },
+      { "┌" .. string.rep("─", 8) .. "┐", "LineNr" },
     },
 
     {
@@ -34,9 +34,9 @@ local results_ui = function()
       space,
       underline,
       gen_padding(3),
-      { "│", "Comment" },
+      { "│", "LineNr" },
       { " 󰆓 Save " },
-      { "│", "Comment" },
+      { "│", "LineNr" },
     },
 
     {
@@ -47,7 +47,7 @@ local results_ui = function()
       { "󱓻 ", "huefg_" .. v.new_hex },
       { "#" .. v.new_hex },
       gen_padding(3),
-      { "└" .. string.rep("─", 8) .. "┘", "Comment" },
+      { "└" .. string.rep("─", 8) .. "┘", "LineNr" },
     },
   }
   return results

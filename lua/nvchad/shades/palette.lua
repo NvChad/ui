@@ -54,7 +54,7 @@ local function palette_lines()
     {},
     tabs(),
 
-    { { string.rep("-", v.w_with_pad), "Comment" } },
+    { { string.rep("-", v.w_with_pad), "LineNr" } },
 
     palettes[1],
     palettes[1],
@@ -65,8 +65,8 @@ local function palette_lines()
     {
       { "Intensity : " .. v.intensity .. (v.intensity == 10 and "" or " ") },
       { "         " },
-      { "  ", v.palette_cols == 12 and "Function" or "Comment" },
-      { " ", v.palette_cols == 6 and "Function" or "Comment" },
+      { "  ", v.palette_cols == 12 and "Function" or "LineNr" },
+      { " ", v.palette_cols == 6 and "Function" or "LineNr" },
       { " Columns" },
     },
   }

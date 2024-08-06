@@ -43,7 +43,7 @@ M.open = function()
   })
 
   api.nvim_win_set_hl_ns(win, v.ns)
-  api.nvim_set_hl(v.ns, "FloatBorder", { link = "NvColorBorder" })
+  api.nvim_set_hl(v.ns, "FloatBorder", { link = "LineNr" })
 
   -- set empty lines to make all cols/rows available
   local empty_lines = {}
@@ -65,7 +65,6 @@ M.open = function()
       local cursor_pos = api.nvim_win_get_cursor(0)
       local row, col = cursor_pos[1], cursor_pos[2]
       local slider_row = #v.palette_lines + 1
-      vim.print(cursor_pos)
 
       -- mode switcher
       if row == 2 then
