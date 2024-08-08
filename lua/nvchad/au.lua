@@ -76,3 +76,7 @@ end
 if config.colorify.enabled then
   require("nvchad.colorify").run()
 end
+
+if vim.version().minor < 10 then
+  vim.notify "Please update neovim version to v0.10 at least! NvChad only supports v0.10+"
+end
