@@ -42,10 +42,6 @@ return function(buf, event)
   local ns = api.nvim_get_namespaces().Colorify or api.nvim_create_namespace "Colorify"
   api.nvim_set_hl_ns(ns)
 
-  if not vim.bo[buf].bl then
-    return
-  end
-
   local winid = vim.fn.bufwinid(buf)
 
   local min = fn.line("w0", winid) - 1
