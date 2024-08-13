@@ -31,6 +31,7 @@ end)
 
 new_cmd("K", function()
   require("plenary.reload").reload_module "nvchad.shades"
+  require("plenary.reload").reload_module "nvchad.extmarks"
   require("nvchad.shades").open()
 end, {})
 

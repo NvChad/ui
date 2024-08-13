@@ -2,33 +2,30 @@ local M = {}
 local api = vim.api
 local utils = require "nvchad.color.utils"
 
-local palette = require "nvchad.shades.palette"
-local slider = require "nvchad.shades.slider"
-local results = require "nvchad.shades.results"
-
 local set_opt = api.nvim_set_option_value
 
 local v = require "nvchad.shades.state"
+local mark_state = require "nvchad.extmarks.state"
+local redraw = require("nvchad.extmarks").redraw
+local layout = require "nvchad.shades.layout"
+
 v.ns = api.nvim_create_namespace "NvShades"
 
-local function save_color()
-  vim.cmd "q"
-  local line = api.nvim_get_current_line()
-  line = line:gsub(v.hex, v.new_hex)
-  api.nvim_set_current_line(line)
-end
-
 M.open = function()
-  v.hex = utils.hex_on_cursor()
-
-  if not v.hex then
-    print "not a hex color!"
-    return
-  end
-
-  local h = 15
+  v.hex = utils.hex_on_cursor() or "61afef"
   v.new_hex = v.hex
+
   v.buf = api.nvim_create_buf(false, true)
+
+  mark_state[v.buf] = {
+    xpad = v.xpad,
+    ns = v.ns,
+    buf = v.buf,
+  }
+
+  require("nvchad.extmarks").gen_data(v.buf, layout)
+
+  local h = mark_state[v.buf].h
 
   local win = api.nvim_open_win(v.buf, true, {
     row = 1,
@@ -42,69 +39,60 @@ M.open = function()
     title_pos = "center",
   })
 
+  local input_buf = api.nvim_create_buf(false, true)
+
+  api.nvim_open_win(input_buf, true, {
+    row = h + 1,
+    col = -1,
+    width = v.w,
+    height = 1,
+    relative = "win",
+    win = win,
+    style = "minimal",
+    border = { "┏", "━", "┓", "┃", "┛", "━", "┗", "┃" },
+  })
+
+  api.nvim_buf_set_lines(input_buf, 0, -1, false, { "   Enter color : #" .. v.hex })
+
   api.nvim_win_set_hl_ns(win, v.ns)
   api.nvim_set_hl(v.ns, "FloatBorder", { link = "LineNr" })
 
-  -- set empty lines to make all cols/rows available
-  local empty_lines = {}
+  api.nvim_set_current_win(win)
 
-  for _ = 1, h, 1 do
-    table.insert(empty_lines, string.rep(" ", v.w))
+  v.close = function()
+    vim.cmd("bw" .. v.buf)
+    vim.cmd("bw" .. input_buf)
   end
 
-  api.nvim_buf_set_lines(v.buf, 0, -1, true, empty_lines)
+  -- set empty lines to make all cols/rows available
+  require("nvchad.extmarks").set_empty_lines(v.buf, h, v.w)
+  require("nvchad.extmarks").run(v.buf)
+  require("nvchad.extmarks").make_clickable(v.buf)
 
-  palette.draw()
-  slider.draw(v.w_with_pad / 2)
-  results.draw()
-
-  -------------- interactivity --------------------
-  api.nvim_create_autocmd("CursorMoved", {
-    buffer = v.buf,
-    callback = function()
-      local cursor_pos = api.nvim_win_get_cursor(0)
-      local row, col = cursor_pos[1], cursor_pos[2]
-      local slider_row = #v.palette_lines + 1
-
-      -- mode switcher
-      if row == 2 then
-        palette.tab_redraw(col)
+  -- enable insert mode in input win only!
+  api.nvim_create_autocmd({ "WinEnter", "WinLeave" }, {
+    buffer = input_buf,
+    callback = function(args)
+      if args.event == "WinLeave" then
+        vim.cmd "stopinsert"
+        return
       end
 
-      -- slider interactivity
-      if row == slider_row then
-        local percentage = math.floor((col - 1) / v.w_with_pad * 100)
-        v.intensity = math.floor(percentage < 0 and 0 or percentage / v.step)
-        palette.draw()
-        slider.draw(col < v.xpad and 0 or col - 2)
-      end
-
-      -- column toggler, -1 cuz its above slider!
-      if row == slider_row - 1 and col > (v.w_with_pad / 2) then
-        slider.toggle_shade_cols()
-        palette.draw()
-      end
-
-      -- make color blocks clickable
-      if vim.tbl_contains(v.color_blocks_rows, row) then
-        local col_pos = math.floor((col - 2) / v.blocklen) + 1
-
-        if col_pos > 0 and col_pos <= v.palette_cols then
-          local shade_row = v.palette_lines[row]
-          v.new_hex = shade_row[col_pos][2]:sub(4)
-          results.draw()
-        end
-      end
-
-      if vim.tbl_contains(v.save_btn_pos.row, row) and col >= v.save_btn_pos.col then
-        save_color()
-      end
+      api.nvim_feedkeys("$", "n", true)
+      api.nvim_feedkeys("a", "n", true)
     end,
   })
 
   ----------------- keymaps --------------------------
-  vim.keymap.set("n", "q", ":q<cr>", { buffer = v.buf })
-  vim.keymap.set("n", "<esc>", ":q<cr>", { buffer = v.buf })
+  vim.keymap.set("n", "q", v.close, { buffer = v.buf })
+
+  -- redraw some sections on <cr>
+  vim.keymap.set("i", "<cr>", function()
+    local cur_line = api.nvim_get_current_line()
+    v.hex = string.match(cur_line, "%w+$")
+    v.new_hex = v.hex
+    redraw(v.buf, { "palettes", "footer" })
+  end, { buffer = input_buf })
 
   set_opt("modifiable", false, { buf = v.buf })
 end
