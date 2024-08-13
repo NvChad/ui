@@ -5,6 +5,7 @@ vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.s
   border = "rounded",
   focusable = false,
   silent = true,
+  max_height = 7,
 })
 
 local function check_triggeredChars(triggerChars)
