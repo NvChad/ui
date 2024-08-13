@@ -27,6 +27,11 @@ return function(buf, name)
 
       if mark[3] then
         local pos = { col_start = col - strlen, col_end = col, click = mark[3] }
+
+        if vim.fn.strwidth(mark[1]) == 1 then
+          pos.col_end = pos.col_start
+        end
+
         table.insert(v.clickables[row], pos)
       end
     end
