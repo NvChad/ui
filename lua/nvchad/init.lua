@@ -30,8 +30,8 @@ vim.schedule(function()
 end)
 
 new_cmd("K", function()
-  require("plenary.reload").reload_module "nvchad.shades"
+  require("plenary.reload").reload_module "nvchad.huefy"
   require("plenary.reload").reload_module "nvchad.extmarks"
-  require("nvchad.shades").open()
+  require("nvchad.huefy").open()
 end, {})
 
