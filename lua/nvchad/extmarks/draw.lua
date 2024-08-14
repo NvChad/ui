@@ -2,21 +2,12 @@ local api = vim.api
 local set_extmark = api.nvim_buf_set_extmark
 local state = require "nvchad.extmarks.state"
 
-local get_section = function(tb, name)
-  for _, value in ipairs(tb) do
-    if value.name == name then
-      return value
-    end
-  end
-end
-
-return function(buf, name)
+return function(buf, section)
   local v = state[buf]
-  local sec = get_section(v.layout, name)
-  local section_lines = sec.lines()
+  local section_lines = section.lines()
 
   for line_i, val in ipairs(section_lines) do
-    local row = line_i + sec.row
+    local row = line_i + section.row
     local col = v.xpad
 
     v.clickables[row] = {}
@@ -45,7 +36,7 @@ return function(buf, name)
   end
 
   for line, marks in ipairs(section_lines) do
-    local row = line + sec.row
+    local row = line + section.row
     local opts = { virt_text_pos = "overlay", virt_text = marks, id = v.ids[row] }
     local id = set_extmark(v.buf, v.ns, row - 1, v.xpad, opts)
 

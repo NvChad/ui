@@ -3,6 +3,14 @@ local api = vim.api
 local draw = require "nvchad.extmarks.draw"
 local state = require "nvchad.extmarks.state"
 
+local get_section = function(tb, name)
+  for _, value in ipairs(tb) do
+    if value.name == name then
+      return value
+    end
+  end
+end
+
 M.gen_data = function(buf, layout)
   local v = state[buf]
 
@@ -21,20 +29,25 @@ M.gen_data = function(buf, layout)
   v.h = row
 end
 
-M.run = function(buf)
+M.redraw = function(buf, names)
   local v = state[buf]
 
-  for _, value in ipairs(v.layout) do
-    draw(buf, value.name)
+  if names == "all" then
+    for _, section in ipairs(v.layout) do
+      draw(buf, section)
+    end
+    return
   end
 
-  v.ids_set = true
+  for _, name in ipairs(names) do
+    draw(buf, get_section(v.layout, name))
+  end
 end
 
-M.redraw = function(buf, names)
-  for _, name in ipairs(names) do
-    draw(buf, name)
-  end
+M.run = function(buf)
+  local v = state[buf]
+  M.redraw(buf, "all")
+  v.ids_set = true
 end
 
 M.set_empty_lines = function(buf, n, w)
@@ -47,6 +60,6 @@ M.set_empty_lines = function(buf, n, w)
   api.nvim_buf_set_lines(buf, 0, -1, true, empty_lines)
 end
 
-M.make_clickable = require("nvchad.extmarks.events")
+M.make_clickable = require "nvchad.extmarks.events"
 
 return M
