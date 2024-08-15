@@ -24,6 +24,16 @@ M.tools = {
     lines = ui.rgb_slider,
     name = "rgb_slider",
   },
+
+  {
+    lines = ui.saturation_slider,
+    name = "saturation_slider",
+  },
+
+  {
+    lines = ui.lightness_slider,
+    name = "lightness_slider",
+  },
 }
 
 return M

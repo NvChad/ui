@@ -1,20 +1,34 @@
+local hex2rgb_ratio = require("base46.colors").hex2rgb_ratio
+
 local M = {
   hex = "",
   ns = 0,
   xpad = 1,
   step = 10,
   intensity = 5,
-  blocklen = 6,
-  palette_cols = 6,
-  mode = "Variants",
   close = nil,
-  rgb = {},
+
+  sliders = {
+    r = 0,
+    b = 0,
+    g = 0,
+    saturation = 10,
+    lightness = 10,
+  },
+
+  contrast_mode = "vibrant",
+  lightness_mode = "light",
 }
 
-M.w = M.palette_cols * M.blocklen + (2 * M.xpad)
+M.w = 36 + (2 * M.xpad)
 M.w_with_pad = M.w - (2 * M.xpad)
 
 M.tools_w = M.w
 M.tools_with_pad = M.tools_w - (2 * M.xpad)
+
+M.set_hex = function(val)
+  M.new_hex = val:sub(2)
+  M.sliders.r, M.sliders.g, M.sliders.b = hex2rgb_ratio(val)
+end
 
 return M

@@ -17,7 +17,7 @@ v.toolsNs = api.nvim_create_namespace "HuefyTools"
 M.open = function()
   v.hex = utils.hex_on_cursor() or "61afef"
   v.new_hex = v.hex
-  v.rgb.r, v.rgb.g, v.rgb.b = hex2rgb_ratio(v.new_hex)
+  v.sliders.r, v.sliders.g, v.sliders.b = hex2rgb_ratio(v.new_hex)
 
   v.palette_buf = api.nvim_create_buf(false, true)
   v.tools_buf = api.nvim_create_buf(false, true)
@@ -116,8 +116,9 @@ M.open = function()
   vim.keymap.set("i", "<cr>", function()
     local cur_line = api.nvim_get_current_line()
     v.hex = string.match(cur_line, "%w+$")
-    v.new_hex = v.hex
-    redraw(v.palette_buf, { "palettes", "footer" })
+    v.set_hex("#"..v.hex)
+    redraw(v.palette_buf, "all")
+    redraw(v.tools_buf, "all")
   end, { buffer = input_buf })
 
   set_opt("modifiable", false, { buf = v.palette_buf })
