@@ -55,6 +55,7 @@ M.palettes = function()
   end
 
   table.insert(blocks, 1, {})
+  table.insert(blocks, {})
   return blocks
 end
 
@@ -79,14 +80,7 @@ M.hue = function()
     api.nvim_set_hl(v.ns, hlgroup, { bg = new_color })
   end
 
-  return {
-    {},
-    {
-      { "Hue" },
-    },
-    separator,
-    result,
-  }
+  return { { { "Hue" } }, separator, result }
 end
 
 local function save_color()
@@ -166,7 +160,7 @@ local slider = function(opts)
       -- "━",
       hlgroup,
       function()
-        opts.onclick(i * 4)
+        opts.onclick(i)
       end,
     }
 
@@ -179,49 +173,27 @@ local slider = function(opts)
 end
 
 M.rgb_slider = function()
-  return {
+  local lines = {}
+  local sliders_info = { Red = "r", Green = "g", Blue = "b" }
 
-    slider {
-      txt = "R",
+  for key, val in pairs(sliders_info) do
+    local ui = slider {
+      txt = val:upper(),
       w = v.tools_with_pad,
-      val = math.floor(v.rgb.r),
-      hlon = "HueSliderRed",
+      val = math.floor(v.rgb[val]),
+      hlon = "HueSlider" .. key,
       hloff = "HueSliderGrey",
       onclick = function(step)
-        v.rgb.r = step
+        v.rgb[val] = step * 4
         v.new_hex = rgb2hex(v.rgb.r, v.rgb.g, v.rgb.b):sub(2)
         redraw_all()
       end,
-    },
+    }
 
-    
+    table.insert(lines, ui)
+  end
 
-    slider {
-      txt = "G",
-      w = v.tools_with_pad,
-      val = math.floor(v.rgb.g),
-      hlon = "HueSliderGreen",
-      hloff = "HueSliderGrey",
-      onclick = function(step)
-        v.rgb.g = step
-        v.new_hex = rgb2hex(v.rgb.r, v.rgb.g, v.rgb.b):sub(2)
-        redraw_all()
-      end,
-    },
-
-    slider {
-      txt = "B",
-      w = v.tools_with_pad,
-      val = math.floor(v.rgb.b),
-      hlon = "HueSliderBlue",
-      hloff = "HueSliderGrey",
-      onclick = function(step)
-        v.rgb.b = step
-        v.new_hex = rgb2hex(v.rgb.r, v.rgb.g, v.rgb.b):sub(2)
-        redraw_all()
-      end,
-    },
-  }
+  return lines
 end
 
 return M

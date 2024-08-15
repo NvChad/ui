@@ -118,7 +118,7 @@ local handle_slider = function()
   local col = api.nvim_win_get_cursor(0)[2]
   local percentage = math.floor((col - 1) / v.w_with_pad * 100)
   v.intensity = math.floor(percentage < 0 and 0 or percentage / v.step)
-  redraw(v.buf, { "intensity", "palettes", "slider" })
+  redraw(v.buf, { "slider", "intensity", "palettes" })
 end
 
 M.slider = function()
