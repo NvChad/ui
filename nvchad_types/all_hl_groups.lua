@@ -1,7 +1,7 @@
 ---@meta
 
 --- Don't edit or require this file
-error("Requring a meta file")
+error("Requiring a meta file")
 
 ---@class HLGroups
 ---@field healthSuccess Base46HLGroups # highlight group for defaults
@@ -166,6 +166,8 @@ error("Requring a meta file")
 ---@field NvimTreeEmptyFolderName Base46HLGroups # highlight group for nvimtree
 ---@field NvimTreeCursorLine Base46HLGroups # highlight group for nvimtree
 ---@field NvimInternalError Base46HLGroups # highlight group for defaults
+---@field NvShTitle Base46HLGroups # highlight group for nvshades
+---@field NvDashlazy Base46HLGroups # highlight group for nvdash
 ---@field NvDashButtons Base46HLGroups # highlight group for nvdash
 ---@field NvDashAscii Base46HLGroups # highlight group for nvdash
 ---@field NvChSection Base46HLGroups # highlight group for nvcheatsheet
@@ -360,6 +362,7 @@ error("Requring a meta file")
 ---@field Function Base46HLGroups # highlight group for syntax
 ---@field Folded Base46HLGroups # highlight group for defaults
 ---@field FoldColumn Base46HLGroups # highlight group for defaults
+---@field FloatTitle Base46HLGroups # highlight group for defaults
 ---@field FloatBorder Base46HLGroups # highlight group for defaults
 ---@field Float Base46HLGroups # highlight group for syntax
 ---@field Exception Base46HLGroups # highlight group for defaults
@@ -764,6 +767,8 @@ error("Requring a meta file")
 ---@field NvimTreeEmptyFolderName Base46HLGroups # highlight group for nvimtree
 ---@field NvimTreeCursorLine Base46HLGroups # highlight group for nvimtree
 ---@field NvimInternalError Base46HLGroups # highlight group for defaults
+---@field NvShTitle Base46HLGroups # highlight group for nvshades
+---@field NvDashlazy Base46HLGroups # highlight group for nvdash
 ---@field NvDashButtons Base46HLGroups # highlight group for nvdash
 ---@field NvDashAscii Base46HLGroups # highlight group for nvdash
 ---@field NvChSection Base46HLGroups # highlight group for nvcheatsheet
@@ -958,6 +963,7 @@ error("Requring a meta file")
 ---@field Function Base46HLGroups # highlight group for syntax
 ---@field Folded Base46HLGroups # highlight group for defaults
 ---@field FoldColumn Base46HLGroups # highlight group for defaults
+---@field FloatTitle Base46HLGroups # highlight group for defaults
 ---@field FloatBorder Base46HLGroups # highlight group for defaults
 ---@field Float Base46HLGroups # highlight group for syntax
 ---@field Exception Base46HLGroups # highlight group for defaults
@@ -1257,6 +1263,7 @@ error("Requring a meta file")
 ---| "'nvcheatsheet'"
 ---| "'nvdash'"
 ---| "'nvimtree'"
+---| "'nvshades'"
 ---| "'rainbowdelimiters'"
 ---| "'semantic_tokens'"
 ---| "'statusline'"

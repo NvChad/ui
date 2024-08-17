@@ -1,6 +1,6 @@
 ---@meta
 --- Don't edit or require this file
-error("Requring a meta file")
+error("Requiring a meta file")
 
 ---@type ThemeName
 vim.g.nvchad_theme = 'onedark'
