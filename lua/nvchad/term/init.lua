@@ -79,6 +79,8 @@ M.display = function(opts)
   for k, v in pairs(winopts) do
     vim.wo[win][k] = v
   end
+
+  save_term_info(opts.buf, opts)
 end
 
 local function create(opts)
