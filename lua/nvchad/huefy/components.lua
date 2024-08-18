@@ -19,7 +19,7 @@ M.slider = function(o)
   local step = math.ceil(100 / o.w)
 
   for i = 1, o.w, 1 do
-    local hlgroup = i <= active_len and o.hlon or o.hloff
+    local hlgroup = i <= active_len and o.hlon or (o.hloff or "LineNr")
 
     local char = {
       (o.thumb and i == active_len) and " " or "━",

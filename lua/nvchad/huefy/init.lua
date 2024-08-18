@@ -14,6 +14,8 @@ v.paletteNS = api.nvim_create_namespace "Huefy"
 v.inputNS = api.nvim_create_namespace "HuefyInput"
 v.toolsNS = api.nvim_create_namespace "HuefyTools"
 
+dofile(vim.g.base46_cache .. "huefy")
+
 M.open = function()
   v.hex = utils.hex_on_cursor() or "61afef"
   v.new_hex = v.hex
@@ -31,11 +33,13 @@ M.open = function()
   local h = mark_state[v.palette_buf].h
 
   local win = api.nvim_open_win(v.palette_buf, true, {
-    row = (vim.o.lines / 2) / 2,
-    col = vim.o.columns / 5,
+    row = 1,
+    col = 1,
+    -- row = (vim.o.lines / 2) / 2,
+    -- col = vim.o.columns / 5,
     width = v.w,
     height = h,
-    relative = "editor",
+    relative = "cursor",
     style = "minimal",
     border = { "┏", "━", "┓", "┃", "┛", "━", "┗", "┃" },
     title = " 󱥚 Huefy ",
