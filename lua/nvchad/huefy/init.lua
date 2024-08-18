@@ -10,9 +10,9 @@ local redraw = require("nvchad.extmarks").redraw
 local layout = require "nvchad.huefy.layout"
 local hex2rgb_ratio = require("base46.colors").hex2rgb_ratio
 
-v.ns = api.nvim_create_namespace "Huefy"
+v.paletteNS = api.nvim_create_namespace "Huefy"
 v.inputNS = api.nvim_create_namespace "HuefyInput"
-v.toolsNs = api.nvim_create_namespace "HuefyTools"
+v.toolsNS = api.nvim_create_namespace "HuefyTools"
 
 M.open = function()
   v.hex = utils.hex_on_cursor() or "61afef"
@@ -22,8 +22,8 @@ M.open = function()
   v.palette_buf = api.nvim_create_buf(false, true)
   v.tools_buf = api.nvim_create_buf(false, true)
 
-  mark_state[v.palette_buf] = { xpad = v.xpad, ns = v.ns, buf = v.palette_buf }
-  mark_state[v.tools_buf] = { xpad = v.xpad, ns = v.ns, buf = v.tools_buf }
+  mark_state[v.palette_buf] = { xpad = v.xpad, ns = v.paletteNS, buf = v.palette_buf }
+  mark_state[v.tools_buf] = { xpad = v.xpad, ns = v.paletteNS, buf = v.tools_buf }
 
   require("nvchad.extmarks").gen_data(v.palette_buf, layout.palette)
   require("nvchad.extmarks").gen_data(v.tools_buf, layout.tools)
@@ -67,16 +67,16 @@ M.open = function()
     border = "single",
   })
 
-  api.nvim_win_set_hl_ns(win, v.ns)
+  api.nvim_win_set_hl_ns(win, v.paletteNS)
   api.nvim_win_set_hl_ns(input_win, v.inputNS)
-  api.nvim_win_set_hl_ns(tools_win, v.toolsNs)
+  api.nvim_win_set_hl_ns(tools_win, v.toolsNS)
 
-  api.nvim_set_hl(v.ns, "FloatBorder", { link = "HuefyBorder" })
-  api.nvim_set_hl(v.ns, "Normal", { link = "HuefyWin" })
+  api.nvim_set_hl(v.paletteNS, "FloatBorder", { link = "HuefyBorder" })
+  api.nvim_set_hl(v.paletteNS, "Normal", { link = "HuefyWin" })
   api.nvim_set_hl(v.inputNS, "FloatBorder", { link = "HuefyBorder2" })
   api.nvim_set_hl(v.inputNS, "Normal", { link = "HuefyWin2" })
-  api.nvim_set_hl(v.toolsNs, "FloatBorder", { link = "HuefyBorder2" })
-  api.nvim_set_hl(v.toolsNs, "Normal", { link = "HuefyWin2" })
+  api.nvim_set_hl(v.toolsNS, "FloatBorder", { link = "HuefyBorder2" })
+  api.nvim_set_hl(v.toolsNS, "Normal", { link = "HuefyWin2" })
 
   api.nvim_set_current_win(win)
   api.nvim_buf_set_lines(input_buf, 0, -1, false, { "   Enter color : #" .. v.hex })

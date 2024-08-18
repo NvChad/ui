@@ -7,6 +7,7 @@ local rgb2hex = require("base46.colors").rgb2hex
 local change_saturation = require("base46.colors").change_hex_saturation
 local slider = require("nvchad.huefy.components").slider
 local checkbox = require("nvchad.huefy.components").checkbox
+local hex2complementary = require("base46.colors").hex2complementary
 
 local M = {}
 
@@ -35,7 +36,7 @@ local function gen_colors(hex, row, type)
       end,
     }
 
-    api.nvim_set_hl(v.ns, hlgroup, { bg = color })
+    api.nvim_set_hl(v.paletteNS, hlgroup, { bg = color })
 
     table.insert(blocks, block)
   end
@@ -78,7 +79,7 @@ M.hue = function()
     }
 
     table.insert(result, block)
-    api.nvim_set_hl(v.ns, hlgroup, { bg = new_color })
+    api.nvim_set_hl(v.paletteNS, hlgroup, { bg = new_color })
   end
 
   return { { { "Hue" } }, separator, result }
@@ -101,8 +102,8 @@ M.footer = function()
   local space = gen_padding()
   local underline = { string.rep("-", col_len), "LineNr" }
 
-  api.nvim_set_hl(v.ns, "hex1", { fg = "#" .. v.hex })
-  api.nvim_set_hl(v.ns, "hex2", { fg = "#" .. v.new_hex })
+  api.nvim_set_hl(v.paletteNS, "hex1", { fg = "#" .. v.hex })
+  api.nvim_set_hl(v.paletteNS, "hex2", { fg = "#" .. v.new_hex })
 
   local results = {
     {},
@@ -169,13 +170,12 @@ M.rgb_slider = function()
   return lines
 end
 
-
 M.saturation_slider = function()
   return {
     {},
 
     {
-      { "  Contrast" },
+      { "󰌁  Contrast" },
 
       { string.rep(" ", 15) },
 
@@ -216,7 +216,7 @@ end
 M.lightness_slider = function()
   local handle_click = function(step)
     local mm = v.lightness_mode == "dark" and -1 or 1
-    local color = lighten("#" .. v.hex, (mm * step)/2)
+    local color = lighten("#" .. v.hex, (mm * step) / 2)
     v.sliders.lightness = step
 
     v.set_hex(color)
@@ -227,7 +227,7 @@ M.lightness_slider = function()
     {},
 
     {
-      { "  Lightness" },
+      { "󰖨  Lightness" },
 
       { string.rep(" ", 14) },
 
@@ -253,6 +253,47 @@ M.lightness_slider = function()
         handle_click(step)
       end,
     },
+  }
+end
+
+M.suggested_colors = function()
+  local qty = 36
+  local colors = hex2complementary(v.new_hex, qty)
+
+  local line1 = {}
+  local line2 = {}
+
+  for i, color in ipairs(colors) do
+    local hlgroup = "coo" .. color:sub(2)
+    api.nvim_set_hl(v.toolsNS, hlgroup, { fg =color, })
+
+    local virt_text = {
+      "󱓻",
+      hlgroup,
+      function()
+        v.set_hex(color)
+        redraw_all()
+      end,
+    }
+
+    local space = { " " }
+
+    if i <= qty / 2 then
+      table.insert(line1, virt_text)
+      table.insert(line1, space)
+    else
+      table.insert(line2, virt_text)
+      table.insert(line2, space)
+    end
+  end
+
+  return {
+    {},
+    { { "󱥚  Complementary Colors" } },
+    separator,
+
+    line1,
+    line2,
   }
 end
 

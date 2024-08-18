@@ -2,7 +2,6 @@ local hex2rgb_ratio = require("base46.colors").hex2rgb_ratio
 
 local M = {
   hex = "",
-  ns = 0,
   xpad = 1,
   step = 10,
   intensity = 5,
@@ -12,8 +11,8 @@ local M = {
     r = 0,
     b = 0,
     g = 0,
-    saturation = 10,
-    lightness = 10,
+    saturation = 20,
+    lightness = 20,
   },
 
   contrast_mode = "vibrant",

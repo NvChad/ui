@@ -34,6 +34,11 @@ M.tools = {
     lines = ui.lightness_slider,
     name = "lightness_slider",
   },
+
+  {
+    lines = ui.suggested_colors,
+    name = "suggested_colors",
+  },
 }
 
 return M
