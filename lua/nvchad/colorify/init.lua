@@ -15,7 +15,9 @@ M.run = function()
   }, {
     -- callback = function(args)
     callback = function(args)
-      M.attach(args.buf, args.event)
+      if vim.bo[args.buf].bl then
+        M.attach(args.buf, args.event)
+      end
     end,
   })
 end
