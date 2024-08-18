@@ -356,6 +356,15 @@ error("Requiring a meta file")
 ---@field Identifier Base46HLGroups # highlight group for syntax
 ---@field IblScopeChar Base46HLGroups # highlight group for blankline
 ---@field IblChar Base46HLGroups # highlight group for blankline
+---@field HuefyWin2 Base46HLGroups # highlight group for huefy
+---@field HuefyWin Base46HLGroups # highlight group for huefy
+---@field HuefySliderRed Base46HLGroups # highlight group for huefy
+---@field HuefySliderGreen Base46HLGroups # highlight group for huefy
+---@field HuefySliderBlue Base46HLGroups # highlight group for huefy
+---@field HuefyIWin Base46HLGroups # highlight group for huefy
+---@field HuefyIBorder Base46HLGroups # highlight group for huefy
+---@field HuefyBorder2 Base46HLGroups # highlight group for huefy
+---@field HuefyBorder Base46HLGroups # highlight group for huefy
 ---@field HopNextKey2 Base46HLGroups # highlight group for hop
 ---@field HopNextKey1 Base46HLGroups # highlight group for hop
 ---@field HopNextKey Base46HLGroups # highlight group for hop
@@ -957,6 +966,15 @@ error("Requiring a meta file")
 ---@field Identifier Base46HLGroups # highlight group for syntax
 ---@field IblScopeChar Base46HLGroups # highlight group for blankline
 ---@field IblChar Base46HLGroups # highlight group for blankline
+---@field HuefyWin2 Base46HLGroups # highlight group for huefy
+---@field HuefyWin Base46HLGroups # highlight group for huefy
+---@field HuefySliderRed Base46HLGroups # highlight group for huefy
+---@field HuefySliderGreen Base46HLGroups # highlight group for huefy
+---@field HuefySliderBlue Base46HLGroups # highlight group for huefy
+---@field HuefyIWin Base46HLGroups # highlight group for huefy
+---@field HuefyIBorder Base46HLGroups # highlight group for huefy
+---@field HuefyBorder2 Base46HLGroups # highlight group for huefy
+---@field HuefyBorder Base46HLGroups # highlight group for huefy
 ---@field HopNextKey2 Base46HLGroups # highlight group for hop
 ---@field HopNextKey1 Base46HLGroups # highlight group for hop
 ---@field HopNextKey Base46HLGroups # highlight group for hop
@@ -1254,6 +1272,7 @@ error("Requiring a meta file")
 ---| "'devicons'"
 ---| "'git'"
 ---| "'hop'"
+---| "'huefy'"
 ---| "'lsp'"
 ---| "'lspsaga'"
 ---| "'mason'"
