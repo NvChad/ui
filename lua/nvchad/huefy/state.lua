@@ -15,7 +15,7 @@ local M = {
     lightness = 20,
   },
 
-  contrast_mode = "vibrant",
+  saturation_mode = "vibrant",
   lightness_mode = "light",
 }
 

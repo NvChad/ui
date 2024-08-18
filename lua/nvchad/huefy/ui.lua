@@ -160,7 +160,8 @@ M.rgb_slider = function()
       onclick = function(step)
         rgb[val[1]] = step
         v.new_hex = rgb2hex(rgb.r, rgb.g, rgb.b):sub(2)
-        redraw_all()
+        redraw(v.tools_buf, { "rgb_slider", "suggested_colors" })
+        redraw(v.palette_buf, "all")
       end,
     }
 
@@ -171,26 +172,30 @@ M.rgb_slider = function()
 end
 
 M.saturation_slider = function()
+  local function handle_click(step)
+    local mm = v.saturation_mode == "dim" and -1 or 1
+    local color = change_saturation("#" .. v.hex, v.sliders.saturation * mm)
+    v.sliders.saturation = step
+    v.set_hex(color)
+    redraw(v.tools_buf, { "saturation_slider", "rgb_slider", "suggested_colors" })
+    redraw(v.palette_buf, "all")
+  end
+
   return {
     {},
 
     {
-      { "󰌁  Contrast" },
+      { "󰌁  Saturation" },
 
-      { string.rep(" ", 15) },
+      { string.rep(" ", 14) },
 
       checkbox {
-        txt = "Vibrant",
+        txt = "Invert",
         hlon = "String",
-        active = v.contrast_mode == "vibrant",
+        active = v.saturation_mode == "vibrant",
         onclick = function()
-          v.contrast_mode = v.contrast_mode == "dim" and "vibrant" or "dim"
-
-          local mm = v.contrast_mode == "dim" and -1 or 1
-          local color = change_saturation("#" .. v.new_hex, v.sliders.saturation * mm)
-
-          v.set_hex(color)
-          redraw_all()
+          v.saturation_mode = v.saturation_mode == "dim" and "vibrant" or "dim"
+          handle_click(v.sliders.saturation)
         end,
       },
     },
@@ -202,13 +207,7 @@ M.saturation_slider = function()
       hloff = "HueSliderGrey",
       ratio_txt = false,
       thumb = true,
-      onclick = function(step)
-        local mm = v.contrast_mode == "dim" and -1 or 1
-        local color = change_saturation("#" .. v.new_hex, mm * step)
-        v.sliders.saturation = step
-        v.set_hex(color)
-        redraw_all()
-      end,
+      onclick = handle_click,
     },
   }
 end
@@ -220,7 +219,8 @@ M.lightness_slider = function()
     v.sliders.lightness = step
 
     v.set_hex(color)
-    redraw_all()
+    redraw(v.tools_buf, { "lightness_slider", "rgb_slider", "suggested_colors" })
+    redraw(v.palette_buf, "all")
   end
 
   return {
@@ -229,7 +229,7 @@ M.lightness_slider = function()
     {
       { "󰖨  Lightness" },
 
-      { string.rep(" ", 14) },
+      { string.rep(" ", 15) },
 
       checkbox {
         txt = "Darken",
@@ -249,9 +249,7 @@ M.lightness_slider = function()
       hloff = "HueSliderGrey",
       ratio_txt = false,
       thumb = true,
-      onclick = function(step)
-        handle_click(step)
-      end,
+      onclick = handle_click,
     },
   }
 end
@@ -265,7 +263,7 @@ M.suggested_colors = function()
 
   for i, color in ipairs(colors) do
     local hlgroup = "coo" .. color:sub(2)
-    api.nvim_set_hl(v.toolsNS, hlgroup, { fg =color, })
+    api.nvim_set_hl(v.toolsNS, hlgroup, { fg = color })
 
     local virt_text = {
       "󱓻",
