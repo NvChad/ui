@@ -11,6 +11,8 @@ local style_buf = require("nvchad.tabufline.utils").style_buf
 local cur_buf = api.nvim_get_current_buf
 local config = require("nvconfig").ui.tabufline
 
+g.toggle_theme_icon = "   "
+
 ---------------------------------------------------------- btn onclick functions ----------------------------------------------
 
 vim.cmd "function! TbGoToBuf(bufnr,b,c,d) \n execute 'b'..a:bufnr \n endfunction"
