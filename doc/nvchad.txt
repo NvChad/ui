@@ -25,26 +25,32 @@ CONTENTS                                                       *nvchad-contents*
  
  4. `Statusline`                                        |nvchad.ui.statusline|
  
- 5. `Lsp`                                               |nvchad.lsp|
+ 5. `Term`                                              |nvchad.term|
+    5.1 New Window                                    |nvchad.term.new|
+    5.2 Toggle Window                                 |nvchad.term.toggle|
+    5.3 Code Runner                                   |nvchad.term.runner|
+ 
+ 6. `Base46 Theming`                                    |nvchad.base46|
+    6.1 Highlight Override                            |nvchad.base46.highlights|
+    6.2 Customize Themes                              |nvchad.base46.edit_themes|
+    6.3 Integrations                                  |nvchad.base46.integrations|
+    6.4 Local Themes                                  |nvchad.base46.local_themes|
+
+ 7. `Lsp`                                               |nvchad.lsp|
     5.1 Signature Help                                |nvchad.lsp.signature|
     5.2 Renamer                                       |nvchad.lsp.renamer|
- 
- 6. `Cheatsheet`                                        |nvchad.cheatsheet|
- 
- 7. `Term`                                              |nvchad.term|
-    7.1 New Window                                    |nvchad.term.new|
-    7.2 Toggle Window                                 |nvchad.term.toggle|
-    7.3 Code Runner                                   |nvchad.term.runner|
- 
- 8. `Base46 Theming`                                    |nvchad.base46|
-    8.1 Highlight Override                            |nvchad.base46.highlights|
-    8.2 Customize Themes                              |nvchad.base46.edit_themes|
-    8.3 Integrations                                  |nvchad.base46.integrations|
-    8.4 Local Themes                                  |nvchad.base46.local_themes|
+
+ 8. `Color tools`                                       |nvchad.color|
+    6.1 Colorify                                      |nvchad.colorify|
+    6.2 Shades Picker                                 |nvchad.shades|
+    6.3 Color Picker                                  |nvchad.color-picker|
  
  9. `Telescope Extensions`                              |nvchad.telescope|
     9.1 Base46 Themes                                 |nvchad.telescope.themes|
     9.2 Term Picker                                   |nvchad.telescope.terms|
+
+ 10. `Cheatsheet`                                       |nvchad.cheatsheet|
+ 11. `Cmp UI`                                           |nvchad.cmp|
 
 ==============================================================================
 1. Introduction                                                   *nvchad.intro*
@@ -126,9 +132,11 @@ options.
 
    ui = {
      cmp = {
-       icons = true,
        lspkind_text = true,
        style = "default", -- default/flat_light/flat_dark/atom/atom_colored
+       format_colors = {
+         tailwind = true,
+        },
      },
  
      telescope = { style = "borderless" }, -- borderless / bordered
@@ -322,6 +330,8 @@ Managing modules example: ~
    },
  }
 <
+Above modules field shows how you can add custom modules to the statusline
+
 Note:  The |"%F"| is a stl modifier, check `stl` to know list of modifiers
  - The module can be a string/function
  - |"%="| is a separator, modules before 1st separator will be on the left 
@@ -339,45 +349,7 @@ Order: ~
     `https://github.com/NvChad/ui/blob/v2.5/lua/nvchad/stl/utils.lua#L12`
 
 ==============================================================================
-5. LSP                                                              *nvchad.lsp*
-
-------------------------------------------------------------------------------
-5.1 Signature Help                                        *nvchad.lsp.signature*
-
-Enables signature help for LSP, whenever you're inside a function call, the
-signature popup window will be shown.
->lua
- M.lsp = {
-   signature = true,
- }
-<
-------------------------------------------------------------------------------
-5.2 Renamer                                                 *nvchad.lsp.renamer*
-
-This is a function will will rename variable under cursor
->lua
- require "nvchad.lsp.renamer"()
-
-==============================================================================
-6. Cheatsheet                                                *nvchad.cheatsheet*
-
-This shows mappings in a pretty cheatsheet format on the buffer
->lua
- M.cheatsheet = {
-   theme = "grid", -- simple/grid
-   excluded_groups = { "terminal (t)", "autopairs", "Nvim", "Opens" }, -- can add group name or with mode
- }
-<
-Notes:
-
-- The excluded_groups will remove that group's column from the cheatsheet. 
-
-- For example `terminal` there will remove all columns which had the name "terminal"
-  in it (with modename removed) `"terminal (t)"` just removes the terminal column 
-  which had |(t)| in it.
-
-==============================================================================
-7. Term                                                            *nvchad.term*
+5. Term                                                            *nvchad.term*
 
 Terminal module with useful functions to spawn & toggle terminals at different
 positions & with commands 
@@ -408,7 +380,7 @@ winopts: ~
 
 
 ------------------------------------------------------------------------------
-7.1 Terminal API                                               *nvchad.term.api*
+5.1 Terminal API                                               *nvchad.term.api*
 
 These are the functions which open the terminal based on options provided
 
@@ -425,13 +397,13 @@ Available options are:
  }
 <
 ------------------------------------------------------------------------------
-7.2 New Window                                                 *nvchad.term.new*
+5.2 New Window                                                 *nvchad.term.new*
 >lua
  require("nvchad.term").new { pos = "sp", size = 0.3 }
  require("nvchad.term").new { pos = "vsp", cmd = "neofetch"}
 <
 -------------------------------------------------------------------------------
-7.3 Toggle Window                                            *nvchad.term.toggle*
+5.3 Toggle Window                                            *nvchad.term.toggle*
 
 This function toggles the terminal window, make sure to provide an unique id.
 >lua
@@ -445,7 +417,7 @@ This function toggles the terminal window, make sure to provide an unique id.
  end)
 <
 -------------------------------------------------------------------------------
-7.4 Code Runner                                              *nvchad.term.runner*
+5.4 Code Runner                                              *nvchad.term.runner*
 
 This function will first open a terminal + runs the cmd.
 Calling the function again will run the cmd in that terminal window
@@ -478,7 +450,7 @@ As Cmd can be a function too, here's a complex example :
  }
 <
 ==============================================================================
-8. Base46 theming                                                *nvchad.base46*
+6. Base46 theming                                                *nvchad.base46*
 
 			     How does it work?
                              ─────────────────
@@ -532,7 +504,7 @@ Note: You can load all cache files at once instead of lazyloding them
  end
 <
 ------------------------------------------------------------------------------
-8.1 Highlight override                                *nvchad.base46.highlights*
+6.1 Highlight override                                *nvchad.base46.highlights*
 
 - Make sure you use a valid highlight group.
 - Check your theme colors in the base46 theme dir
@@ -558,7 +530,7 @@ Note: You can load all cache files at once instead of lazyloding them
 - To add new highlight groups, use |hl_add|
 
 ------------------------------------------------------------------------------
-8.2 Customize themes                                 *nvchad.base46.edit_themes*
+6.2 Customize themes                                 *nvchad.base46.edit_themes*
 
 If you just want to customize an already existing theme, you can use
 `base46.changed_themes` option
@@ -578,7 +550,7 @@ If you just want to customize an already existing theme, you can use
  }
 <
 ------------------------------------------------------------------------------
-8.3 Base46 integrations                             *nvchad.base46.integrations*
+6.3 Base46 integrations                             *nvchad.base46.integrations*
 
 An integration file is a group of highlight groups, for example cmp
 integration, telescope etc.
@@ -610,13 +582,72 @@ It's preferred to just put the dofile code in your plugin's config func
  }
 <
 ------------------------------------------------------------------------------
-8.4 Local themes                                    *nvchad.base46.local_themes*
+6.4 Local themes                                    *nvchad.base46.local_themes*
 
 Just put the theme file in `lua/themes/` folder 
 
 and check the base46 readme for theme file structure 
 
 |https://github.com/NvChad/base46?tab=readme-ov-file#understanding-theme-variables|
+
+==============================================================================
+7. LSP                                                              *nvchad.lsp*
+
+------------------------------------------------------------------------------
+7.1 Signature Help                                        *nvchad.lsp.signature*
+
+Enables signature help for LSP, whenever you're inside a function call, the
+signature popup window will be shown.
+>lua
+ M.lsp = {
+   signature = true,
+ }
+<
+------------------------------------------------------------------------------
+7.2 Renamer                                                 *nvchad.lsp.renamer*
+
+This is a function will will rename variable under cursor
+>lua
+ require "nvchad.lsp.renamer"()
+
+==============================================================================
+8. Color tools                                              *nvchad.color-tools*
+
+Thesea are a list of color tools provided by the UI plugin
+
+------------------------------------------------------------------------------
+8.1. Colorify                                                  *nvchad.colorify*
+
+This module will colorize hex codes in the buffer as well as lsp variables
+for example, tailwind color related classes etc, as thats provided by the lsp!
+>lua
+ M.colorify = {
+   enabled = true,
+   mode = "virtual", -- fg, bg, virtual
+   virt_text = "󱓻 ",
+   highlight = { hex = true, lspvars = true },
+ }, 
+
+------------------------------------------------------------------------------
+8.1. Shades picker                                          *nvchad.shades*
+
+This will open a window, which captures hex-color under the cursor and shows 
+variants of that color in a grid ( lightened / darkened)
+
+Also has modes like saturation, hue. 100% mouse friendly
+>lua
+ require("nvchad.shades").open()
+
+NOTE: 
+- To close the window, press |q| or |<esc>|
+
+------------------------------------------------------------------------------
+8.3. Color picker                                          *nvchad.color-picker*
+
+Color picker module  which allows editing rgb values, saturation, brightness
+of a color
+>lua
+ require("nvchad.huefy").open()
 
 ==============================================================================
 9. Telescope extensions                                       *nvchad.telescope*
@@ -638,6 +669,45 @@ Command : `Telescope themes`
 - Terminals closed with |require("nvchad.tabufline").close_buffer()| will be
   hidden, you can check `Telescope terms` command to view them back and
   pressing |enter| or |C-v| or |C-x| will unhide the terminal.
+
+==============================================================================
+10. Cheatsheet                                                *nvchad.cheatsheet*
+
+This shows mappings in a pretty cheatsheet format on the buffer
+>lua
+ M.cheatsheet = {
+   theme = "grid", -- simple/grid
+   excluded_groups = { "terminal (t)", "autopairs", "Nvim", "Opens" }, -- can add group name or with mode
+ }
+<
+Notes:
+
+- The excluded_groups will remove that group's column from the cheatsheet. 
+
+- For example `terminal` there will remove all columns which had the name "terminal"
+  in it (with modename removed) `"terminal (t)"` just removes the terminal column 
+  which had |(t)| in it.
+
+==============================================================================
+11. Cmp UI                                                        *nvchad.cmp-ui*
+
+These are the default options for cmp UI
+>lua
+ M.ui.cmp = {
+   lspkind_text = true,
+   style = "default", -- default/flat_light/flat_dark/atom/atom_colored
+   format_colors = {
+     tailwind = true,
+   },
+ },
+<
+ - To make your cmp config look like nvchad's, import nvchad.cmp module
+ - Merge the options with your cmp config
+
+>lua
+ local options =  { ... you options }
+ options =  vim.tbl_deep_extend("force", options, require "nvchad.cmp")
+ require("cmp").setup(options)
 
 
 vim:tw=78:ts=8:noet:ft=help:norl:
