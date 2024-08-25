@@ -88,7 +88,7 @@ end
 local function save_color()
   v.close()
   local line = api.nvim_get_current_line()
-  line = line:gsub(v.new_hex, v.new_hex)
+  line = line:gsub(v.hex, v.new_hex)
   api.nvim_set_current_line(line)
 end
 

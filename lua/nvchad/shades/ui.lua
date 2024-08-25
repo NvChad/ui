@@ -194,9 +194,6 @@ M.footer = function()
       { "└" .. string.rep("─", 8) .. "┘", "Function", save_color },
     },
     {},
-
-    -- { { string.rep("─", v.w_with_pad), "LineNr" } },
-    -- { { string.rep("─", v.w_with_pad), "LineNr" } },
   }
 
   return results

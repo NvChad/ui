@@ -12,6 +12,9 @@ local layout = require "nvchad.shades.layout"
 v.ns = api.nvim_create_namespace "NvShades"
 
 M.open = function()
+  local oldwin = api.nvim_get_current_win()
+
+  v.filebuf = api.nvim_get_current_buf()
   v.hex = utils.hex_on_cursor() or "61afef"
   v.new_hex = v.hex
 
@@ -35,7 +38,7 @@ M.open = function()
     relative = "cursor",
     style = "minimal",
     border = { "┏", "━", "┓", "┃", "┛", "━", "┗", "┃" },
-    title = { { " 󱥚 Color Shades ", "floatTitle" } },
+    title = " 󱥚 Color Shades ",
     title_pos = "center",
   })
 
@@ -62,6 +65,7 @@ M.open = function()
   v.close = function()
     vim.cmd("bw" .. v.buf)
     vim.cmd("bw" .. input_buf)
+    api.nvim_set_current_win(oldwin)
   end
 
   -- set empty lines to make all cols/rows available

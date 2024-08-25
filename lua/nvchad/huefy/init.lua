@@ -17,6 +17,8 @@ v.toolsNS = api.nvim_create_namespace "HuefyTools"
 dofile(vim.g.base46_cache .. "huefy")
 
 M.open = function()
+  local oldwin = api.nvim_get_current_win()
+
   v.hex = utils.hex_on_cursor() or "61afef"
   v.new_hex = v.hex
   v.sliders.r, v.sliders.g, v.sliders.b = hex2rgb_ratio(v.new_hex)
@@ -89,6 +91,7 @@ M.open = function()
     vim.cmd("bw" .. v.palette_buf)
     vim.cmd("bw" .. input_buf)
     vim.cmd("bw" .. v.tools_buf)
+    api.nvim_set_current_win(oldwin)
   end
 
   -- set empty lines to make all cols/rows available
