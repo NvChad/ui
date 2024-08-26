@@ -89,7 +89,7 @@ local function create(opts)
 
   -- handle cmd opt
   local shell = vim.o.shell
-  local cmd = shell
+  local cmd = { shell }
 
   if opts.cmd and opts.buf then
     cmd = { shell, "-c", format_cmd(opts.cmd) .. "; " .. shell }
