@@ -93,6 +93,8 @@ local function create(opts)
 
   if opts.cmd and opts.buf then
     cmd = { shell, "-c", format_cmd(opts.cmd) .. "; " .. shell }
+  else
+    cmd = { shell }
   end
 
   M.display(opts)
