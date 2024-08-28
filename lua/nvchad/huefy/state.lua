@@ -3,8 +3,7 @@ local hex2rgb_ratio = require("base46.colors").hex2rgb_ratio
 local M = {
   hex = "",
   xpad = 1,
-  step = 10,
-  intensity = 5,
+  hue_intensity = 2,
   close = nil,
 
   sliders = {

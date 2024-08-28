@@ -66,7 +66,7 @@ M.hue = function()
   local result = {}
 
   for i = 1, 36, 1 do
-    local new_color = change_hue(v.new_hex, i * 2)
+    local new_color = change_hue(v.new_hex, i * v.hue_intensity)
     local hlgroup = "hue" .. new_color:sub(2)
 
     local block = {
@@ -82,7 +82,38 @@ M.hue = function()
     api.nvim_set_hl(v.paletteNS, hlgroup, { bg = new_color })
   end
 
-  return { { { "Hue" } }, separator, result }
+  return {
+    {
+      { "Hue Variants" },
+      { string.rep(" ", 10) },
+
+      {
+        "",
+        "Function",
+        function()
+          v.hue_intensity = v.hue_intensity + 1
+          redraw(v.palette_buf, { "hue" })
+        end,
+      },
+
+      { "  " },
+
+      {
+        "",
+        "Comment",
+        function()
+          v.hue_intensity = v.hue_intensity - 1
+          redraw(v.palette_buf, { "hue" })
+        end,
+      },
+
+      { "  Step: " .. v.hue_intensity },
+    },
+
+    separator,
+
+    result,
+  }
 end
 
 local function save_color()
