@@ -44,7 +44,7 @@ M.open = function()
     relative = "cursor",
     style = "minimal",
     border = { "┏", "━", "┓", "┃", "┛", "━", "┗", "┃" },
-    title = " 󱥚 Huefy ",
+    title = " 󱥚  Color picker ",
     title_pos = "center",
   })
 
@@ -96,12 +96,11 @@ M.open = function()
 
   -- set empty lines to make all cols/rows available
   require("nvchad.extmarks").set_empty_lines(v.palette_buf, h, v.w)
-  require("nvchad.extmarks").run(v.palette_buf)
-  require("nvchad.extmarks").make_clickable(v.palette_buf)
-
   require("nvchad.extmarks").set_empty_lines(v.tools_buf, tools_h, v.w)
+
+  require("nvchad.extmarks").run(v.palette_buf)
   require("nvchad.extmarks").run(v.tools_buf)
-  require("nvchad.extmarks").make_clickable(v.tools_buf)
+  require("nvchad.extmarks").make_clickable { v.palette_buf, v.tools_buf }
 
   -- enable insert mode in input win only!
   api.nvim_create_autocmd({ "WinEnter", "WinLeave" }, {
@@ -123,7 +122,7 @@ M.open = function()
   vim.keymap.set("i", "<cr>", function()
     local cur_line = api.nvim_get_current_line()
     v.hex = string.match(cur_line, "%w+$")
-    v.set_hex("#"..v.hex)
+    v.set_hex("#" .. v.hex)
     redraw(v.palette_buf, "all")
     redraw(v.tools_buf, "all")
   end, { buffer = input_buf })

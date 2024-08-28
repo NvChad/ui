@@ -71,7 +71,7 @@ M.open = function()
   -- set empty lines to make all cols/rows available
   require("nvchad.extmarks").set_empty_lines(v.buf, h, v.w)
   require("nvchad.extmarks").run(v.buf)
-  require("nvchad.extmarks").make_clickable(v.buf)
+  require("nvchad.extmarks").make_clickable { v.buf }
 
   -- enable insert mode in input win only!
   api.nvim_create_autocmd({ "WinEnter", "WinLeave" }, {
