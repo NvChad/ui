@@ -3,7 +3,9 @@ local M = {}
 M.slider = function(o)
   local line = {}
 
-  o.w = o.w - 1
+  if o.thumb then
+    o.w = o.w - 1
+  end
 
   if o.txt then
     table.insert(line, { o.txt .. "  " })
@@ -43,7 +45,7 @@ end
 M.checkbox = function(o)
   return {
     (o.active and "  " or "  ") .. o.txt,
-    o.active and o.hlon or o.hloff,
+    o.active and (o.hlon or "String") or o.hloff,
     o.onclick,
   }
 end

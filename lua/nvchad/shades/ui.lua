@@ -1,6 +1,8 @@
 local api = vim.api
 local v = require "nvchad.shades.state"
 local redraw = require("nvchad.extmarks").redraw
+local slider = require("nvchad.huefy.components").slider
+local checkbox = require("nvchad.huefy.components").checkbox
 
 local M = {}
 
@@ -9,10 +11,10 @@ M.tabs = function()
   local result = {}
 
   for _, name in ipairs(modes) do
-    local mark = {
-      (v.mode == name and "  " or "  ") .. name,
-      v.mode == name and "String" or nil,
-      function()
+    local mark = checkbox {
+      txt = name,
+      active = v.mode == name,
+      onclick = function()
         v.mode = name
         redraw(v.buf, { "tabs", "palettes" })
       end,
@@ -82,6 +84,7 @@ local update_palette_cols = function(n)
   redraw(v.buf, { "palettes", "intensity" })
 end
 
+---------------------------------- intensity -------------------------------------------
 M.intensity = function()
   return {
     {},
@@ -110,33 +113,17 @@ M.intensity = function()
 
       { "  Columns" },
     },
-  }
-end
 
----------------------------------- slider -------------------------------------------
-local handle_slider = function()
-  local col = api.nvim_win_get_cursor(0)[2]
-  local percentage = math.floor((col - 1) / v.w_with_pad * 100)
-  v.intensity = math.floor(percentage < 0 and 0 or percentage / v.step)
-  redraw(v.buf, { "slider", "intensity", "palettes" })
-end
-
-M.slider = function()
-  local col = api.nvim_win_get_cursor(0)[2]
-
-  col = col - v.xpad
-  col = col < 0 and v.w_with_pad / 2 or col
-
-  if col > v.w_with_pad then
-    col = v.w_with_pad
-  end
-
-  local inactive = v.w_with_pad - col
-
-  return {
-    {
-      { string.rep("━", col), "NvimInternalError", handle_slider },
-      { string.rep("━", inactive), "LineNr", handle_slider },
+    slider {
+      w = v.w_with_pad,
+      val = v.intensity * 10,
+      hlon = "NvimInternalError",
+      ratio_txt = false,
+      onclick = function(step)
+        vim.print(step)
+        v.intensity = math.floor(step / 10)
+        redraw(v.buf, { "intensity", "palettes" })
+      end,
     },
   }
 end

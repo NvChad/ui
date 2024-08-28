@@ -17,11 +17,6 @@ return {
   },
 
   {
-    lines = ui.slider,
-    name = "slider",
-  },
-
-  {
     lines = ui.footer,
     name = "footer",
   },
