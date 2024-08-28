@@ -5,8 +5,7 @@ local lighten = require("base46.colors").change_hex_lightness
 local change_hue = require("base46.colors").change_hex_hue
 local rgb2hex = require("base46.colors").rgb2hex
 local change_saturation = require("base46.colors").change_hex_saturation
-local slider = require("nvchad.huefy.components").slider
-local checkbox = require("nvchad.huefy.components").checkbox
+local ui = require("nvchad.extmarks_ui")
 local hex2complementary = require("base46.colors").hex2complementary
 
 local M = {}
@@ -181,7 +180,7 @@ M.rgb_slider = function()
   local sliders_info = { { "r", "Red" }, { "g", "Green" }, { "b", "Blue" } }
 
   for _, val in ipairs(sliders_info) do
-    local ui = slider {
+    local mark = ui.slider {
       txt = val[1]:upper(),
       w = v.tools_with_pad,
       val = math.floor(rgb[val[1]]),
@@ -195,7 +194,7 @@ M.rgb_slider = function()
       end,
     }
 
-    table.insert(lines, ui)
+    table.insert(lines, mark)
   end
 
   return lines
@@ -219,7 +218,7 @@ M.saturation_slider = function()
 
       { string.rep(" ", 14) },
 
-      checkbox {
+      ui.checkbox {
         txt = "Invert",
         hlon = "String",
         active = v.saturation_mode == "vibrant",
@@ -230,7 +229,7 @@ M.saturation_slider = function()
       },
     },
 
-    slider {
+    ui.slider {
       w = v.tools_with_pad,
       val = v.sliders.saturation,
       hlon = "Normal",
@@ -260,7 +259,7 @@ M.lightness_slider = function()
 
       { string.rep(" ", 15) },
 
-      checkbox {
+      ui.checkbox {
         txt = "Darken",
         hlon = "String",
         active = v.lightness_mode == "dark",
@@ -271,7 +270,7 @@ M.lightness_slider = function()
       },
     },
 
-    slider {
+    ui.slider {
       w = v.tools_with_pad,
       val = v.sliders.lightness,
       hlon = "Normal",

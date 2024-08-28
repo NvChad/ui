@@ -1,8 +1,7 @@
 local api = vim.api
 local v = require "nvchad.shades.state"
 local redraw = require("nvchad.extmarks").redraw
-local slider = require("nvchad.huefy.components").slider
-local checkbox = require("nvchad.huefy.components").checkbox
+local ui = require("nvchad.extmarks_ui")
 
 local M = {}
 
@@ -11,7 +10,7 @@ M.tabs = function()
   local result = {}
 
   for _, name in ipairs(modes) do
-    local mark = checkbox {
+    local mark = ui.checkbox {
       txt = name,
       active = v.mode == name,
       onclick = function()
@@ -114,7 +113,7 @@ M.intensity = function()
       { "  Columns" },
     },
 
-    slider {
+    ui.slider {
       w = v.w_with_pad,
       val = v.intensity * 10,
       hlon = "NvimInternalError",
