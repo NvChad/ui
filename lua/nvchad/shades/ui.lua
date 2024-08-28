@@ -119,7 +119,6 @@ M.intensity = function()
       hlon = "NvimInternalError",
       ratio_txt = false,
       onclick = function(step)
-        vim.print(step)
         v.intensity = math.floor(step / 10)
         redraw(v.buf, { "intensity", "palettes" })
       end,
