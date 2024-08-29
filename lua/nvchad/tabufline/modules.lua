@@ -13,7 +13,7 @@ local config = require("nvconfig").ui.tabufline
 
 g.toggle_theme_icon = "   "
 
----------------------------------------------------------- btn onclick functions ----------------------------------------------
+---------------------------------------------------------- btn actions functions ----------------------------------------------
 
 vim.cmd "function! TbGoToBuf(bufnr,b,c,d) \n execute 'b'..a:bufnr \n endfunction"
 

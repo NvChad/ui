@@ -14,7 +14,7 @@ local get_virt_text = function(tb, n)
   end
 end
 
-local function onclick(buf, row, col)
+local function actions(buf, row, col)
   local v = nvmark_state[buf]
 
   if v.clickables[row] then
@@ -38,7 +38,7 @@ return function(bufs)
 
     if key == keys.lMouse or key == keys.lDrag then
       local row, col = mousepos.line, mousepos.column - 1
-      onclick(cur_buf, row, col)
+      actions(cur_buf, row, col)
     end
   end)
 end

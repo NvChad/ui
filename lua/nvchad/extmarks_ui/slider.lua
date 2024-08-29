@@ -26,7 +26,7 @@ return function(o)
       -- "━",
       hlgroup,
       function()
-        o.onclick(i * step)
+        o.actions(i * step)
       end,
     }
 

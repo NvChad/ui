@@ -13,7 +13,7 @@ M.tabs = function()
     local mark = ui.checkbox {
       txt = name,
       active = v.mode == name,
-      onclick = function()
+      actions = function()
         v.mode = name
         redraw(v.buf, { "tabs", "palettes" })
       end,
@@ -118,7 +118,7 @@ M.intensity = function()
       val = v.intensity * 10,
       hlon = "NvimInternalError",
       ratio_txt = false,
-      onclick = function(step)
+      actions = function(step)
         v.intensity = math.floor(step / 10)
         redraw(v.buf, { "intensity", "palettes" })
       end,

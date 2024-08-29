@@ -186,7 +186,7 @@ M.rgb_slider = function()
       val = math.floor(rgb[val[1]]),
       hlon = "HuefySlider" .. val[2],
       ratio_txt = true,
-      onclick = function(step)
+      actions = function(step)
         rgb[val[1]] = step
         v.new_hex = rgb2hex(rgb.r, rgb.g, rgb.b):sub(2)
         redraw(v.tools_buf, { "rgb_slider", "suggested_colors" })
@@ -222,7 +222,7 @@ M.saturation_slider = function()
         txt = "Invert",
         hlon = "String",
         active = v.saturation_mode == "vibrant",
-        onclick = function()
+        actions = function()
           v.saturation_mode = v.saturation_mode == "dim" and "vibrant" or "dim"
           handle_click(v.sliders.saturation)
         end,
@@ -235,7 +235,7 @@ M.saturation_slider = function()
       hlon = "Normal",
       ratio_txt = false,
       thumb = true,
-      onclick = handle_click,
+      actions = handle_click,
     },
   }
 end
@@ -263,7 +263,7 @@ M.lightness_slider = function()
         txt = "Darken",
         hlon = "String",
         active = v.lightness_mode == "dark",
-        onclick = function()
+        actions = function()
           v.lightness_mode = v.lightness_mode == "dark" and "light" or "dark"
           handle_click(v.sliders.lightness)
         end,
@@ -276,7 +276,7 @@ M.lightness_slider = function()
       hlon = "Normal",
       ratio_txt = false,
       thumb = true,
-      onclick = handle_click,
+      actions = handle_click,
     },
   }
 end
