@@ -54,6 +54,24 @@ M.set_empty_lines = function(buf, n, w)
   api.nvim_buf_set_lines(buf, 0, -1, true, empty_lines)
 end
 
+M.close = function(val)
+  vim.cmd("bw" .. table.concat(val, " "))
+  vim.cmd "echo ''"
+  api.nvim_set_current_win(val.oldwin)
+end
+
+M.close_mapping = function(val)
+  for _, buf in ipairs(val) do
+    vim.keymap.set("n", "q", function()
+      M.close(val)
+    end, { buffer = buf })
+  end
+
+  return function()
+    M.close(val)
+  end
+end
+
 M.run = function(buf, h, w)
   M.set_empty_lines(buf, h, w)
   M.redraw(buf, "all")

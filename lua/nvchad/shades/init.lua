@@ -62,12 +62,6 @@ M.open = function()
 
   api.nvim_set_current_win(win)
 
-  v.close = function()
-    vim.cmd("bw" .. v.buf)
-    vim.cmd("bw" .. input_buf)
-    api.nvim_set_current_win(oldwin)
-  end
-
   -- set empty lines to make all cols/rows available
   require("nvchad.extmarks").run(v.buf, h, v.w)
   require "nvchad.extmarks.events" { bufs = { v.buf }, hover = true }
@@ -87,7 +81,7 @@ M.open = function()
   })
 
   ----------------- keymaps --------------------------
-  vim.keymap.set("n", "q", v.close, { buffer = v.buf })
+  v.close = require("nvchad.extmarks").close_mapping { v.buf, input_buf, oldwin = oldwin }
 
   -- redraw some sections on <cr>
   vim.keymap.set("i", "<cr>", function()

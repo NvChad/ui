@@ -87,13 +87,6 @@ M.open = function()
   api.nvim_set_current_win(win)
   api.nvim_buf_set_lines(input_buf, 0, -1, false, { "   Enter color : #" .. v.hex })
 
-  v.close = function()
-    vim.cmd("bw" .. v.palette_buf)
-    vim.cmd("bw" .. input_buf)
-    vim.cmd("bw" .. v.tools_buf)
-    api.nvim_set_current_win(oldwin)
-  end
-
   require("nvchad.extmarks").run(v.palette_buf, h, v.w)
   require("nvchad.extmarks").run(v.tools_buf, tools_h, v.w)
   require "nvchad.extmarks.events" { bufs = { v.palette_buf, v.tools_buf }, hover = true }
@@ -112,7 +105,7 @@ M.open = function()
   })
 
   ----------------- keymaps --------------------------
-  vim.keymap.set("n", "q", v.close, { buffer = v.palette_buf })
+  v.close = require("nvchad.extmarks").close_mapping { v.palette_buf, input_buf, v.tools_buf, oldwin = oldwin }
 
   -- redraw some sections on <cr>
   vim.keymap.set("i", "<cr>", function()
