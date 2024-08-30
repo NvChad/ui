@@ -1,9 +1,11 @@
 local api = vim.api
 local nvmark_state = require "nvchad.extmarks.state"
+local redraw = require("nvchad.extmarks").redraw
 
 local keys = {
-  lMouse = vim.keycode "<LeftMouse>",
-  lDrag = vim.keycode "<LeftDrag>",
+  LeftMouse = vim.keycode "<LeftMouse>",
+  LeftDrag = vim.keycode "<LeftDrag>",
+  MouseMove = vim.keycode "<MouseMove>",
 }
 
 local get_virt_text = function(tb, n)
@@ -14,31 +16,70 @@ local get_virt_text = function(tb, n)
   end
 end
 
-local function actions(buf, row, col)
+local function interactivity(buf, key, row, col, opts)
   local v = nvmark_state[buf]
+
+  -- clear old hovers!
+  if opts.hover and key == keys.MouseMove and v.hovered_extmarks then
+    vim.g.nvmark_hovered = nil
+    redraw(buf, v.hovered_extmarks)
+    v.hovered_extmarks = nil
+  end
 
   if v.clickables[row] then
     local virtt = get_virt_text(v.clickables[row], col)
 
-    if virtt then
-      virtt.click()
+    if not virtt then
+      return
+    end
+
+    if type(virtt.actions) == "function" then
+      virtt.actions = { click = virtt.actions }
+    end
+
+    local actions = virtt.actions
+
+    if opts.hover and (actions.MouseMove or actions.hover_name) and key == keys.MouseMove then
+      if actions.hover then
+        actions.hover()
+      end
+
+      vim.g.nvmark_hovered = actions.hover_name or nil
+
+      redraw(buf, actions.sections)
+      v.hovered_extmarks = actions.sections
+    elseif key == keys.LeftMouse or key == keys.LeftDrag then
+      actions.click()
     end
   end
 end
 
-return function(bufs)
+return function(opts)
+  if opts.hover then
+    vim.o.mousemoveevent = true
+  end
+
   vim.on_key(function(key)
     local mousepos = vim.fn.getmousepos()
     local cur_win = mousepos.winid
     local cur_buf = api.nvim_win_get_buf(cur_win)
 
-    if not vim.tbl_contains(bufs, cur_buf) then
+    if not vim.tbl_contains(opts.bufs, cur_buf) then
       return
     end
 
-    if key == keys.lMouse or key == keys.lDrag then
+    if not opts.hover then
+      if key == keys.LeftMouse or key == keys.LeftDrag then
+        local row, col = mousepos.line, mousepos.column - 1
+        interactivity(cur_buf, key, row, col, opts)
+      end
+
+      return
+    end
+
+    if key == keys.LeftMouse or key == keys.LeftDrag or key == keys.MouseMove then
       local row, col = mousepos.line, mousepos.column - 1
-      actions(cur_buf, row, col)
+      interactivity(cur_buf, key, row, col, opts)
     end
   end)
 end

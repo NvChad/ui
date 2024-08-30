@@ -45,9 +45,8 @@ M.redraw = function(buf, names)
 end
 
 M.run = function(buf)
-  local v = state[buf]
   M.redraw(buf, "all")
-  v.ids_set = true
+  state[buf].ids_set = true
 end
 
 M.set_empty_lines = function(buf, n, w)
@@ -59,7 +58,5 @@ M.set_empty_lines = function(buf, n, w)
 
   api.nvim_buf_set_lines(buf, 0, -1, true, empty_lines)
 end
-
-M.make_clickable = require "nvchad.extmarks.events"
 
 return M
