@@ -100,7 +100,7 @@ M.open = function()
 
   require("nvchad.extmarks").run(v.palette_buf)
   require("nvchad.extmarks").run(v.tools_buf)
-  require("nvchad.extmarks").make_clickable { v.palette_buf, v.tools_buf }
+  require "nvchad.extmarks.events" { bufs = { v.palette_buf, v.tools_buf }, hover = true }
 
   -- enable insert mode in input win only!
   api.nvim_create_autocmd({ "WinEnter", "WinLeave" }, {

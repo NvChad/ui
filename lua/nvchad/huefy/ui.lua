@@ -5,8 +5,9 @@ local lighten = require("base46.colors").change_hex_lightness
 local change_hue = require("base46.colors").change_hex_hue
 local rgb2hex = require("base46.colors").rgb2hex
 local change_saturation = require("base46.colors").change_hex_saturation
-local ui = require("nvchad.extmarks_ui")
+local ui = require "nvchad.extmarks_ui"
 local hex2complementary = require("base46.colors").hex2complementary
+local g = vim.g
 
 local M = {}
 
@@ -115,12 +116,17 @@ M.hue = function()
   }
 end
 
-local function save_color()
-  v.close()
-  local line = api.nvim_get_current_line()
-  line = line:gsub(v.hex, v.new_hex)
-  api.nvim_set_current_line(line)
-end
+local save_color = {
+  click = function()
+    v.close()
+    local line = api.nvim_get_current_line()
+    line = line:gsub(v.hex, v.new_hex)
+    api.nvim_set_current_line(line)
+  end,
+
+  sections = { "footer" },
+  hover_name = "saved_color",
+}
 
 M.footer = function()
   local col_len = 9
@@ -135,6 +141,8 @@ M.footer = function()
   api.nvim_set_hl(v.paletteNS, "hex1", { fg = "#" .. v.hex })
   api.nvim_set_hl(v.paletteNS, "hex2", { fg = "#" .. v.new_hex })
 
+  local borderhl = g.nvmark_hovered == "saved_color" and "Normal" or "LineNr"
+
   local results = {
     {},
     {
@@ -143,7 +151,7 @@ M.footer = function()
       space,
       { "New Color" },
       gen_padding(6),
-      { "┌" .. string.rep("─", 8) .. "┐", "Function", save_color },
+      { "┌" .. string.rep("─", 8) .. "┐", borderhl, save_color },
     },
 
     {
@@ -152,9 +160,9 @@ M.footer = function()
       space,
       underline,
       gen_padding(6),
-      { "│", "Function", save_color },
-      { " 󰆓 Save ", "Function", save_color },
-      { "│", "Function", save_color },
+      { "│", borderhl, save_color },
+      { " 󰆓 Save ", "Normal", save_color },
+      { "│", borderhl, save_color },
     },
 
     {
@@ -165,7 +173,7 @@ M.footer = function()
       { "󱓻 ", "hex2" },
       { "#" .. v.new_hex },
       gen_padding(6),
-      { "└" .. string.rep("─", 8) .. "┘", "Function", save_color },
+      { "└" .. string.rep("─", 8) .. "┘", borderhl, save_color },
     },
   }
 
@@ -220,12 +228,17 @@ M.saturation_slider = function()
 
       ui.checkbox {
         txt = "Invert",
-        hlon = "String",
-        active = v.saturation_mode == "vibrant",
-        actions = function()
-          v.saturation_mode = v.saturation_mode == "dim" and "vibrant" or "dim"
-          handle_click(v.sliders.saturation)
-        end,
+        active = g.nvmark_hovered == "invert_checkbox" or v.saturation_mode == "vibrant",
+        actions = {
+          click = function()
+            v.saturation_mode = v.saturation_mode == "dim" and "vibrant" or "dim"
+            handle_click(v.sliders.saturation)
+            vim.print(v.hovered_item)
+          end,
+
+          sections = { "saturation_slider" },
+          hover_name = "invert_checkbox",
+        },
       },
     },
 
@@ -261,12 +274,15 @@ M.lightness_slider = function()
 
       ui.checkbox {
         txt = "Darken",
-        hlon = "String",
-        active = v.lightness_mode == "dark",
-        actions = function()
-          v.lightness_mode = v.lightness_mode == "dark" and "light" or "dark"
-          handle_click(v.sliders.lightness)
-        end,
+        active = g.nvmark_hovered == "darken_checkbox" or v.lightness_mode == "dark",
+        actions = {
+          sections = { "lightness_slider" },
+          hover_name = "darken_checkbox",
+          click = function()
+            v.lightness_mode = v.lightness_mode == "dark" and "light" or "dark"
+            handle_click(v.sliders.lightness)
+          end,
+        },
       },
     },
 

@@ -1,7 +1,8 @@
 local api = vim.api
 local v = require "nvchad.shades.state"
 local redraw = require("nvchad.extmarks").redraw
-local ui = require("nvchad.extmarks_ui")
+local ui = require "nvchad.extmarks_ui"
+local g = vim.g
 
 local M = {}
 
@@ -10,13 +11,19 @@ M.tabs = function()
   local result = {}
 
   for _, name in ipairs(modes) do
+    local hover_name = "tabs_checkbox" .. name
     local mark = ui.checkbox {
       txt = name,
-      active = v.mode == name,
-      actions = function()
-        v.mode = name
-        redraw(v.buf, { "tabs", "palettes" })
-      end,
+      active = g.nvmark_hovered == hover_name or v.mode == name,
+      actions = {
+        sections = { "tabs" },
+        hover_name = hover_name,
+
+        click = function()
+          v.mode = name
+          redraw(v.buf, { "tabs", "palettes" })
+        end,
+      },
     }
 
     table.insert(result, mark)
@@ -126,12 +133,17 @@ M.intensity = function()
   }
 end
 
-local function save_color()
-  v.close()
-  local line = api.nvim_get_current_line()
-  line = line:gsub(v.hex, v.new_hex)
-  api.nvim_set_current_line(line)
-end
+local save_color = {
+  click = function()
+    v.close()
+    local line = api.nvim_get_current_line()
+    line = line:gsub(v.hex, v.new_hex)
+    api.nvim_set_current_line(line)
+  end,
+
+  sections = { "footer" },
+  hover_name = "savedcolor",
+}
 
 M.footer = function()
   local col_len = 9
@@ -146,6 +158,8 @@ M.footer = function()
   api.nvim_set_hl(v.ns, "hex1", { fg = "#" .. v.hex })
   api.nvim_set_hl(v.ns, "hex2", { fg = "#" .. v.new_hex })
 
+  local borderhl = g.nvmark_hovered == "savedcolor" and "Function" or "LineNr"
+
   local results = {
     {},
     {
@@ -154,7 +168,7 @@ M.footer = function()
       space,
       { "New Color" },
       gen_padding(6),
-      { "┌" .. string.rep("─", 8) .. "┐", "Function", save_color },
+      { "┌" .. string.rep("─", 8) .. "┐", borderhl, save_color },
     },
 
     {
@@ -163,9 +177,9 @@ M.footer = function()
       space,
       underline,
       gen_padding(6),
-      { "│", "Function", save_color },
+      { "│", borderhl, save_color },
       { " 󰆓 Save ", "Function", save_color },
-      { "│", "Function", save_color },
+      { "│", borderhl, save_color },
     },
 
     {
@@ -176,7 +190,7 @@ M.footer = function()
       { "󱓻 ", "hex2" },
       { "#" .. v.new_hex },
       gen_padding(6),
-      { "└" .. string.rep("─", 8) .. "┘", "Function", save_color },
+      { "└" .. string.rep("─", 8) .. "┘", borderhl, save_color },
     },
     {},
   }
