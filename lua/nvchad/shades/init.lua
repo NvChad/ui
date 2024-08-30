@@ -69,8 +69,7 @@ M.open = function()
   end
 
   -- set empty lines to make all cols/rows available
-  require("nvchad.extmarks").set_empty_lines(v.buf, h, v.w)
-  require("nvchad.extmarks").run(v.buf)
+  require("nvchad.extmarks").run(v.buf, h, v.w)
   require "nvchad.extmarks.events" { bufs = { v.buf }, hover = true }
 
   -- enable insert mode in input win only!

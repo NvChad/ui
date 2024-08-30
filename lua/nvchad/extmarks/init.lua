@@ -44,11 +44,6 @@ M.redraw = function(buf, names)
   end
 end
 
-M.run = function(buf)
-  M.redraw(buf, "all")
-  state[buf].ids_set = true
-end
-
 M.set_empty_lines = function(buf, n, w)
   local empty_lines = {}
 
@@ -57,6 +52,12 @@ M.set_empty_lines = function(buf, n, w)
   end
 
   api.nvim_buf_set_lines(buf, 0, -1, true, empty_lines)
+end
+
+M.run = function(buf, h, w)
+  M.set_empty_lines(buf, h, w)
+  M.redraw(buf, "all")
+  state[buf].ids_set = true
 end
 
 return M

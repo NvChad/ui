@@ -94,12 +94,8 @@ M.open = function()
     api.nvim_set_current_win(oldwin)
   end
 
-  -- set empty lines to make all cols/rows available
-  require("nvchad.extmarks").set_empty_lines(v.palette_buf, h, v.w)
-  require("nvchad.extmarks").set_empty_lines(v.tools_buf, tools_h, v.w)
-
-  require("nvchad.extmarks").run(v.palette_buf)
-  require("nvchad.extmarks").run(v.tools_buf)
+  require("nvchad.extmarks").run(v.palette_buf, h, v.w)
+  require("nvchad.extmarks").run(v.tools_buf, tools_h, v.w)
   require "nvchad.extmarks.events" { bufs = { v.palette_buf, v.tools_buf }, hover = true }
 
   -- enable insert mode in input win only!
