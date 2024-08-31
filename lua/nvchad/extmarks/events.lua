@@ -39,15 +39,16 @@ local function interactivity(buf, key, row, col, opts)
 
     local actions = virtt.actions
 
-    if opts.hover and (actions.MouseMove or actions.hover_name) and key == keys.MouseMove then
-      if actions.hover then
-        actions.hover()
+    if opts.hover and actions.hover and key == keys.MouseMove then
+      if actions.hover.callback then
+        actions.hover.callback()
       end
 
-      vim.g.nvmark_hovered = actions.hover_name or nil
+      vim.g.nvmark_hovered = actions.hover.id or nil
+      redraw(buf, actions.hover.redraw)
+      v.hovered_extmarks = actions.hover.redraw
 
-      redraw(buf, actions.sections)
-      v.hovered_extmarks = actions.sections
+      ---------------- click ----------------
     elseif key == keys.LeftMouse or key == keys.LeftDrag then
       actions.click()
     end

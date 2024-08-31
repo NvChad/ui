@@ -14,10 +14,8 @@ v.ns = api.nvim_create_namespace "NvShades"
 M.open = function()
   local oldwin = api.nvim_get_current_win()
 
-  v.filebuf = api.nvim_get_current_buf()
   v.hex = utils.hex_on_cursor() or "61afef"
   v.new_hex = v.hex
-
   v.buf = api.nvim_create_buf(false, true)
 
   mark_state[v.buf] = {

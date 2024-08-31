@@ -39,6 +39,11 @@ M.redraw = function(buf, names)
     return
   end
 
+  if type(names) == "string" then
+    draw(buf, get_section(v.layout, names))
+    return
+  end
+
   for _, name in ipairs(names) do
     draw(buf, get_section(v.layout, name))
   end
@@ -55,9 +60,12 @@ M.set_empty_lines = function(buf, n, w)
 end
 
 M.close = function(val)
-  vim.cmd("bw" .. table.concat(val, " "))
+  vim.cmd("bw " .. table.concat(val, " "))
   vim.cmd "echo ''"
-  api.nvim_set_current_win(val.oldwin)
+
+  if val.oldwin then
+    api.nvim_set_current_win(val.oldwin)
+  end
 end
 
 M.close_mapping = function(val)

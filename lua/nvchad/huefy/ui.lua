@@ -124,8 +124,7 @@ local save_color = {
     api.nvim_set_current_line(line)
   end,
 
-  sections = { "footer" },
-  hover_name = "saved_color",
+  hover = { id = "saved_color", redraw = "footer" },
 }
 
 M.footer = function()
@@ -236,8 +235,7 @@ M.saturation_slider = function()
             vim.print(v.hovered_item)
           end,
 
-          sections = { "saturation_slider" },
-          hover_name = "invert_checkbox",
+          hover = { id = "invert_checkbox", redraw = "saturation_slider" },
         },
       },
     },
@@ -276,8 +274,7 @@ M.lightness_slider = function()
         txt = "Darken",
         active = g.nvmark_hovered == "darken_checkbox" or v.lightness_mode == "dark",
         actions = {
-          sections = { "lightness_slider" },
-          hover_name = "darken_checkbox",
+          hover = { id = "darken_checkbox", redraw = "lightness_slider" },
           click = function()
             v.lightness_mode = v.lightness_mode == "dark" and "light" or "dark"
             handle_click(v.sliders.lightness)

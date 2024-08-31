@@ -12,12 +12,12 @@ M.tabs = function()
 
   for _, name in ipairs(modes) do
     local hover_name = "tabs_checkbox" .. name
+
     local mark = ui.checkbox {
       txt = name,
       active = g.nvmark_hovered == hover_name or v.mode == name,
       actions = {
-        sections = { "tabs" },
-        hover_name = hover_name,
+        hover = { id = hover_name, redraw = "tabs" },
 
         click = function()
           v.mode = name
@@ -141,8 +141,7 @@ local save_color = {
     api.nvim_set_current_line(line)
   end,
 
-  sections = { "footer" },
-  hover_name = "savedcolor",
+  hover = { id = "savedcolor", redraw = "footer" },
 }
 
 M.footer = function()
