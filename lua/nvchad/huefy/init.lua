@@ -14,8 +14,6 @@ v.paletteNS = api.nvim_create_namespace "Huefy"
 v.inputNS = api.nvim_create_namespace "HuefyInput"
 v.toolsNS = api.nvim_create_namespace "HuefyTools"
 
-dofile(vim.g.base46_cache .. "huefy")
-
 M.open = function()
   local oldwin = api.nvim_get_current_win()
 
@@ -77,12 +75,12 @@ M.open = function()
   api.nvim_win_set_hl_ns(input_win, v.inputNS)
   api.nvim_win_set_hl_ns(tools_win, v.toolsNS)
 
-  api.nvim_set_hl(v.paletteNS, "FloatBorder", { link = "HuefyBorder" })
-  api.nvim_set_hl(v.paletteNS, "Normal", { link = "HuefyWin" })
-  api.nvim_set_hl(v.inputNS, "FloatBorder", { link = "HuefyBorder2" })
-  api.nvim_set_hl(v.inputNS, "Normal", { link = "HuefyWin2" })
-  api.nvim_set_hl(v.toolsNS, "FloatBorder", { link = "HuefyBorder2" })
-  api.nvim_set_hl(v.toolsNS, "Normal", { link = "HuefyWin2" })
+  api.nvim_set_hl(v.paletteNS, "FloatBorder", { link = "ExDarkBorder" })
+  api.nvim_set_hl(v.paletteNS, "Normal", { link = "ExDarkBg" })
+  api.nvim_set_hl(v.inputNS, "FloatBorder", { link = "ExBlack2border" })
+  api.nvim_set_hl(v.inputNS, "Normal", { link = "ExBlack2Bg" })
+  api.nvim_set_hl(v.toolsNS, "FloatBorder", { link = "Exblack2border" })
+  api.nvim_set_hl(v.toolsNS, "Normal", { link = "ExBlack2Bg" })
 
   api.nvim_set_current_win(win)
   api.nvim_buf_set_lines(input_buf, 0, -1, false, { "   Enter color : #" .. v.hex })

@@ -74,6 +74,7 @@ end
 
 M.run = function(buf, h, w)
   M.set_empty_lines(buf, h, w)
+  require "nvchad.extmarks.highlights"
   M.redraw(buf, "all")
   state[buf].ids_set = true
 end
