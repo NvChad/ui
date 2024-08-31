@@ -19,13 +19,14 @@ M.list_themes = function()
   return default_themes
 end
 
-M.replace_word = function(old, new)
-  local chadrc = vim.fn.stdpath "config" .. "/lua/" .. "chadrc.lua"
-  local file = io.open(chadrc, "r")
+M.replace_word = function(old, new, filepath)
+  filepath = filepath or vim.fn.stdpath "config" .. "/lua/" .. "chadrc.lua"
+
+  local file = io.open(filepath, "r")
   local added_pattern = string.gsub(old, "-", "%%-") -- add % before - if exists
   local new_content = file:read("*all"):gsub(added_pattern, new)
 
-  file = io.open(chadrc, "w")
+  file = io.open(filepath, "w")
   file:write(new_content)
   file:close()
 end
