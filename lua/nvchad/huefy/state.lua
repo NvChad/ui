@@ -16,6 +16,8 @@ local M = {
 
   saturation_mode = "vibrant",
   lightness_mode = "light",
+
+  visible = true,
 }
 
 M.w = 36 + (2 * M.xpad)

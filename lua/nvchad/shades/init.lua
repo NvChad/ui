@@ -94,4 +94,14 @@ M.open = function()
   set_opt("modifiable", false, { buf = v.buf })
 end
 
+M.toggle = function()
+  if v.visible then
+    M.open()
+  else
+    v.close()
+  end
+
+  v.visible = not v.visible
+end
+
 return M

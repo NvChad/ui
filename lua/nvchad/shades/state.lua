@@ -8,6 +8,7 @@ local M = {
   palette_cols = 6,
   mode = "Variants",
   close = nil,
+  visible = true,
 }
 
 M.w = M.palette_cols * M.blocklen + (2 * M.xpad)
