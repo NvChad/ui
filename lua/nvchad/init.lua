@@ -29,9 +29,12 @@ vim.schedule(function()
   require "nvchad.au"
 end)
 
-new_cmd("K", function()
-  require("plenary.reload").reload_module "nvchad.huefy"
-  require("plenary.reload").reload_module "nvchad.extmarks"
-  require("nvchad.huefy").open()
-end, {})
+vim.keymap.set("n", "<RightMouse>", function()
+  vim.cmd.exec "\"normal! \\<RightMouse>\""
 
+  require("plenary.reload").reload_module "nvchad.extmarks"
+  require("plenary.reload").reload_module "nvchad.kk"
+  require("plenary.reload").reload_module "nvchad.menu"
+
+  require("nvchad.menu").open(require "nvchad.kk")
+end, {})
