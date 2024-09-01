@@ -50,7 +50,11 @@ local function interactivity(buf, key, row, col, opts)
 
       ---------------- click ----------------
     elseif key == keys.LeftMouse or key == keys.LeftDrag then
-      actions.click()
+      if type(actions.click) == "string" then
+        vim.cmd(actions.click)
+      else
+        actions.click()
+      end
     end
   end
 end

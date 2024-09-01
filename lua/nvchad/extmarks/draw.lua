@@ -5,10 +5,11 @@ local state = require "nvchad.extmarks.state"
 return function(buf, section)
   local v = state[buf]
   local section_lines = section.lines()
+  local xpad = v.xpad or 0
 
   for line_i, val in ipairs(section_lines) do
     local row = line_i + section.row
-    local col = v.xpad
+    local col = xpad
 
     v.clickables[row] = {}
 
@@ -19,7 +20,7 @@ return function(buf, section)
       if mark[3] then
         local pos = { col_start = col - strlen, col_end = col, actions = mark[3] }
 
-        if vim.fn.strwidth(mark[1]) == 1 then
+        if strlen == 1 and #mark[1] == 1 then
           pos.col_end = pos.col_start
         end
 
@@ -38,7 +39,7 @@ return function(buf, section)
   for line, marks in ipairs(section_lines) do
     local row = line + section.row
     local opts = { virt_text_pos = "overlay", virt_text = marks, id = v.ids[row] }
-    local id = set_extmark(v.buf, v.ns, row - 1, v.xpad, opts)
+    local id = set_extmark(v.buf, v.ns, row - 1, xpad, opts)
 
     if not v.ids_set then
       table.insert(v.ids, id)
