@@ -37,9 +37,6 @@ M.open = function(items)
   api.nvim_set_hl(v.ns, "FloatBorder", { link = "ExBlack2Border" })
   -- api.nvim_set_hl(v.ns, "FloatBorder", { link = "Comment" })
 
-  -- api.nvim_set_hl(v.ns, "Normal", { link = "ExDarkBg" })
-  -- api.nvim_set_hl(v.ns, "FloatBorder", { link = "ExDarkBorder" })
-
   require("nvchad.extmarks").run(buf, h, v.w)
   require "nvchad.extmarks.events" { bufs = { buf }, hover = true }
 

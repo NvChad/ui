@@ -35,6 +35,7 @@ M.items = function()
       click = function()
         state.close()
         item.cmd()
+        vim.api.nvim_del_augroup_by_name "NvMenu"
       end,
     }
 
