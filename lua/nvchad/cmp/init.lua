@@ -11,7 +11,7 @@ local M = {
       local icons = require "nvchad.icons.lspkind"
 
       item.menu = cmp_ui.lspkind_text and item.kind or ""
-      item.menu_hl_group = atom_styled and "LineNr" or "CmpItemKind" .. item.kind
+      item.menu_hl_group = atom_styled and "LineNr" or "CmpItemKind" .. (item.kind or "")
 
       item.kind = item.kind and icons[item.kind] or ""
       item.kind = " " .. item.kind .. " "
