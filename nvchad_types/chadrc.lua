@@ -67,9 +67,9 @@
 --- nvim-cmp style
 ---@field style? '"default"'|'"flat_light"'|'"flat_dark"'|'"atom"'|'"atom_colored"'
 --- Only has effects when the style is `default`
----@field border_color? string|Base30Colors
---- Whether to have more vibrant color for the currently selected entry in the popup menu
----@field selected_item_bg? "colored"|"simple"
+--- @field icons_left? boolean 
+--- places lspkind icons to the left, only for non-atom styles
+--- @field format_colors? NvCmpFormatColors
 
 ---@class NvTelescopeConfig
 --- Telescope style
@@ -170,3 +170,7 @@
 ---@class ColorifyHL
 ---@field hex? boolean
 ---@field lspvars? boolean
+
+---@class NvCmpFormatColors
+---@field icon? string # icon to use for color swatches
+---@field tailwind? boolean # show colors from tailwind/css/astro lsp in menu

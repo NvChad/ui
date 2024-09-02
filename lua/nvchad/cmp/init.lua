@@ -3,7 +3,7 @@ local cmp_style = cmp_ui.style
 local format_kk = require "nvchad.cmp.format"
 
 local atom_styled = cmp_style == "atom" or cmp_style == "atom_colored"
-local fields = atom_styled and { "kind", "abbr", "menu" } or { "abbr", "kind", "menu" }
+local fields = (atom_styled or cmp_ui.icons_left) and { "kind", "abbr", "menu" } or { "abbr", "kind", "menu" }
 
 local M = {
   formatting = {
@@ -13,10 +13,10 @@ local M = {
       item.menu = cmp_ui.lspkind_text and item.kind or ""
       item.menu_hl_group = atom_styled and "LineNr" or "CmpItemKind" .. (item.kind or "")
 
-      item.kind = item.kind and icons[item.kind] or ""
-      item.kind = " " .. item.kind .. " "
+      item.kind = item.kind and icons[item.kind] .. " " or ""
+      item.kind = cmp_ui.icons_left and item.kind or " " .. item.kind
 
-      if atom_styled then
+      if atom_styled or cmp_ui.icons_left then
         item.menu = " " .. item.menu
       end
 
