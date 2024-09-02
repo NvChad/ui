@@ -15,6 +15,7 @@ M.gen_data = function(buf, layout)
   local v = state[buf]
 
   v.clickables = {}
+  v.hoverables = {}
   v.ids = {}
   v.layout = layout
 

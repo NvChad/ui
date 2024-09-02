@@ -12,19 +12,26 @@ return function(buf, section)
     local col = xpad
 
     v.clickables[row] = {}
+    v.hoverables[row] = {}
 
     for _, mark in ipairs(val) do
       local strlen = vim.fn.strwidth(mark[1])
       col = col + strlen
 
       if mark[3] then
-        local pos = { col_start = col - strlen, col_end = col, actions = mark[3] }
+        local virt = { col_start = col - strlen, col_end = col, actions = mark[3] }
 
         if strlen == 1 and #mark[1] == 1 then
-          pos.col_end = pos.col_start
+          virt.col_end = virt.col_start
         end
 
-        table.insert(v.clickables[row], pos)
+        table.insert(v.clickables[row], virt)
+
+        if type(virt.actions) == "table" then
+          virt.ui_type = virt.actions.ui_type
+          virt.hover = virt.actions.hover
+          table.insert(v.hoverables[row], virt)
+        end
       end
     end
   end

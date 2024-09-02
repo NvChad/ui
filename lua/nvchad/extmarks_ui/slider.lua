@@ -25,9 +25,12 @@ return function(o)
       (o.thumb and i == active_len) and " " or "━",
       -- "━",
       hlgroup,
-      function()
-        o.actions(i * step)
-      end,
+      {
+        ui_type = "slider",
+        click = function()
+          o.actions(i * step)
+        end,
+      },
     }
 
     table.insert(line, char)
