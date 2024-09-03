@@ -20,6 +20,10 @@ local hlgroups = {
   ExGreen = { fg = colors.green },
 
   ExInactive = { fg = lighten(colors.light_grey, 5) },
+
+  ExHovered = { bg = colors.one_bg3 },
+  -- ExHovered = { fg = colors.black, bg = colors.pmenu_bg },
+  MenuLabel = { fg = lighten(colors.grey, 30) },
 }
 
 for name, val in pairs(hlgroups) do

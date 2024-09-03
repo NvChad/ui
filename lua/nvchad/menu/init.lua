@@ -3,11 +3,10 @@ local api = vim.api
 local v = require "nvchad.menu.state"
 local layout = require "nvchad.menu.layout"
 local mark_state = require "nvchad.extmarks.state"
-local set_opt = api.nvim_set_option_value
 
 M.open = function(items)
   v.ns = api.nvim_create_namespace "NvMenu"
-  local buf = api.nvim_create_buf(false, true)
+  v.buf = api.nvim_create_buf(false, true)
 
   v.items = items
   local h = #items
@@ -15,7 +14,7 @@ M.open = function(items)
 
   v.w = v.w + v.item_gap
 
-  local win = api.nvim_open_win(buf, false, {
+  local win = api.nvim_open_win(v.buf, false, {
     relative = "mouse",
     width = v.w,
     height = #items,
@@ -25,36 +24,21 @@ M.open = function(items)
     style = "minimal",
   })
 
-  mark_state[buf] = {
+  mark_state[v.buf] = {
     ns = v.ns,
-    buf = buf,
+    buf = v.buf,
   }
 
-  require("nvchad.extmarks").gen_data(buf, layout)
+  require("nvchad.extmarks").gen_data(v.buf, layout)
+  require("nvchad.extmarks").mappings { v.buf }
 
   api.nvim_win_set_hl_ns(win, v.ns)
   api.nvim_set_hl(v.ns, "Normal", { link = "ExBlack2Bg" })
   api.nvim_set_hl(v.ns, "FloatBorder", { link = "ExBlack2Border" })
   -- api.nvim_set_hl(v.ns, "FloatBorder", { link = "Comment" })
 
-  require("nvchad.extmarks").run(buf, h, v.w)
-  require "nvchad.extmarks.events" { bufs = { buf }, hover = true }
-
-  ----------------- keymaps --------------------------
-  v.close = require("nvchad.extmarks").close_mapping { buf }
-  vim.keymap.set("n", "<RightMouse>", v.close, { buffer = buf })
-
-  api.nvim_create_autocmd({ "WinEnter" }, {
-    group = vim.api.nvim_create_augroup("NvMenu", { clear = true }),
-    callback = function(args)
-      if args.buf ~= buf then
-        v.close()
-        vim.api.nvim_del_augroup_by_name "NvMenu"
-      end
-    end,
-  })
-
-  set_opt("modifiable", false, { buf = buf })
+  require("nvchad.extmarks").run(v.buf, h, v.w)
+  require "nvchad.extmarks.events" { bufs = { v.buf }, hover = true }
 end
 
 return M

@@ -1,5 +1,6 @@
 local M = {}
 local state = require "nvchad.menu.state"
+local api = vim.api
 local strw = vim.fn.strwidth
 
 local format_title = function(name, rtxt, hl, actions)
@@ -33,9 +34,10 @@ M.items = function()
     local actions = {
       hover = { id = hover_id, redraw = "items" },
       click = function()
-        state.close()
+        api.nvim_buf_call(state.buf, function()
+         api.nvim_feedkeys("q", "x", false)
+        end)
         item.cmd()
-        vim.api.nvim_del_augroup_by_name "NvMenu"
       end,
     }
 
