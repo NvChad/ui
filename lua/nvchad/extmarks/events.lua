@@ -1,6 +1,7 @@
 local api = vim.api
 local nvmark_state = require "nvchad.extmarks.state"
 local redraw = require("nvchad.extmarks").redraw
+local cycle_clickables = require("nvchad.extmarks.utils").cycle_clickables
 
 local MouseMove = vim.keycode "<MouseMove>"
 local LeftMouse = vim.keycode "<LeftMouse>"
@@ -80,6 +81,14 @@ return function(opts)
 
     map("n", "<CR>", function()
       handle_click(buf)
+    end, { buffer = buf })
+
+    map("n", "<Tab>", function()
+      cycle_clickables(buf, 1)
+    end, { buffer = buf })
+
+    map("n", "<S-Tab>", function()
+      cycle_clickables(buf, -1)
     end, { buffer = buf })
   end
 

@@ -1,7 +1,9 @@
 local M = {}
 local api = vim.api
+local map = vim.keymap.set
 local draw = require "nvchad.extmarks.draw"
 local state = require "nvchad.extmarks.state"
+local utils = require "nvchad.extmarks.utils"
 
 local get_section = function(tb, name)
   for _, value in ipairs(tb) do
@@ -60,32 +62,35 @@ M.set_empty_lines = function(buf, n, w)
   api.nvim_buf_set_lines(buf, 0, -1, true, empty_lines)
 end
 
-M.close = function(val)
-  vim.cmd("bw " .. table.concat(val, " "))
-  vim.cmd "echo ''"
+M.mappings = function(bufs)
+  for _, buf in ipairs(bufs) do
+    -- cycle bufs
+    map("n", "<C-t>", function()
+      utils.cycle_bufs(bufs)
+    end, { buffer = buf })
 
-  if val.oldwin then
-    api.nvim_set_current_win(val.oldwin)
-  end
-end
-
-M.close_mapping = function(val)
-  for _, buf in ipairs(val) do
-    vim.keymap.set("n", "q", function()
-      M.close(val)
+    -- close
+    map("n", "q", function()
+      utils.close(bufs)
     end, { buffer = buf })
   end
 
-  return function()
-    M.close(val)
+  if bufs.input_buf then
+    api.nvim_create_autocmd("WinEnter", {
+      buffer = bufs.input_buf,
+      command = "normal! $",
+    })
   end
 end
 
 M.run = function(buf, h, w)
   M.set_empty_lines(buf, h, w)
   require "nvchad.extmarks.highlights"
+
   M.redraw(buf, "all")
   state[buf].ids_set = true
+
+  api.nvim_set_option_value("modifiable", false, { buf = buf })
 end
 
 return M
