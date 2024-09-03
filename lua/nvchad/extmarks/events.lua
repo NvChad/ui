@@ -98,7 +98,7 @@ return function(opts)
 
   vim.o.mousemoveevent = true
 
-  vim.on_key(function(key)
+  local onkey_ns = vim.on_key(function(key)
     local mousepos = vim.fn.getmousepos()
     local cur_win = mousepos.winid
     local cur_buf = api.nvim_win_get_buf(cur_win)
@@ -116,4 +116,8 @@ return function(opts)
       handle_click(cur_buf, "mouse", row, col)
     end
   end)
+
+  for _, buf in ipairs(opts.bufs) do
+    nvmark_state[buf].onkey_ns = onkey_ns
+  end
 end

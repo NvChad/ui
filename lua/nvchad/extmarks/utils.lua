@@ -31,9 +31,14 @@ M.cycle_clickables = function(buf, step)
 end
 
 M.close = function(val)
-  for _, buf in ipairs(val) do
+  for i, buf in ipairs(val) do
     api.nvim_buf_delete(buf, { force = true })
-    -- vim.on_key(nil, nvmark_state[buf].onkey_ns)
+
+    -- clear old onkey
+    if i == 1 then
+      vim.on_key(nil, state[buf].onkey_ns)
+    end
+
     state[buf] = nil
   end
 
