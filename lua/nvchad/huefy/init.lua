@@ -2,8 +2,6 @@ local M = {}
 local api = vim.api
 local utils = require "nvchad.color.utils"
 
-local set_opt = api.nvim_set_option_value
-
 local v = require "nvchad.huefy.state"
 local mark_state = require "nvchad.extmarks.state"
 local redraw = require("nvchad.extmarks").redraw
@@ -23,12 +21,14 @@ M.open = function()
 
   v.palette_buf = api.nvim_create_buf(false, true)
   v.tools_buf = api.nvim_create_buf(false, true)
+  local input_buf = api.nvim_create_buf(false, true)
 
   mark_state[v.palette_buf] = { xpad = v.xpad, ns = v.paletteNS, buf = v.palette_buf }
   mark_state[v.tools_buf] = { xpad = v.xpad, ns = v.paletteNS, buf = v.tools_buf }
 
   require("nvchad.extmarks").gen_data(v.palette_buf, layout.palette)
   require("nvchad.extmarks").gen_data(v.tools_buf, layout.tools)
+  require("nvchad.extmarks").mappings { v.palette_buf, input_buf, v.tools_buf, oldwin = oldwin, inputbuf = input_buf }
 
   local h = mark_state[v.palette_buf].h
 
@@ -46,7 +46,6 @@ M.open = function()
     title_pos = "center",
   })
 
-  local input_buf = api.nvim_create_buf(false, true)
   local tools_h = h - 4
 
   local input_win = api.nvim_open_win(input_buf, true, {
@@ -89,22 +88,7 @@ M.open = function()
   require("nvchad.extmarks").run(v.tools_buf, tools_h, v.w)
   require "nvchad.extmarks.events" { bufs = { v.palette_buf, v.tools_buf }, hover = true }
 
-  -- enable insert mode in input win only!
-  api.nvim_create_autocmd({ "WinEnter", "WinLeave" }, {
-    buffer = input_buf,
-    callback = function(args)
-      if args.event == "WinLeave" then
-        vim.cmd "stopinsert"
-        return
-      end
-
-      api.nvim_feedkeys("$a", "n", true)
-    end,
-  })
-
   ----------------- keymaps --------------------------
-  v.close = require("nvchad.extmarks").close_mapping { v.palette_buf, input_buf, v.tools_buf, oldwin = oldwin }
-
   -- redraw some sections on <cr>
   vim.keymap.set("i", "<cr>", function()
     local cur_line = api.nvim_get_current_line()
@@ -113,15 +97,13 @@ M.open = function()
     redraw(v.palette_buf, "all")
     redraw(v.tools_buf, "all")
   end, { buffer = input_buf })
-
-  set_opt("modifiable", false, { buf = v.palette_buf })
 end
 
 M.toggle = function()
   if v.visible then
     M.open()
   else
-    v.close()
+    api.nvim_feedkeys("q", "x", false)
   end
 
   v.visible = not v.visible

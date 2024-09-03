@@ -1,5 +1,6 @@
 local api = vim.api
 local v = require "nvchad.shades.state"
+local mark_state = require "nvchad.extmarks.state"
 local redraw = require("nvchad.extmarks").redraw
 local ui = require "nvchad.extmarks_ui"
 local g = vim.g
@@ -135,7 +136,7 @@ end
 
 local save_color = {
   click = function()
-    v.close()
+    api.nvim_feedkeys("q", "x", false)
     local line = api.nvim_get_current_line()
     line = line:gsub(v.hex, v.new_hex)
     api.nvim_set_current_line(line)

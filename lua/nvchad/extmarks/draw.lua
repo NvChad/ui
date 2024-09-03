@@ -11,14 +11,14 @@ return function(buf, section)
     local row = line_i + section.row
     local col = xpad
 
-    v.clickables[row] = {}
-    v.hoverables[row] = {}
-
     for _, mark in ipairs(val) do
       local strlen = vim.fn.strwidth(mark[1])
       col = col + strlen
 
       if mark[3] then
+        v.clickables[row] = v.clickables[row] or {}
+        v.hoverables[row] = v.hoverables[row] or {}
+
         local virt = { col_start = col - strlen, col_end = col, actions = mark[3] }
 
         if strlen == 1 and #mark[1] == 1 then

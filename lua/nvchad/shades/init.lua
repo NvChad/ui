@@ -17,6 +17,7 @@ M.open = function()
   v.hex = utils.hex_on_cursor() or "61afef"
   v.new_hex = v.hex
   v.buf = api.nvim_create_buf(false, true)
+  local input_buf = api.nvim_create_buf(false, true)
 
   mark_state[v.buf] = {
     xpad = v.xpad,
@@ -25,6 +26,7 @@ M.open = function()
   }
 
   require("nvchad.extmarks").gen_data(v.buf, layout)
+  require("nvchad.extmarks").mappings { v.buf, input_buf, oldwin = oldwin, input_buf = input_buf }
 
   local h = mark_state[v.buf].h
 
@@ -39,8 +41,6 @@ M.open = function()
     title = " 󱥚 Color Shades ",
     title_pos = "center",
   })
-
-  local input_buf = api.nvim_create_buf(false, true)
 
   api.nvim_open_win(input_buf, true, {
     row = h + 1,
@@ -64,23 +64,7 @@ M.open = function()
   require("nvchad.extmarks").run(v.buf, h, v.w)
   require "nvchad.extmarks.events" { bufs = { v.buf }, hover = true }
 
-  -- enable insert mode in input win only!
-  api.nvim_create_autocmd({ "WinEnter", "WinLeave" }, {
-    buffer = input_buf,
-    callback = function(args)
-      if args.event == "WinLeave" then
-        vim.cmd "stopinsert"
-        return
-      end
-
-      api.nvim_feedkeys("$", "n", true)
-      api.nvim_feedkeys("a", "n", true)
-    end,
-  })
-
   ----------------- keymaps --------------------------
-  v.close = require("nvchad.extmarks").close_mapping { v.buf, input_buf, oldwin = oldwin }
-
   -- redraw some sections on <cr>
   vim.keymap.set("i", "<cr>", function()
     local cur_line = api.nvim_get_current_line()
@@ -88,8 +72,6 @@ M.open = function()
     v.new_hex = v.hex
     redraw(v.buf, { "palettes", "footer" })
   end, { buffer = input_buf })
-
-  set_opt("modifiable", false, { buf = v.buf })
 end
 
 M.toggle = function()
