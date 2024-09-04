@@ -25,7 +25,7 @@ local function gen_colors(hex, row, type)
 
   for i = 1, 12, 1 do
     local color = lighten(hex or v.new_hex, (abc - i) * row * 1.3)
-    local hlgroup = "hue" .. color:sub(2)
+    local hlgroup = "hue" .. i .. row .. (type or "")
 
     local block = {
       "   ",
@@ -51,7 +51,8 @@ M.palettes = function()
     table.insert(blocks, 1, gen_colors(nil, row))
   end
 
-  local lastcolor = blocks[#blocks][1][2]:sub(4)
+  local lastcolor = api.nvim_get_hl(v.paletteNS, { name = blocks[#blocks][1][2] }).bg
+  lastcolor = string.format("%06x", lastcolor)
 
   for row = 1, 5, 1 do
     table.insert(blocks, gen_colors(lastcolor, row, "dark"))
@@ -66,20 +67,20 @@ M.hue = function()
   local result = {}
 
   for i = 1, 36, 1 do
-    local new_color = change_hue(v.new_hex, i * v.hue_intensity)
-    local hlgroup = "hue" .. new_color:sub(2)
+    local color = change_hue(v.new_hex, i * v.hue_intensity)
+    local hlgroup = "huevarients" .. i
 
     local block = {
       " ",
       hlgroup,
       function()
-        v.set_hex(new_color)
+        v.set_hex(color)
         redraw_all()
       end,
     }
 
     table.insert(result, block)
-    api.nvim_set_hl(v.paletteNS, hlgroup, { bg = new_color })
+    api.nvim_set_hl(v.paletteNS, hlgroup, { bg = color })
   end
 
   return {
@@ -303,7 +304,7 @@ M.suggested_colors = function()
   local line2 = {}
 
   for i, color in ipairs(colors) do
-    local hlgroup = "coo" .. color:sub(2)
+    local hlgroup = "compcolor" .. i
     api.nvim_set_hl(v.toolsNS, hlgroup, { fg = color })
 
     local virt_text = {

@@ -56,24 +56,26 @@ M.palettes = function()
   for i = 1, v.palette_cols, 1 do
     local dark = gen_color(v.hex, -1 * (i - 1) * intensity)
     local light = gen_color(v.hex, (i - 1) * intensity)
+    local dark_hl = "hue" .. i .. "dark"
+    local light_hl = "hue" .. i .. "light"
 
-    api.nvim_set_hl(v.ns, "hue" .. dark:sub(2), { bg = dark, fg = dark })
-    api.nvim_set_hl(v.ns, "hue" .. light:sub(2), { bg = light, fg = light })
+    api.nvim_set_hl(v.ns, dark_hl, { bg = dark })
+    api.nvim_set_hl(v.ns, light_hl, { bg = light })
 
-    local light_block = {
+    local dark_block = {
       blockstr,
-      "hue" .. light:sub(2),
+      dark_hl,
       function()
-        v.new_hex = light:sub(2)
+        v.new_hex = dark:sub(2)
         redraw(v.buf, { "footer" })
       end,
     }
 
-    local dark_block = {
+    local light_block = {
       blockstr,
-      "hue" .. dark:sub(2),
+      light_hl,
       function()
-        v.new_hex = dark:sub(2)
+        v.new_hex = light:sub(2)
         redraw(v.buf, { "footer" })
       end,
     }
