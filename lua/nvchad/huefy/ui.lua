@@ -187,14 +187,17 @@ M.rgb_slider = function()
   local sliders_info = { { "r", "Red" }, { "g", "Green" }, { "b", "Blue" } }
 
   for _, val in ipairs(sliders_info) do
-    local mark = ui.slider {
-      txt = val[1]:upper(),
+    local txt = val[1]:upper() .. "  "
+
+    local mark = ui.slider.config {
+      txt = txt,
       w = v.tools_with_pad,
       val = math.floor(rgb[val[1]]),
       hlon = "Ex" .. val[2],
       ratio_txt = true,
-      actions = function(step)
-        rgb[val[1]] = step
+      actions = function()
+        rgb[val[1]] = ui.slider.val(v.tools_with_pad, txt, v.xpad, { ratio = true })
+
         v.new_hex = rgb2hex(rgb.r, rgb.g, rgb.b):sub(2)
         redraw(v.tools_buf, { "rgb_slider", "suggested_colors" })
         redraw(v.palette_buf, "all")
@@ -208,10 +211,10 @@ M.rgb_slider = function()
 end
 
 M.saturation_slider = function()
-  local function handle_click(step)
+  local handle_click = function(step)
     local mm = v.saturation_mode == "dim" and -1 or 1
+    v.sliders.saturation = step or ui.slider.val(v.tools_with_pad, nil, v.xpad, { thumb = true })
     local color = change_saturation("#" .. v.hex, v.sliders.saturation * mm)
-    v.sliders.saturation = step
     v.set_hex(color)
     redraw(v.tools_buf, { "saturation_slider", "rgb_slider", "suggested_colors" })
     redraw(v.palette_buf, "all")
@@ -231,8 +234,7 @@ M.saturation_slider = function()
         actions = {
           click = function()
             v.saturation_mode = v.saturation_mode == "dim" and "vibrant" or "dim"
-            handle_click(v.sliders.saturation)
-            vim.print(v.hovered_item)
+            handle_click(10)
           end,
 
           hover = { id = "invert_checkbox", redraw = "saturation_slider" },
@@ -240,7 +242,7 @@ M.saturation_slider = function()
       },
     },
 
-    ui.slider {
+    ui.slider.config {
       w = v.tools_with_pad,
       val = v.sliders.saturation,
       hlon = "Normal",
@@ -254,9 +256,8 @@ end
 M.lightness_slider = function()
   local handle_click = function(step)
     local mm = v.lightness_mode == "dark" and -1 or 1
-    local color = lighten("#" .. v.hex, (mm * step) / 2)
-    v.sliders.lightness = step
-
+    v.sliders.lightness = step or ui.slider.val(v.tools_with_pad, nil, v.xpad, { thumb = true })
+    local color = lighten("#" .. v.hex, v.sliders.lightness * mm)
     v.set_hex(color)
     redraw(v.tools_buf, { "lightness_slider", "rgb_slider", "suggested_colors" })
     redraw(v.palette_buf, "all")
@@ -283,7 +284,7 @@ M.lightness_slider = function()
       },
     },
 
-    ui.slider {
+    ui.slider.config {
       w = v.tools_with_pad,
       val = v.sliders.lightness,
       hlon = "Normal",

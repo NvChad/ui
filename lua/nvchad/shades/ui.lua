@@ -46,6 +46,7 @@ local color_funcs = {
 }
 
 M.palettes = function()
+  local intensity = math.floor(v.intensity / 10)
   local gen_color = color_funcs[v.mode]
   local blockstr = string.rep(" ", v.blocklen)
 
@@ -53,8 +54,8 @@ M.palettes = function()
   local dark_blocks = {}
 
   for i = 1, v.palette_cols, 1 do
-    local dark = gen_color(v.hex, -1 * (i - 1) * v.intensity)
-    local light = gen_color(v.hex, (i - 1) * v.intensity)
+    local dark = gen_color(v.hex, -1 * (i - 1) * intensity)
+    local light = gen_color(v.hex, (i - 1) * intensity)
 
     api.nvim_set_hl(v.ns, "hue" .. dark:sub(2), { bg = dark, fg = dark })
     api.nvim_set_hl(v.ns, "hue" .. light:sub(2), { bg = light, fg = light })
@@ -93,11 +94,12 @@ end
 
 ---------------------------------- intensity -------------------------------------------
 M.intensity = function()
+  local intensity = math.floor(v.intensity / 10)
   return {
     {},
 
     {
-      { "Intensity : " .. v.intensity .. (v.intensity == 10 and "" or " ") },
+      { "Intensity : " .. intensity .. (intensity == 10 and "" or " ") },
       { "         " },
 
       {
@@ -121,13 +123,13 @@ M.intensity = function()
       { "  Columns" },
     },
 
-    ui.slider {
+    ui.slider.config {
       w = v.w_with_pad,
-      val = v.intensity * 10,
+      val = v.intensity,
       hlon = "NvimInternalError",
       ratio_txt = false,
-      actions = function(step)
-        v.intensity = math.floor(step / 10)
+      actions = function()
+        v.intensity = ui.slider.val(v.w_with_pad, nil, v.xpad)
         redraw(v.buf, { "intensity", "palettes" })
       end,
     },
