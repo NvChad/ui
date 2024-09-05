@@ -307,13 +307,20 @@ M.suggested_colors = function()
     local hlgroup = "compcolor" .. i
     api.nvim_set_hl(v.toolsNS, hlgroup, { fg = color })
 
+    local hover_id = "suggested" .. i
+    local hovered = g.nvmark_hovered == hover_id
+
     local virt_text = {
-      "󱓻",
+      hovered and "" or "󱓻",
       hlgroup,
-      function()
-        v.set_hex(color)
-        redraw_all()
-      end,
+      {
+        hover = { id = hover_id, redraw = "suggested_colors" },
+
+        click = function()
+          v.set_hex(color)
+          redraw_all()
+        end,
+      },
     }
 
     local space = { " " }
