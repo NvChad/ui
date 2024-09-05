@@ -15,7 +15,14 @@ end
 
 M.cycle_clickables = function(buf, step)
   local bufstate = state[buf]
-  local lines = vim.tbl_keys(bufstate.clickables)
+  local lines = {}
+
+  for row, val in pairs(bufstate.clickables) do
+    if #val > 0 then
+      table.insert(lines, row)
+    end
+  end
+
   local cur_row = api.nvim_win_get_cursor(0)[1]
 
   local len = #lines
