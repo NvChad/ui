@@ -65,7 +65,7 @@ M.items = function(buf)
   for i, item in ipairs(bufv.items or {}) do
     local hover_id = i .. "menu"
     local hovered = vim.g.nvmark_hovered == hover_id
-    local hl = hovered and "ExHovered" or nil
+    local hl = hovered and "PmenuSel" or nil
 
     local nested_menu = item.items
 

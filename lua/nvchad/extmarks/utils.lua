@@ -41,8 +41,12 @@ M.close = function(val)
   local event_bufs = require("nvchad.extmarks.events").bufs
 
   for _, buf in ipairs(val.bufs) do
-    api.nvim_buf_delete(buf, { force = true })
-    state[buf] = nil
+    local valid_buf = api.nvim_buf_is_valid(buf)
+
+    if valid_buf then
+      api.nvim_buf_delete(buf, { force = true })
+      state[buf] = nil
+    end
 
     --- remove buf from event_bufs table
     for i, bufid in ipairs(event_bufs) do
@@ -59,6 +63,8 @@ M.close = function(val)
   if val.close_func_post then
     val.close_func_post()
   end
+
+  vim.g.nvmark_hovered = nil
 end
 
 return M

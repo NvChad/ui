@@ -13,23 +13,31 @@ local get_section = function(tb, name)
   end
 end
 
-M.gen_data = function(buf, layout)
-  local v = state[buf]
+M.gen_data = function(data)
+  for _, info in ipairs(data) do
+    state[info.buf] = {}
 
-  v.clickables = {}
-  v.hoverables = {}
-  v.ids = {}
-  v.layout = layout
+    local buf = info.buf
+    local v = state[buf]
 
-  local row = 0
+    v.clickables = {}
+    v.hoverables = {}
+    v.ids = {}
+    v.xpad = info.xpad
+    v.layout = info.layout
+    v.ns = info.ns
+    v.buf = buf
 
-  for _, value in ipairs(v.layout) do
-    local lines = value.lines(buf)
-    value.row = row
-    row = row + #lines
+    local row = 0
+
+    for _, value in ipairs(v.layout) do
+      local lines = value.lines(buf)
+      value.row = row
+      row = row + #lines
+    end
+
+    v.h = row
   end
-
-  v.h = row
 end
 
 M.redraw = function(buf, names)
@@ -66,7 +74,7 @@ M.mappings = function(val)
   for _, buf in ipairs(val.bufs) do
     -- cycle bufs
     map("n", "<C-t>", function()
-      utils.cycle_bufs(val)
+      utils.cycle_bufs(val.bufs)
     end, { buffer = buf })
 
     -- close
@@ -94,6 +102,14 @@ M.run = function(buf, h, w)
 
   if not vim.g.extmarks_events then
     require("nvchad.extmarks.events").enable()
+  end
+end
+
+M.toggle_func = function(open_func, ui_state)
+  if ui_state then
+    open_func()
+  else
+    api.nvim_feedkeys("q", "x", false)
   end
 end
 

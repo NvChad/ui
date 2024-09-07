@@ -46,7 +46,7 @@ return function(buf, section)
   for line, marks in ipairs(section_lines) do
     local row = line + section.row
     local opts = { virt_text_pos = "overlay", virt_text = marks, id = v.ids[row] }
-    local id = set_extmark(v.buf, v.ns, row - 1, xpad, opts)
+    local id = set_extmark(buf, v.ns, row - 1, xpad, opts)
 
     if not v.ids_set then
       table.insert(v.ids, id)

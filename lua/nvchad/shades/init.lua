@@ -6,6 +6,8 @@ local v = require "nvchad.shades.state"
 local mark_state = require "nvchad.extmarks.state"
 local redraw = require("nvchad.extmarks").redraw
 local layout = require "nvchad.shades.layout"
+local extmarks = require "nvchad.extmarks"
+local extmarks_events = require "nvchad.extmarks.events"
 
 v.ns = api.nvim_create_namespace "NvShades"
 
@@ -15,22 +17,11 @@ M.open = function()
   v.hex = utils.hex_on_cursor() or "61afef"
   v.new_hex = v.hex
   v.buf = api.nvim_create_buf(false, true)
+
   local input_buf = api.nvim_create_buf(false, true)
 
-  mark_state[v.buf] = {
-    xpad = v.xpad,
-    ns = v.ns,
-    buf = v.buf,
-  }
-
-  require("nvchad.extmarks").gen_data(v.buf, layout)
-
-  require("nvchad.extmarks").mappings {
-    bufs = { v.buf, input_buf },
-    input_buf = input_buf,
-    close_func_post = function()
-      api.nvim_set_current_win(oldwin)
-    end,
+  extmarks.gen_data {
+    { buf = v.buf, layout = layout, xpad = v.xpad, ns = v.ns },
   }
 
   local h = mark_state[v.buf].h
@@ -65,9 +56,8 @@ M.open = function()
 
   api.nvim_set_current_win(win)
 
-  -- set empty lines to make all cols/rows available
-  require("nvchad.extmarks").run(v.buf, h, v.w)
-  require("nvchad.extmarks.events").add(v.buf)
+  extmarks.run(v.buf, h, v.w)
+  extmarks_events.add(v.buf)
 
   ----------------- keymaps --------------------------
   -- redraw some sections on <cr>
@@ -77,15 +67,18 @@ M.open = function()
     v.new_hex = v.hex
     redraw(v.buf, { "palettes", "footer" })
   end, { buffer = input_buf })
+
+  extmarks.mappings {
+    bufs = { v.buf, input_buf },
+    input_buf = input_buf,
+    close_func_post = function()
+      api.nvim_set_current_win(oldwin)
+    end,
+  }
 end
 
 M.toggle = function()
-  if v.visible then
-    M.open()
-  else
-    v.close()
-  end
-
+  extmarks.toggle_func(M.open, v.visible)
   v.visible = not v.visible
 end
 

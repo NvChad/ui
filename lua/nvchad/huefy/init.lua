@@ -8,6 +8,9 @@ local redraw = require("nvchad.extmarks").redraw
 local layout = require "nvchad.huefy.layout"
 local hex2rgb_ratio = require("base46.colors").hex2rgb_ratio
 
+local extmarks = require "nvchad.extmarks"
+local extmarks_events = require "nvchad.extmarks.events"
+
 v.paletteNS = api.nvim_create_namespace "Huefy"
 v.inputNS = api.nvim_create_namespace "HuefyInput"
 v.toolsNS = api.nvim_create_namespace "HuefyTools"
@@ -23,18 +26,9 @@ M.open = function()
   v.tools_buf = api.nvim_create_buf(false, true)
   local input_buf = api.nvim_create_buf(false, true)
 
-  mark_state[v.palette_buf] = { xpad = v.xpad, ns = v.paletteNS, buf = v.palette_buf }
-  mark_state[v.tools_buf] = { xpad = v.xpad, ns = v.paletteNS, buf = v.tools_buf }
-
-  require("nvchad.extmarks").gen_data(v.palette_buf, layout.palette)
-  require("nvchad.extmarks").gen_data(v.tools_buf, layout.tools)
-
-  require("nvchad.extmarks").mappings {
-    bufs = { v.palette_buf, input_buf, v.tools_buf },
-    inputbuf = input_buf,
-    close_func_post = function()
-      api.nvim_set_current_win(oldwin)
-    end,
+  extmarks.gen_data {
+    { buf = v.palette_buf, layout = layout.palette, xpad = v.xpad, ns = v.paletteNS },
+    { buf = v.tools_buf, layout = layout.tools, xpad = v.xpad, ns = v.paletteNS },
   }
 
   local h = mark_state[v.palette_buf].h
@@ -91,9 +85,9 @@ M.open = function()
   api.nvim_set_current_win(win)
   api.nvim_buf_set_lines(input_buf, 0, -1, false, { "   Enter color : #" .. v.hex })
 
-  require("nvchad.extmarks").run(v.palette_buf, h, v.w)
-  require("nvchad.extmarks").run(v.tools_buf, tools_h, v.w)
-  require("nvchad.extmarks.events").add { v.palette_buf, v.tools_buf }
+  extmarks.run(v.palette_buf, h, v.w)
+  extmarks.run(v.tools_buf, tools_h, v.w)
+  extmarks_events.add { v.palette_buf, v.tools_buf }
 
   ----------------- keymaps --------------------------
   -- redraw some sections on <cr>
@@ -104,15 +98,18 @@ M.open = function()
     redraw(v.palette_buf, "all")
     redraw(v.tools_buf, "all")
   end, { buffer = input_buf })
+
+  extmarks.mappings {
+    bufs = { v.palette_buf, input_buf, v.tools_buf },
+    inputbuf = input_buf,
+    close_func_post = function()
+      api.nvim_set_current_win(oldwin)
+    end,
+  }
 end
 
 M.toggle = function()
-  if v.visible then
-    M.open()
-  else
-    api.nvim_feedkeys("q", "x", false)
-  end
-
+  extmarks.toggle_func(M.open, v.visible)
   v.visible = not v.visible
 end
 

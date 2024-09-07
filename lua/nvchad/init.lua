@@ -30,6 +30,6 @@ vim.schedule(function()
 end)
 
 new_cmd("K", function()
-  require("nvchad.huefy").open()
+  require("nvchad.huefy").toggle()
 end, {})
 
