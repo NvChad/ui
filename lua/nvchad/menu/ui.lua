@@ -5,7 +5,7 @@ local win_pos = api.nvim_win_get_position
 local state = require "nvchad.menu.state"
 
 local format_title = function(buf, name, rtxt, hl, actions)
-  local bufv = state[buf]
+  local bufv = state.bufs[buf]
   local line = {}
 
   if name == " separator" then
@@ -50,7 +50,7 @@ local function toggle_nested_menu(items)
     require("nvchad.extmarks.utils").close {
       bufs = right_bufs,
       close_func = function(buf)
-        state[buf] = nil
+        state.bufs[buf] = nil
       end,
     }
   else
@@ -60,7 +60,7 @@ end
 
 M.items = function(buf)
   local lines = {}
-  local bufv = state[buf]
+  local bufv = state.bufs[buf]
 
   for i, item in ipairs(bufv.items or {}) do
     local hover_id = i .. "menu"

@@ -10,10 +10,10 @@ M.open = function(items, opts)
   opts = opts or {}
 
   local buf = api.nvim_create_buf(false, true)
-  state[buf] = { items = items, item_gap = opts.item_gap or 10 }
+  state.bufs[buf] = { items = items, item_gap = opts.item_gap or 10 }
 
   local h = #items
-  local bufv = state[buf]
+  local bufv = state.bufs[buf]
   bufv.w = require("nvchad.menu.utils").get_width(items)
   bufv.w = bufv.w + bufv.item_gap
 
@@ -53,11 +53,31 @@ M.open = function(items, opts)
   extmarks_events.add(buf)
 
   extmarks.mappings {
-    bufs = vim.tbl_keys(state),
+    bufs = vim.tbl_keys(state.bufs),
     close_func = function(bufid)
-      state[bufid] = nil
+      state.bufs[bufid] = nil
     end,
   }
+
+  -- clear menu if clicked outside
+  if not state.autocmd then
+    api.nvim_create_autocmd("WinEnter", {
+      callback = function(args)
+        local mousepos = vim.fn.getmousepos()
+        local bufid = api.nvim_win_get_buf(mousepos.winid)
+
+        if vim.bo[bufid].ft ~= "NvMenu" then
+          require("nvchad.extmarks.utils").close {
+            bufs = vim.tbl_keys(state.bufs),
+            close_func = function(id)
+              state.bufs[id] = nil
+            end,
+          }
+          api.nvim_del_autocmd(args.id)
+        end
+      end,
+    })
+  end
 end
 
 return M
