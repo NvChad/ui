@@ -1,19 +1,21 @@
 local M = {}
-local state = require "nvchad.menu.state"
 local api = vim.api
 local strw = vim.fn.strwidth
+local win_pos = api.nvim_win_get_position
+local state = require "nvchad.menu.state"
 
-local format_title = function(name, rtxt, hl, actions)
+local format_title = function(buf, name, rtxt, hl, actions)
+  local bufv = state[buf]
   local line = {}
 
   if name == " separator" then
-    table.insert(line, { " " .. string.rep("─", state.w - 2), "LineNr" })
+    table.insert(line, { " " .. string.rep("─", bufv.w - 2), "LineNr" })
     return line
   end
 
   table.insert(line, { name, hl or "MenuLabel", actions })
 
-  local gap = state.w - (strw(name) + strw(rtxt))
+  local gap = bufv.w - (strw(name) + strw(rtxt))
   table.insert(line, { string.rep(" ", gap), hl, actions })
 
   if rtxt then
@@ -23,25 +25,71 @@ local format_title = function(name, rtxt, hl, actions)
   return line
 end
 
-M.items = function()
-  local lines = {}
+local get_right_bufs = function()
+  local cur_win = vim.fn.getmousepos().winid
+  local wins = api.nvim_list_wins()
 
-  for i, item in ipairs(state.items) do
+  local nvmenu_bufs = {}
+  local cur_win_col = win_pos(cur_win)[2]
+
+  for _, id in ipairs(wins) do
+    local bufid = api.nvim_win_get_buf(id)
+
+    if vim.bo[bufid].ft == "NvMenu" and win_pos(id)[2] > cur_win_col then
+      table.insert(nvmenu_bufs, bufid)
+    end
+  end
+
+  return nvmenu_bufs
+end
+
+local function toggle_nested_menu(items)
+  local right_bufs = get_right_bufs()
+
+  if #right_bufs > 0 then
+    require("nvchad.extmarks.utils").close {
+      bufs = right_bufs,
+      close_func = function(buf)
+        state[buf] = nil
+      end,
+    }
+  else
+    require("nvchad.menu").open(items, { nested = true })
+  end
+end
+
+M.items = function(buf)
+  local lines = {}
+  local bufv = state[buf]
+
+  for i, item in ipairs(bufv.items or {}) do
     local hover_id = i .. "menu"
     local hovered = vim.g.nvmark_hovered == hover_id
     local hl = hovered and "ExHovered" or nil
 
+    local nested_menu = item.items
+
+    if nested_menu then
+      item.rtxt = ""
+    end
+
     local actions = {
       hover = { id = hover_id, redraw = "items" },
       click = function()
-        api.nvim_buf_call(state.buf, function()
-         api.nvim_feedkeys("q", "x", false)
+        if nested_menu then
+          toggle_nested_menu(nested_menu)
+          return
+        end
+
+        api.nvim_buf_call(buf, function()
+          api.nvim_feedkeys("q", "x", false)
         end)
+
         item.cmd()
       end,
     }
 
-    local mark = format_title(" " .. item.name, (item.rtxt or "") .. " ", hl, actions)
+    local mark = format_title(buf, " " .. item.name, (item.rtxt or "") .. " ", hl, actions)
     table.insert(lines, mark)
   end
 

@@ -28,7 +28,14 @@ M.open = function()
 
   require("nvchad.extmarks").gen_data(v.palette_buf, layout.palette)
   require("nvchad.extmarks").gen_data(v.tools_buf, layout.tools)
-  require("nvchad.extmarks").mappings { v.palette_buf, input_buf, v.tools_buf, oldwin = oldwin, inputbuf = input_buf }
+
+  require("nvchad.extmarks").mappings {
+    bufs = { v.palette_buf, input_buf, v.tools_buf },
+    inputbuf = input_buf,
+    close_func_post = function()
+      api.nvim_set_current_win(oldwin)
+    end,
+  }
 
   local h = mark_state[v.palette_buf].h
 

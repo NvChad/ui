@@ -62,22 +62,22 @@ M.set_empty_lines = function(buf, n, w)
   api.nvim_buf_set_lines(buf, 0, -1, true, empty_lines)
 end
 
-M.mappings = function(bufs)
-  for _, buf in ipairs(bufs) do
+M.mappings = function(val)
+  for _, buf in ipairs(val.bufs) do
     -- cycle bufs
     map("n", "<C-t>", function()
-      utils.cycle_bufs(bufs)
+      utils.cycle_bufs(val)
     end, { buffer = buf })
 
     -- close
     map("n", "q", function()
-      utils.close(bufs)
+      utils.close(val)
     end, { buffer = buf })
   end
 
-  if bufs.input_buf then
+  if val.input_buf then
     api.nvim_create_autocmd("WinEnter", {
-      buffer = bufs.input_buf,
+      buffer = val.input_buf,
       command = "normal! $",
     })
   end

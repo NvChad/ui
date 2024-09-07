@@ -2,8 +2,6 @@ local M = {}
 local api = vim.api
 local utils = require "nvchad.color.utils"
 
-local set_opt = api.nvim_set_option_value
-
 local v = require "nvchad.shades.state"
 local mark_state = require "nvchad.extmarks.state"
 local redraw = require("nvchad.extmarks").redraw
@@ -26,7 +24,14 @@ M.open = function()
   }
 
   require("nvchad.extmarks").gen_data(v.buf, layout)
-  require("nvchad.extmarks").mappings { v.buf, input_buf, oldwin = oldwin, input_buf = input_buf }
+
+  require("nvchad.extmarks").mappings {
+    bufs = { v.buf, input_buf },
+    input_buf = input_buf,
+    close_func_post = function()
+      api.nvim_set_current_win(oldwin)
+    end,
+  }
 
   local h = mark_state[v.buf].h
 

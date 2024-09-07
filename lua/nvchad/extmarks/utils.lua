@@ -40,7 +40,7 @@ end
 M.close = function(val)
   local event_bufs = require("nvchad.extmarks.events").bufs
 
-  for _, buf in ipairs(val) do
+  for _, buf in ipairs(val.bufs) do
     api.nvim_buf_delete(buf, { force = true })
     state[buf] = nil
 
@@ -50,10 +50,14 @@ M.close = function(val)
         table.remove(event_bufs, i)
       end
     end
+
+    if val.close_func then
+      val.close_func(buf)
+    end
   end
 
-  if val.oldwin then
-    api.nvim_set_current_win(val.oldwin)
+  if val.close_func_post then
+    val.close_func_post()
   end
 end
 
