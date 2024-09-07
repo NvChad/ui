@@ -75,49 +75,57 @@ local function handle_hover(buf_state, buf, row, col)
   end
 end
 
-return function(opts)
-  for _, buf in ipairs(opts.bufs) do
-    set_cursormoved_autocmd(buf)
+local buf_mappings = function(buf)
+  set_cursormoved_autocmd(buf)
 
-    map("n", "<CR>", function()
-      handle_click(buf)
-    end, { buffer = buf })
+  map("n", "<CR>", function()
+    handle_click(buf)
+  end, { buffer = buf })
 
-    map("n", "<Tab>", function()
-      cycle_clickables(buf, 1)
-    end, { buffer = buf })
+  map("n", "<Tab>", function()
+    cycle_clickables(buf, 1)
+  end, { buffer = buf })
 
-    map("n", "<S-Tab>", function()
-      cycle_clickables(buf, -1)
-    end, { buffer = buf })
+  map("n", "<S-Tab>", function()
+    cycle_clickables(buf, -1)
+  end, { buffer = buf })
+end
+
+local M = {}
+
+M.bufs = {}
+
+M.add = function(val)
+  if type(val) == "table" then
+    for _, buf in ipairs(val) do
+      table.insert(M.bufs, buf)
+      buf_mappings(buf)
+    end
+  else
+    table.insert(M.bufs, val)
+    buf_mappings(val)
   end
+end
 
-  if not opts.hover then
-    return
-  end
+M.enable = function()
+  vim.g.extmarks_events = true
+  vim.o.mousemev = true
 
-  vim.o.mousemoveevent = true
-
-  local onkey_ns = vim.on_key(function(key)
+  vim.on_key(function(key)
     local mousepos = vim.fn.getmousepos()
     local cur_win = mousepos.winid
     local cur_buf = api.nvim_win_get_buf(cur_win)
-    local buf_state = nvmark_state[cur_buf]
 
-    if not vim.tbl_contains(opts.bufs, cur_buf) then
-      return
-    end
+    if vim.tbl_contains(M.bufs, cur_buf) then
+      local row, col = mousepos.line, mousepos.column - 1
 
-    local row, col = mousepos.line, mousepos.column - 1
-
-    if key == MouseMove then
-      handle_hover(buf_state, cur_buf, row, col)
-    elseif key == LeftMouse then
-      handle_click(cur_buf, "mouse", row, col)
+      if key == MouseMove then
+        handle_hover(nvmark_state[cur_buf], cur_buf, row, col)
+      elseif key == LeftMouse then
+        handle_click(cur_buf, "mouse", row, col)
+      end
     end
   end)
-
-  for _, buf in ipairs(opts.bufs) do
-    nvmark_state[buf].onkey_ns = onkey_ns
-  end
 end
+
+return M

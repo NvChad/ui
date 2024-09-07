@@ -62,7 +62,7 @@ M.open = function()
 
   -- set empty lines to make all cols/rows available
   require("nvchad.extmarks").run(v.buf, h, v.w)
-  require "nvchad.extmarks.events" { bufs = { v.buf }, hover = true }
+  require("nvchad.extmarks.events").add(v.buf)
 
   ----------------- keymaps --------------------------
   -- redraw some sections on <cr>

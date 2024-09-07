@@ -86,7 +86,7 @@ M.open = function()
 
   require("nvchad.extmarks").run(v.palette_buf, h, v.w)
   require("nvchad.extmarks").run(v.tools_buf, tools_h, v.w)
-  require "nvchad.extmarks.events" { bufs = { v.palette_buf, v.tools_buf }, hover = true }
+  require("nvchad.extmarks.events").add { v.palette_buf, v.tools_buf }
 
   ----------------- keymaps --------------------------
   -- redraw some sections on <cr>

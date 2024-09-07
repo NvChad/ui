@@ -24,7 +24,7 @@ M.gen_data = function(buf, layout)
   local row = 0
 
   for _, value in ipairs(v.layout) do
-    local lines = value.lines()
+    local lines = value.lines(buf)
     value.row = row
     row = row + #lines
   end
@@ -91,6 +91,10 @@ M.run = function(buf, h, w)
   state[buf].ids_set = true
 
   api.nvim_set_option_value("modifiable", false, { buf = buf })
+
+  if not vim.g.extmarks_events then
+    require("nvchad.extmarks.events").enable()
+  end
 end
 
 return M

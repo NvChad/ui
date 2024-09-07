@@ -4,7 +4,7 @@ local state = require "nvchad.extmarks.state"
 
 return function(buf, section)
   local v = state[buf]
-  local section_lines = section.lines()
+  local section_lines = section.lines(buf)
   local xpad = v.xpad or 0
 
   for line_i, val in ipairs(section_lines) do

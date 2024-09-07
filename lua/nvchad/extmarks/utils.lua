@@ -38,15 +38,18 @@ M.cycle_clickables = function(buf, step)
 end
 
 M.close = function(val)
-  for i, buf in ipairs(val) do
+  local event_bufs = require("nvchad.extmarks.events").bufs
+
+  for _, buf in ipairs(val) do
     api.nvim_buf_delete(buf, { force = true })
-
-    -- clear old onkey
-    if i == 1 then
-      vim.on_key(nil, state[buf].onkey_ns)
-    end
-
     state[buf] = nil
+
+    --- remove buf from event_bufs table
+    for i, bufid in ipairs(event_bufs) do
+      if bufid == buf then
+        table.remove(event_bufs, i)
+      end
+    end
   end
 
   if val.oldwin then
