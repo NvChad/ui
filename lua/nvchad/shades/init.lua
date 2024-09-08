@@ -56,7 +56,7 @@ M.open = function()
 
   api.nvim_set_current_win(win)
 
-  extmarks.run(v.buf, h, v.w)
+  extmarks.run(v.buf, { h = h, w = v.w })
   extmarks_events.add(v.buf)
 
   ----------------- keymaps --------------------------

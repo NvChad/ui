@@ -49,7 +49,7 @@ M.open = function(items, opts)
   api.nvim_set_hl(ns, "Normal", { link = "ExBlack2Bg" })
   api.nvim_set_hl(ns, "FloatBorder", { link = "ExBlack2Border" })
 
-  extmarks.run(buf, h, bufv.w)
+  extmarks.run(buf, { h = h, w = bufv.w })
   extmarks_events.add(buf)
 
   extmarks.mappings {

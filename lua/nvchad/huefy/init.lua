@@ -85,8 +85,8 @@ M.open = function()
   api.nvim_set_current_win(win)
   api.nvim_buf_set_lines(input_buf, 0, -1, false, { "   Enter color : #" .. v.hex })
 
-  extmarks.run(v.palette_buf, h, v.w)
-  extmarks.run(v.tools_buf, tools_h, v.w)
+  extmarks.run(v.palette_buf, { h = h, w = v.w })
+  extmarks.run(v.tools_buf, { h = tools_h, w = v.w })
   extmarks_events.add { v.palette_buf, v.tools_buf }
 
   ----------------- keymaps --------------------------

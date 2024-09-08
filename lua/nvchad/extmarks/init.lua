@@ -91,8 +91,8 @@ M.mappings = function(val)
   end
 end
 
-M.run = function(buf, h, w)
-  M.set_empty_lines(buf, h, w)
+M.run = function(buf, opts)
+  M.set_empty_lines(buf, opts.h, opts.w)
   require "nvchad.extmarks.highlights"
 
   M.redraw(buf, "all")
