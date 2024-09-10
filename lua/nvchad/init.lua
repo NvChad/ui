@@ -29,7 +29,3 @@ vim.schedule(function()
   require "nvchad.au"
 end)
 
-new_cmd("K", function()
-  require("nvchad.huefy").toggle()
-end, {})
-
