@@ -40,10 +40,7 @@ CONTENTS                                                       *nvchad-contents*
     5.1 Signature Help                                |nvchad.lsp.signature|
     5.2 Renamer                                       |nvchad.lsp.renamer|
 
- 8. `Color tools`                                       |nvchad.color|
-    6.1 Colorify                                      |nvchad.colorify|
-    6.2 Shades Picker                                 |nvchad.shades|
-    6.3 Color Picker                                  |nvchad.color-picker|
+ 8. `Colorify`                                          |nvchad.colorify|
  
  9. `Telescope Extensions`                              |nvchad.telescope|
     9.1 Base46 Themes                                 |nvchad.telescope.themes|
@@ -611,12 +608,7 @@ This is a function will will rename variable under cursor
  require "nvchad.lsp.renamer"()
 
 ==============================================================================
-8. Color tools                                              *nvchad.color-tools*
-
-Thesea are a list of color tools provided by the UI plugin
-
-------------------------------------------------------------------------------
-8.1. Colorify                                                  *nvchad.colorify*
+8. Colorify                                                    *nvchad.colorify*
 
 This module will colorize hex codes in the buffer as well as lsp variables
 for example, tailwind color related classes etc, as thats provided by the lsp!
@@ -627,27 +619,6 @@ for example, tailwind color related classes etc, as thats provided by the lsp!
    virt_text = "󱓻 ",
    highlight = { hex = true, lspvars = true },
  }, 
-
-------------------------------------------------------------------------------
-8.1. Shades picker                                          *nvchad.shades*
-
-This will open a window, which captures hex-color under the cursor and shows 
-variants of that color in a grid ( lightened / darkened)
-
-Also has modes like saturation, hue. 100% mouse friendly
->lua
- require("nvchad.shades").open()
-
-NOTE: 
-- To close the window, press |q| or |<esc>|
-
-------------------------------------------------------------------------------
-8.3. Color picker                                          *nvchad.color-picker*
-
-Color picker module  which allows editing rgb values, saturation, brightness
-of a color
->lua
- require("nvchad.huefy").open()
 
 ==============================================================================
 9. Telescope extensions                                       *nvchad.telescope*
