@@ -114,9 +114,6 @@ M.open = function()
   end
 
   ------------------------------------ keybinds ------------------------------------------
-  -- disable left/right
-  map({ "h", "l", "<left>", "<right>" }, "", buf)
-
   local btn_start_i = row_i + #opts.header + 2
   api.nvim_win_set_cursor(win, { btn_start_i, col_i + 5 })
 
@@ -133,10 +130,8 @@ M.open = function()
   end, buf)
 
   map({ "<cr>" }, function()
-    local line = fn.line "."
-
     local key = vim.tbl_filter(function(item)
-      return item.i == line
+      return item.i == fn.line "."
     end, key_lines)
 
     if key[1] and key[1].cmd then

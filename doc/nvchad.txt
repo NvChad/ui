@@ -52,27 +52,26 @@ CONTENTS                                                       *nvchad-contents*
 ==============================================================================
 1. Introduction                                                   *nvchad.intro*
 
-			     How does it work?
+		   	     How does it work?
                              ─────────────────
 
-      ` ┌────────────────────────┐       ┌────────────────────────────┐
-      ` │      nvconfig.lua     │       │        chadrc.lua         │
-      ` ├────────────────────────┤       ├────────────────────────────┤
-       │  Has default options  │      │  User options             │
-       │                        │       │  These override nvconfig  │
-       │  {                     │       └────────────┬───────────────┘
-       │    ui = {...},         │                    │
-       │    base46 = {...},     │                    │
-       │  }                     │                    │
-       └────────────────────────┘                    │
-                    │                                │
-                    └───────────────┬────────────────┘
-                                    │      
-                                    ▼      
-                     The options are merged 
-                     Available in |require('nvconfig')|
-     	             Then used by UI & Base46 plugin
-
+      ` ┌────────────────────────┐         ┌────────────────────────────┐
+      ` │      nvconfig.lua     │         │        chadrc.lua         │
+      ` ├────────────────────────┤         ├────────────────────────────┤
+       │  Has default options  │        │  User options             │
+       │                        │         │  These override nvconfig  │
+       │  {                     │         └────────────┬───────────────┘
+       │    ui = {...},         │                      │
+       │    base46 = {...},     │                      │
+       │  }                     │                      │
+       └────────────────────────┘                      │
+                    │                                  │
+                    └─────────────────┬────────────────┘
+                                      │      
+                                      ▼      
+                      The options are merged 
+                      Available in |require('nvconfig')|
+     	              Then used by UI & Base46 plugin
 
 The file `lua/chadrc.lua` is user's config file used to customize NvChad's Base46
 & UI plugin and it needs to return a table, example:
@@ -87,7 +86,9 @@ The file `lua/chadrc.lua` is user's config file used to customize NvChad's Base4
  return M
 <
 ------------------------------------------------------------------------------
-1.1 UI & Base46 plugin setup                             *nvchad.plugin-install*
+1.1 UI & Base46 plugin setup                                *nvchad.plugin-install*
+
+In your plugins file
 >lua
  { "nvim-lua/plenary.nvim", lazy = true },
 
@@ -100,17 +101,18 @@ The file `lua/chadrc.lua` is user's config file used to customize NvChad's Base4
       require("base46").load_all_highlights()
     end,
  },
-
- {
-   "nvim-tree/nvim-web-devicons",
-   opts = function()
-     dofile(vim.g.base46_cache .. "devicons")
-     return { override = require "nvchad.icons.devicons" }
-   end,
- },
 <
+Base46 setup
+>lua
+ -- put this in your main init.lua file ( before lazy setup )
+ vim.g.base46_cache = vim.fn.stdpath "data" .. "/base46"
+
+ -- put this after lazy setup
+ dofile(vim.g.base46_cache .. "defaults")
+ dofile(vim.g.base46_cache .. "statusline")
+
 ==============================================================================
-2. Default Chadrc Options                                *nvchad.chadrc.options*
+2. Default Chadrc Options                                  *nvchad.chadrc.options*
 
 These are the default options for UI/Base46 plugin. You dont have to write
 them all, only those you want to change and the it'll override the default
@@ -176,17 +178,7 @@ options.
       buttons = {
         { txt = "  Find File", keys = "Spc f f", cmd = "Telescope find_files" },
         { txt = "  Recent Files", keys = "Spc f o", cmd = "Telescope oldfiles" },
-        { txt = "-", hl = "NvDashLazy", no_gap = true, rep = true },
-        {
-          txt = function()
-            local stats = require("lazy").stats()
-            local ms = math.floor(stats.startuptime) .. " ms"
-            return "  Loaded " .. stats.loaded .. "/" .. stats.count .. " plugins in " .. ms
-          end,
-          hl = "NvDashLazy",
-          no_gap = true,
-        },
-        { txt = "-", hl = "NvDashLazy", no_gap = true, rep = true },
+	-- more... check nvconfig.lua file for full list of buttons
       },
     }
    },
@@ -211,7 +203,7 @@ options.
      excluded_groups = { "terminal (t)", "autopairs", "Nvim", "Opens" }, -- can add group name or with mode
    },
 
-   mason = { cmd = true, pkgs = {} },
+   mason = { pkgs = {} },
 
    colorify = {
      enabled = true,
@@ -220,16 +212,14 @@ options.
      highlight = { hex = true, lspvars = true },
    },
  }
-<
  
 ==============================================================================
 3. Tabufline                                               *nvchad.ui.tabufline*
 
-A tabline which shows UI for `buffers` & `tabs`
+A tabline module which shows UI for `buffers` & `tabs`
 
  - Buffers are tab-scoped too, so buffers from different tabs aren't mixed.
- - Clickable tabs and buffer buttons 
- - Extensible with custom modules 
+ - Clickable tabs and buffer buttons. Extensible with custom modules 
 
 Example config to add `abc` module
 >lua
@@ -250,8 +240,6 @@ Notes:
 
 - To color a text, wrap it with highlight group
   |"%#Test#"| .. |"hi"|  = Test is the hlgroup => |"%#Test#hi"|
-
-- Separating them with .. makes it more readable
 
 - Color a text & make it clickable
   |"%@foo@"| .. |"%#Test#"| .. |"hi"|  = foo is the vim function name
@@ -447,7 +435,7 @@ As Cmd can be a function too, here's a complex example :
  }
 <
 ==============================================================================
-6. Base46 theming                                                *nvchad.base46*
+6. Base46 theming                                                  *nvchad.base46*
 
 			     How does it work?
                              ─────────────────
@@ -494,7 +482,7 @@ Then load the cache files individually, like :
     end,
   }
 <
-Note: You can load all cache files at once instead of lazyloding them
+Note: You can load all cache files at once instead of lazyloading them
 >lua
  for _, v in ipairs(vim.fn.readdir(vim.g.base46_cache)) do
    dofile(vim.g.base46_cache .. v)
@@ -515,11 +503,16 @@ Note: You can load all cache files at once instead of lazyloding them
       Pmenu = { bg = "black2" },
       -- Pmenu = { bg = "#ffffff" }, this works too
         
-      -- lighten or darken bsae46 theme variable
+      -- lighten or darken base46 theme variable
       -- this will use the black color from nvchad theme & lighten it by 5x
       -- negative number will darken it
       Normal = {
         bg = { "black", 2 }
+      },
+
+      -- mix colors, mixes black/blue from your theme by 10%
+      PmenuSel = {
+        bg = { "black", "blue", 10 }
       },
    },
  }
@@ -552,9 +545,8 @@ If you just want to customize an already existing theme, you can use
 An integration file is a group of highlight groups, for example cmp
 integration, telescope etc.
 
-There are many integration files but only few are
-compiled by default, to include other ones, use `base46.integrations` optio
-optionn
+There are many integration files but only few are compiled by default, to 
+include other ones, use `base46.integrations` option
 >lua
  M.base46 = {
    integrations = { "dap", "hop" },
@@ -593,8 +585,7 @@ and check the base46 readme for theme file structure
 ------------------------------------------------------------------------------
 7.1 Signature Help                                        *nvchad.lsp.signature*
 
-Enables signature help for LSP, whenever you're inside a function call, the
-signature popup window will be shown.
+50 ~ LOC auto-signature previewer whenever inside a function,
 >lua
  M.lsp = {
    signature = true,
@@ -621,7 +612,7 @@ for example, tailwind color related classes etc, as thats provided by the lsp!
  }, 
 
 ==============================================================================
-9. Telescope extensions                                       *nvchad.telescope*
+9. Telescope extensions                                         *nvchad.telescope*
 
 There are 2 telescope extensions available : 
  |themes|, |terms|
@@ -668,7 +659,7 @@ These are the default options for cmp UI
    lspkind_text = true,
    style = "default", -- default/flat_light/flat_dark/atom/atom_colored
    format_colors = {
-     tailwind = true,
+     tailwind = false,
    },
  },
 <
@@ -677,9 +668,24 @@ These are the default options for cmp UI
 
 >lua
  local options =  { ... you options }
- options =  vim.tbl_deep_extend("force", options, require "nvchad.cmp")
+ options = vim.tbl_deep_extend("force", options, require "nvchad.cmp")
  require("cmp").setup(options)
 
 
-vim:tw=78:ts=8:noet:ft=help:norl:
+==============================================================================
+11. Mason                                                         *nvchad.mason*
 
+- `MasonInstallAll` command which will install all mason packages.
+- It reads tools from various plugin configs and installs them.
+
+for example if you configured clangd in your lspconfig, then it will install 
+clangd too. You dont have to manually go to mason and install it.
+
+- Currently supported plugins : `lspconfig, conform, nvim-lint`
+- You can explicitly add packages in M.mason.pkgs of your chadrc
+
+NOTE: API
+>lua
+ require("nvchad.mason").install_all()
+>
+vim:tw=78:ts=8:noet:ft=help:norl:

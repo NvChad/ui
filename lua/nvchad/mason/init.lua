@@ -1,7 +1,8 @@
 local M = {}
 local masonames = require "nvchad.mason.names"
+local pkgs = require("nvconfig").mason.pkgs
 
-M.get_pkgs = function(data)
+M.get_pkgs = function()
   local tools = {}
 
   local lsps = require("lspconfig.util").available_servers()
@@ -30,8 +31,6 @@ M.get_pkgs = function(data)
     end
   end
 
-  local pkgs = data or {}
-
   -- rm duplicates
   for _, v in pairs(tools) do
     if not (vim.tbl_contains(pkgs, masonames[v])) then
@@ -42,13 +41,13 @@ M.get_pkgs = function(data)
   return pkgs
 end
 
-M.install_all = function(data)
+M.install_all = function()
   vim.cmd "Mason"
 
   local mr = require "mason-registry"
 
   mr.refresh(function()
-    for _, tool in ipairs(M.get_pkgs(data)) do
+    for _, tool in ipairs(M.get_pkgs()) do
       local p = mr.get_package(tool)
 
       if not p:is_installed() then

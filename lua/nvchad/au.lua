@@ -67,11 +67,9 @@ autocmd("BufWritePost", {
   end,
 })
 
-if config.mason.cmd then
-  vim.api.nvim_create_user_command("MasonInstallAll", function()
-    require("nvchad.mason").install_all(config.mason.pkgs)
-  end, {})
-end
+vim.api.nvim_create_user_command("MasonInstallAll", function()
+  require("nvchad.mason").install_all()
+end, {})
 
 if config.colorify.enabled then
   require("nvchad.colorify").run()
