@@ -1,7 +1,4 @@
-*nvchad* base46 and UI 
-
-These are docs for configuring both
-
+*nvui* Docs for NvChad's base46 and UI
 
                            `  ▄▄         ▄ ▄▄▄▄▄▄▄  `
                            `▄▀███▄     ▄██ █████▀ `
@@ -13,44 +10,45 @@ These are docs for configuring both
                            `  ▀ ▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀`
 
 ==============================================================================
-CONTENTS                                                       *nvchad-contents* 
+CONTENTS                                                         *nvui.contents* 
+ 
+ 1. `Introduction`                                      |nvui.intro|
+    1.1 UI & Base46 Plugin Install                    |nvui.plugin-install|
+ 
+ 2. `Default Chadrc Options`                            |nvui.chadrc.options|
+ 
+ 3. `Tabufline`                                         |nvui.tabufline|
+    3.1 Api functions                                 |nvui.tabufline.api|
+ 
+ 4. `Statusline`                                        |nvui.statusline|
+ 
+ 5. `Term`                                              |nvui.term|
+    5.1 New Window                                    |nvui.term.new|
+    5.2 Toggle Window                                 |nvui.term.toggle|
+    5.3 Code Runner                                   |nvui.term.runner|
+ 
+ 6. `Base46 Theming`                                    |nvui.base46|
+    6.1 Highlight Override                            |nvui.base46.highlights|
+    6.2 Customize Themes                              |nvui.base46.edit_themes|
+    6.3 Integrations                                  |nvui.base46.integrations|
+    6.4 Local Themes                                  |nvui.base46.local_themes|
 
- 1. `Introduction`                                      |nvchad.intro|
-    1.1 UI & Base46 Plugin Install                    |nvchad.plugin-install|
- 
- 2. `Default Chadrc Options`                            |nvchad.chadrc.options|
- 
- 3. `Tabufline`                                         |nvchad.ui.tabufline|
-    3.1 Api functions                                 |nvchad.ui.tabufline.api|
- 
- 4. `Statusline`                                        |nvchad.ui.statusline|
- 
- 5. `Term`                                              |nvchad.term|
-    5.1 New Window                                    |nvchad.term.new|
-    5.2 Toggle Window                                 |nvchad.term.toggle|
-    5.3 Code Runner                                   |nvchad.term.runner|
- 
- 6. `Base46 Theming`                                    |nvchad.base46|
-    6.1 Highlight Override                            |nvchad.base46.highlights|
-    6.2 Customize Themes                              |nvchad.base46.edit_themes|
-    6.3 Integrations                                  |nvchad.base46.integrations|
-    6.4 Local Themes                                  |nvchad.base46.local_themes|
+ 7. `Lsp`                                               |nvui.lsp|
+    5.1 Signature Help                                |nvui.lsp.signature|
+    5.2 Renamer                                       |nvui.lsp.renamer|
 
- 7. `Lsp`                                               |nvchad.lsp|
-    5.1 Signature Help                                |nvchad.lsp.signature|
-    5.2 Renamer                                       |nvchad.lsp.renamer|
-
- 8. `Colorify`                                          |nvchad.colorify|
+ 8. `Colorify`                                          |nvui.colorify|
  
- 9. `Telescope Extensions`                              |nvchad.telescope|
-    9.1 Base46 Themes                                 |nvchad.telescope.themes|
-    9.2 Term Picker                                   |nvchad.telescope.terms|
+ 9. `Telescope Extensions`                              |nvui.telescope|
+    9.1 Base46 Themes                                 |nvui.telescope.themes|
+    9.2 Term Picker                                   |nvui.telescope.terms|
 
- 10. `Cheatsheet`                                       |nvchad.cheatsheet|
- 11. `Cmp UI`                                           |nvchad.cmp|
+ 10. `Cheatsheet`                                       |nvui.cheatsheet|
+ 11. `Cmp UI`                                           |nvui.cmp|
+ 11. `Mason`                                            |nvui.mason|
 
 ==============================================================================
-1. Introduction                                                   *nvchad.intro*
+1. Introduction                                                     *nvui.intro*
 
 		   	     How does it work?
                              ─────────────────
@@ -73,8 +71,8 @@ CONTENTS                                                       *nvchad-contents*
                       Available in |require('nvconfig')|
      	              Then used by UI & Base46 plugin
 
-The file `lua/chadrc.lua` is user's config file used to customize NvChad's Base46
-& UI plugin and it needs to return a table, example:
+The file `lua/chadrc.lua` is user's config file used to customize Base46 & UI
+plugin and it needs to return a table, example:
 >lua
  local M = {}
 
@@ -86,16 +84,21 @@ The file `lua/chadrc.lua` is user's config file used to customize NvChad's Base4
  return M
 <
 ------------------------------------------------------------------------------
-1.1 UI & Base46 plugin setup                                *nvchad.plugin-install*
+1.1 UI & Base46 plugin setup                                *nvui.plugin-install*
 
 In your plugins file
 >lua
- { "nvim-lua/plenary.nvim", lazy = true },
-
- { "NvChad/ui", lazy = false },
+ "nvim-lua/plenary.nvim",
 
  {
-    "NvChad/base46",
+   "nvchad/ui",
+    config = function()
+      require "nvchad" 
+    end
+ },
+
+ {
+    "nvchad/base46",
     lazy = true,
     build = function()
       require("base46").load_all_highlights()
@@ -112,11 +115,10 @@ Base46 setup
  dofile(vim.g.base46_cache .. "statusline")
 
 ==============================================================================
-2. Default Chadrc Options                                  *nvchad.chadrc.options*
+2. Default Chadrc Options                                  *nvui.chadrc.options*
 
-These are the default options for UI/Base46 plugin. You dont have to write
-them all, only those you want to change and the it'll override the default
-options.
+These are the default options for UI/Base46 plugin. No need to write them all 
+Only those you want to change and the it'll override the defaults.
 >lua
  {
    base46 = {
@@ -134,8 +136,8 @@ options.
        lspkind_text = true,
        style = "default", -- default/flat_light/flat_dark/atom/atom_colored
        format_colors = {
-         tailwind = true,
-        },
+         tailwind = false,
+       },
      },
  
      telescope = { style = "borderless" }, -- borderless / bordered
@@ -182,6 +184,8 @@ options.
       },
     }
    },
+
+   -- ui table ends there!
  
    term = {
      winopts = { number = false },
@@ -214,14 +218,14 @@ options.
  }
  
 ==============================================================================
-3. Tabufline                                               *nvchad.ui.tabufline*
+3. Tabufline                                                    *nvui.tabufline*
 
 A tabline module which shows UI for `buffers` & `tabs`
 
  - Buffers are tab-scoped too, so buffers from different tabs aren't mixed.
- - Clickable tabs and buffer buttons. Extensible with custom modules 
+ - Extensible with custom modules 
 
-Example config to add `abc` module
+Example config to add abc module
 >lua
  M.ui = {
    tabufline = {
@@ -236,7 +240,7 @@ Example config to add `abc` module
 <
 Notes:
 
-- To remove a module, just remove it from order.
+- To remove a module, remove it from order.
 
 - To color a text, wrap it with highlight group
   |"%#Test#"| .. |"hi"|  = Test is the hlgroup => |"%#Test#hi"|
@@ -249,12 +253,12 @@ OR You can use our util functions
  require("nvchad.tabufline.utils").txt("hi", "Test")
  require("nvchad.tabufline.utils").btn("hi", "Test", "foo")
 
- -- just define the function on the top!
+ -- define the function on the top!
  local txt = require("nvchad.tabufline.utils").txt
  txt("hi", "HlGroup")
 <
 -----------------------------------------------------------------------------
-3.1 Tabufline API                                     *nvchad.ui.tabufline.api*
+3.1 Tabufline API                                          *nvui.tabufline.api*
 
 These are some useful |functions| to use the tabufline
 
@@ -271,17 +275,17 @@ These are some useful |functions| to use the tabufline
  require("nvchad.tabufline").closeAllBufs(true) 
  require("nvchad.tabufline").closeAllBufs(false) -- excludes current buf
 
- require('nvchad.tabufline').closeBufs_at_direction("left") -- or right
+ require("nvchad.tabufline").closeBufs_at_direction("left") -- or right
 <
 `Move Buffers`
 
 This moves the buffer's position to left/right (-1 for left)
 >lua
- require('nvchad.tabufline').move_buf(1) or -1
+ require("nvchad.tabufline").move_buf(1) or -1
 <
 `API Recipe Example`
 
-All buffer numbers are stored in |vim.t.bufs| tab local variable
+All buffer numbers are stored in |vim.t.bufs| (tab-local variable)
 
 This example maps Alt+number keys to switch buffer
 >lua
@@ -292,9 +296,9 @@ This example maps Alt+number keys to switch buffer
  end
 <
 ==============================================================================
-4. Statusline                                             *nvchad.ui.statusline*
+4. Statusline                                                  *nvui.statusline*
 
-NvChad's statusline is minimal & customizable with least amount of abstraction
+NvChad's statusline is minimal & customizable with less abstraction
 for custom modules, it has 4 themes.
 
 Managing modules example: ~
@@ -331,10 +335,10 @@ separator_style: ~
 
 Order: ~
   - The order can be found at 
-    `https://github.com/NvChad/ui/blob/v2.5/lua/nvchad/stl/utils.lua#L12`
+    `https://github.com/nvui.ui/blob/v2.5/lua/nvui.stl/utils.lua#L12`
 
 ==============================================================================
-5. Term                                                            *nvchad.term*
+5. Term                                                              *nvui.term*
 
 Terminal module with useful functions to spawn & toggle terminals at different
 positions & with commands 
@@ -342,7 +346,7 @@ positions & with commands
 This config applies for all terminals opened through our term functions:
 >lua
  M.term = {
-   winopts = { winhl = "Normal:term,WinSeparator:WinSeparator" },
+   winopts = { number = false },
    sizes = { sp = 0.3, vsp = 0.2, ["bo sp"] = 0.3, ["bo vsp"] = 0.2 },
    float = {
      row = 0.3, col = 0.25,
@@ -363,11 +367,10 @@ winopts: ~
  - In the above example, |winhl| is used, which can be used to color the
    terminal window differently.
 
-
 ------------------------------------------------------------------------------
-5.1 Terminal API                                               *nvchad.term.api*
+5.1 Terminal API                                                 *nvui.term.api*
 
-These are the functions which open the terminal based on options provided
+These are functions which open the terminal based on options provided.
 
 Available options are: 
 >lua
@@ -382,13 +385,13 @@ Available options are:
  }
 <
 ------------------------------------------------------------------------------
-5.2 New Window                                                 *nvchad.term.new*
+5.2 New Window                                                   *nvui.term.new*
 >lua
  require("nvchad.term").new { pos = "sp", size = 0.3 }
  require("nvchad.term").new { pos = "vsp", cmd = "neofetch"}
 <
 -------------------------------------------------------------------------------
-5.3 Toggle Window                                            *nvchad.term.toggle*
+5.3 Toggle Window                                              *nvui.term.toggle*
 
 This function toggles the terminal window, make sure to provide an unique id.
 >lua
@@ -402,10 +405,10 @@ This function toggles the terminal window, make sure to provide an unique id.
  end)
 <
 -------------------------------------------------------------------------------
-5.4 Code Runner                                              *nvchad.term.runner*
+5.4 Code Runner                                                *nvui.term.runner*
 
 This function will first open a terminal + runs the cmd.
-Calling the function again will run the cmd in that terminal window
+Calling it again will run the cmd in that terminal window
 >lua
  require("nvchad.term").runner {
     pos = "vsp",
@@ -435,7 +438,7 @@ As Cmd can be a function too, here's a complex example :
  }
 <
 ==============================================================================
-6. Base46 theming                                                  *nvchad.base46*
+6. Base46 theming                                                  *nvui.base46*
 
 			     How does it work?
                              ─────────────────
@@ -462,7 +465,7 @@ To load the cache file, use the |dofile| function
 >lua
  dofile(vim.g.base46_cache .. "syntax")
 <
-Set the |base46_cache| global before initializing plugins.
+Set the |base46_cache| global before initializing plugins (before lazy.setup)
 >lua
  vim.g.base46_cache = vim.fn.stdpath "data" .. "/base46" 
 <
@@ -476,6 +479,7 @@ Then load the cache files individually, like :
 >lua
   {
     "nvim-treesitter/nvim-treesitter",
+    event = { "BufReadPost", "BufNewFile" },
     config = function()
       dofile(vim.g.base46_cache .. "treesitter")
       require("nvim-treesitter.configs").setup()
@@ -489,7 +493,7 @@ Note: You can load all cache files at once instead of lazyloading them
  end
 <
 ------------------------------------------------------------------------------
-6.1 Highlight override                                *nvchad.base46.highlights*
+6.1 Highlight override                                  *nvui.base46.highlights*
 
 - Make sure you use a valid highlight group.
 - Check your theme colors in the base46 theme dir
@@ -504,7 +508,7 @@ Note: You can load all cache files at once instead of lazyloading them
       -- Pmenu = { bg = "#ffffff" }, this works too
         
       -- lighten or darken base46 theme variable
-      -- this will use the black color from nvchad theme & lighten it by 5x
+      -- this will use the black color from nvui.theme & lighten it by 5x
       -- negative number will darken it
       Normal = {
         bg = { "black", 2 }
@@ -520,10 +524,9 @@ Note: You can load all cache files at once instead of lazyloading them
 - To add new highlight groups, use |hl_add|
 
 ------------------------------------------------------------------------------
-6.2 Customize themes                                 *nvchad.base46.edit_themes*
+6.2 Customize themes                                   *nvui.base46.edit_themes*
 
-If you just want to customize an already existing theme, you can use
-`base46.changed_themes` option
+To edit an already existing theme, use `base46.changed_themes` option.
 >lua
  M.base46 = {
    changed_themes = {
@@ -535,12 +538,12 @@ If you just want to customize an already existing theme, you can use
          },
       },
 
-      onedark = { -- and so on! },
+      onedark = { ... },
    },
  }
 <
 ------------------------------------------------------------------------------
-6.3 Base46 integrations                             *nvchad.base46.integrations*
+6.3 Base46 integrations                               *nvui.base46.integrations*
 
 An integration file is a group of highlight groups, for example cmp
 integration, telescope etc.
@@ -559,7 +562,7 @@ include other ones, use `base46.integrations` option
 
 Note: 
 
-It's preferred to just put the dofile code in your plugin's config func
+It's preferred to put the dofile code in your plugin's config func
 >lua
  {
    "folke/trouble.nvim",
@@ -571,19 +574,18 @@ It's preferred to just put the dofile code in your plugin's config func
  }
 <
 ------------------------------------------------------------------------------
-6.4 Local themes                                    *nvchad.base46.local_themes*
+6.4 Local themes		                      *nvui.base46.local_themes*
 
-Just put the theme file in `lua/themes/` folder 
+- Put the theme file in `lua/themes/` folder 
+- Check the base46 readme for theme file structure 
 
-and check the base46 readme for theme file structure 
-
-|https://github.com/NvChad/base46?tab=readme-ov-file#understanding-theme-variables|
+|https://github.com/nvchad/base46#understanding-theme-variables|
 
 ==============================================================================
-7. LSP                                                              *nvchad.lsp*
+7. LSP                                                                *nvui.lsp*
 
 ------------------------------------------------------------------------------
-7.1 Signature Help                                        *nvchad.lsp.signature*
+7.1 Signature Help                                          *nvui.lsp.signature*
 
 50 ~ LOC auto-signature previewer whenever inside a function,
 >lua
@@ -592,17 +594,17 @@ and check the base46 readme for theme file structure
  }
 <
 ------------------------------------------------------------------------------
-7.2 Renamer                                                 *nvchad.lsp.renamer*
+7.2 Renamer                                                   *nvui.lsp.renamer*
 
 This is a function will will rename variable under cursor
 >lua
  require "nvchad.lsp.renamer"()
 
 ==============================================================================
-8. Colorify                                                    *nvchad.colorify*
+8. Colorify			                                 *nvui.colorify*
 
 This module will colorize hex codes in the buffer as well as lsp variables
-for example, tailwind color related classes etc, as thats provided by the lsp!
+for example from tailwind, css lsp etc
 >lua
  M.colorify = {
    enabled = true,
@@ -612,13 +614,13 @@ for example, tailwind color related classes etc, as thats provided by the lsp!
  }, 
 
 ==============================================================================
-9. Telescope extensions                                         *nvchad.telescope*
+9. Telescope extensions                                         *nvui.telescope*
 
 There are 2 telescope extensions available : 
  |themes|, |terms|
 
 ------------------------------------------------------------------------------
-9.1 Base46 themes                                       *nvchad.telescope.themes*
+9.1 Base46 themes                                       *nvui.telescope.themes*
 
 - This will list all base46 themes in telescope window and cycling over them
   will change themes on fly, pressing enter will save the theme to chadrc.lua
@@ -626,14 +628,16 @@ There are 2 telescope extensions available :
 Command : `Telescope themes`
 
 ------------------------------------------------------------------------------
-9.2 Term picker                                          *nvchad.telescope.terms*
+9.2 Term picker                                          *nvui.telescope.terms*
 
 - Terminals closed with |require("nvchad.tabufline").close_buffer()| will be
   hidden, you can check `Telescope terms` command to view them back and
   pressing |enter| or |C-v| or |C-x| will unhide the terminal.
 
+Command : `Telescope terms`
+
 ==============================================================================
-10. Cheatsheet                                                *nvchad.cheatsheet*
+10. Cheatsheet                                                 *nvui.cheatsheet*
 
 This shows mappings in a pretty cheatsheet format on the buffer
 >lua
@@ -647,20 +651,21 @@ Notes:
 - The excluded_groups will remove that group's column from the cheatsheet. 
 
 - For example `terminal` there will remove all columns which had the name "terminal"
-  in it (with modename removed) `"terminal (t)"` just removes the terminal column 
+  in it (with modename removed) `"terminal (t)"` removes the terminal column 
   which had |(t)| in it.
 
 ==============================================================================
-11. Cmp UI                                                        *nvchad.cmp-ui*
+11. Cmp UI                                                            *nvui.cmp*
 
 These are the default options for cmp UI
 >lua
- M.ui.cmp = {
-   lspkind_text = true,
-   style = "default", -- default/flat_light/flat_dark/atom/atom_colored
-   format_colors = {
-     tailwind = false,
-   },
+ M.ui = {
+     cmp = {
+      lspkind_text = true,
+      style = "default", -- default/flat_light/flat_dark/atom/atom_colored
+      format_colors = {
+         tailwind = false,
+      },
  },
 <
  - To make your cmp config look like nvchad's, import nvchad.cmp module
@@ -673,9 +678,9 @@ These are the default options for cmp UI
 
 
 ==============================================================================
-11. Mason                                                         *nvchad.mason*
+12. Mason                                                           *nvui.mason*
 
-- `MasonInstallAll` command which will install all mason packages.
+- `MasonInstallAll` command installs all mason packages.
 - It reads tools from various plugin configs and installs them.
 
 for example if you configured clangd in your lspconfig, then it will install 
@@ -687,5 +692,5 @@ clangd too. You dont have to manually go to mason and install it.
 NOTE: API
 >lua
  require("nvchad.mason").install_all()
->
+<
 vim:tw=78:ts=8:noet:ft=help:norl:
