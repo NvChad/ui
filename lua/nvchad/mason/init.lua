@@ -10,13 +10,10 @@ M.get_pkgs = function(data)
   local conform_exists, conform = pcall(require, "conform")
 
   if conform_exists then
-    local formatters = conform.list_all_formatters()
-
-    local formatter_names = vim.tbl_map(function(formatter)
-      return formatter.name
-    end, formatters)
-
-    vim.list_extend(tools, formatter_names)
+    for _, v in ipairs(conform.list_all_formatters()) do
+      local fmts = vim.split(v.name:gsub(",", ""), "%s+")
+      vim.list_extend(tools, fmts)
+    end
   end
 
   -- nvim-lint
