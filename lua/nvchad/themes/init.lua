@@ -28,8 +28,6 @@ local gen_word_pad = function()
 end
 
 M.open = function()
-  local oldwin = api.nvim_get_current_win()
-
   state.buf = api.nvim_create_buf(false, true)
   state.input_buf = api.nvim_create_buf(false, true)
 
@@ -81,18 +79,9 @@ M.open = function()
   ----------------- keymaps --------------------------
   extmarks.mappings {
     bufs = { state.buf, state.input_buf },
-    input_buf = state.input_buf,
-    close_func_post = function()
-      api.nvim_set_current_win(oldwin)
-    end,
   }
 
   require "nvchad.themes.mappings"
-end
-
-M.toggle = function()
-  extmarks.toggle_func(M.open, state.visible)
-  state.visible = not state.visible
 end
 
 return M

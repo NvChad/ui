@@ -4,19 +4,10 @@ local autocmd = api.nvim_create_autocmd
 local state = require "nvchad.themes.state"
 local redraw = require("volt").redraw
 
-local function save_theme(name)
-  local chadrc = dofile(vim.fn.stdpath "config" .. "/lua/chadrc.lua")
-  local old_theme = chadrc.ui.theme or chadrc.base46.theme
-
-  old_theme = '"' .. old_theme .. '"'
-  require("nvchad.utils").replace_word(old_theme, '"' .. name .. '"')
-end
-
 local function reload_theme(name)
-  require("nvconfig").ui.theme = name
-  require("nvchad.utils").reload "volt.highlights"
-  vim.api.nvim_exec_autocmds("User", { pattern = "NvChadThemeReload" })
-  save_theme(name)
+  require("nvconfig").base46.theme = name
+  require("base46").load_all_highlights()
+  require("plenary.reload").reload_module "volt.highlights"
   require "volt.highlights"
 end
 
@@ -47,6 +38,18 @@ map("i", "<C-p>", function()
     reload_theme(theme)
     redraw(state.buf, "all")
   end
+end, { buffer = state.input_buf })
+
+map("i", "<cr>", function()
+  local name = state.themes_shown[state.index]
+  local chadrc = dofile(vim.fn.stdpath "config" .. "/lua/chadrc.lua")
+  local old_theme = chadrc.ui.theme or chadrc.base46.theme
+
+  old_theme = '"' .. old_theme .. '"'
+  require("nvchad.utils").replace_word(old_theme, '"' .. name .. '"')
+
+  vim.cmd.stopinsert()
+  require("volt").close()
 end, { buffer = state.input_buf })
 
 map("i", "<BS>", function()
