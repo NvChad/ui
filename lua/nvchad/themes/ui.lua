@@ -56,7 +56,7 @@ M.flat = function()
     api.nvim_set_hl(state.ns, themeNameHl, { fg = theme_colors.base07, bg = theme_bg })
 
     -- theme name + palette colors
-    local padding = state.longest_name - #name + state.word_gap
+    local padding = state.longest_name - #name + state.word_gap + 4
 
     local active = i == state.index
     local active_icon = active and " " or ""

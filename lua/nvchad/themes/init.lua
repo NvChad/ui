@@ -40,6 +40,10 @@ M.open = function(opts)
 
   state.w = state.longest_name + state.word_gap + (#state.order * vim.fn.strwidth(state.icon)) + (state.xpad * 2) + 4
 
+  if style == "flat" then
+    state.w = state.w + 4
+  end
+
   volt.gen_data {
     {
       buf = state.buf,

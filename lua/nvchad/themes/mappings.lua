@@ -4,6 +4,8 @@ local autocmd = api.nvim_create_autocmd
 local state = require "nvchad.themes.state"
 local redraw = require("volt").redraw
 
+local scrolled = false
+
 local function reload_theme(name)
   require("nvconfig").base46.theme = name
   require("base46").load_all_highlights()
@@ -38,8 +40,9 @@ map("i", "<C-n>", function()
     reload_theme(theme)
     redraw(state.buf, "all")
 
-    if state.index+1 > state.limit[state.style] then
-      vim.api.nvim_buf_call(state.buf, function()
+    if state.index + 1 > state.limit[state.style] then
+      api.nvim_buf_call(state.buf, function()
+        scrolled = true
         scroll_down(state.scroll_step[state.style], "down")
       end)
     end
@@ -52,11 +55,10 @@ map("i", "<C-p>", function()
     reload_theme(theme)
     redraw(state.buf, "all")
 
-    if state.index > state.limit[state.style] then
-      vim.api.nvim_buf_call(state.buf, function()
-        scroll_down(state.scroll_step[state.style], "up")
-      end)
-    end
+    api.nvim_buf_call(state.buf, function()
+      scrolled = true
+      scroll_down(state.scroll_step[state.style], "up")
+    end)
   end
 end, { buffer = state.input_buf })
 
@@ -96,9 +98,15 @@ autocmd("TextChangedI", {
   buffer = state.input_buf,
 
   callback = function()
+    if scrolled then
+      api.nvim_buf_call(state.buf, function()
+        vim.cmd "normal! gg"
+      end)
+    end
+
     local input = api.nvim_get_current_line():sub(5, -1)
     input = input:gsub("%s", "")
-    state.index=1
+    state.index = 1
 
     filter_themes(input)
 
@@ -116,5 +124,6 @@ autocmd("TextChangedI", {
     end
 
     redraw(state.buf, "all")
+    scrolled = false
   end,
 })
