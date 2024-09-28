@@ -2,7 +2,6 @@ local M = {}
 local api = vim.api
 local volt = require "volt"
 local ui = require "nvchad.themes.ui"
-local volt_events = require "volt.events"
 local state = require "nvchad.themes.state"
 local colors = dofile(vim.g.base46_cache .. "colors")
 
@@ -103,7 +102,6 @@ M.open = function(opts)
   end
 
   volt.run(state.buf, volt_opts)
-  volt_events.add(state.buf)
 
   ----------------- keymaps --------------------------
   volt.mappings { bufs = { state.buf, state.input_buf } }
