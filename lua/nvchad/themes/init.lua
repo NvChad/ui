@@ -1,8 +1,8 @@
 local M = {}
 local api = vim.api
-local layout = require "nvchad.themes.layout"
-local extmarks = require "volt"
-local extmarks_events = require "volt.events"
+local volt = require "volt"
+local ui = require "nvchad.themes.ui"
+local volt_events = require "volt.events"
 local state = require "nvchad.themes.state"
 local colors = dofile(vim.g.base46_cache .. "colors")
 
@@ -16,7 +16,7 @@ end
 local gen_word_pad = function()
   local largest = 0
 
-  for i = state.index, state.index + state.limit, 1 do
+  for i = state.index, state.index + state.limit[state.style], 1 do
     local namelen = #state.val[i]
 
     if namelen > largest then
@@ -27,21 +27,37 @@ local gen_word_pad = function()
   state.longest_name = largest
 end
 
-M.open = function()
+M.open = function(opts)
   state.buf = api.nvim_create_buf(false, true)
   state.input_buf = api.nvim_create_buf(false, true)
+  state.style = opts.style
+
+  local style = state.style
+
+  state.icons.user = opts.icon
+  state.icon = state.icons.user or state.icons[style]
 
   gen_word_pad()
-  state.w = state.longest_name + state.word_gap + (#state.order * 2) + (state.xpad * 2)
-  state.w = state.w + 4
 
-  extmarks.gen_data {
-    { buf = state.buf, layout = layout, xpad = state.xpad, ns = state.ns },
+  state.w = state.longest_name + state.word_gap + (#state.order * vim.fn.strwidth(state.icon)) + (state.xpad * 2) + 4
+
+  volt.gen_data {
+    {
+      buf = state.buf,
+      layout = { { name = "themes", lines = ui[state.style] } },
+      xpad = state.xpad,
+      ns = state.ns,
+    },
   }
 
-  local h = state.limit + 1
+  local h = state.limit[style] + 1
 
-  state.input_win = api.nvim_open_win(state.input_buf, true, {
+  if style == "flat" or style == "bordered" then
+    local step = state.scroll_step[state.style]
+    h = (h * step) - 5
+  end
+
+  local input_win_opts = {
     row = math.floor((vim.o.lines - h) / 2),
     col = math.floor((vim.o.columns - state.w) / 2),
     width = state.w,
@@ -49,15 +65,21 @@ M.open = function()
     relative = "editor",
     style = "minimal",
     border = { "┏", "━", "┓", "┃", "┛", "━", "┗", "┃" },
-  })
+  }
+
+  if style == "flat" or style == "bordered" then
+    input_win_opts.row = input_win_opts.row - 2
+  end
+
+  state.input_win = api.nvim_open_win(state.input_buf, true, input_win_opts)
 
   vim.cmd "startinsert"
 
-  local win = api.nvim_open_win(state.buf, false, {
+  state.win = api.nvim_open_win(state.buf, false, {
     row = 2,
     col = -1,
     width = state.w,
-    height = h,
+    height = ((style == "flat" or style == "bordered") and h + 2) or h,
     relative = "win",
     style = "minimal",
     border = { "┌", "─", "┐", "│", "┘", "─", "└", "│" },
@@ -68,18 +90,23 @@ M.open = function()
   vim.wo[state.input_win].winhl = "Normal:ExBlack2Bg,FloatBorder:ExBlack2Border"
   api.nvim_set_hl(state.ns, "Normal", { link = "ExDarkBg" })
   api.nvim_set_hl(state.ns, "FloatBorder", { link = "ExDarkBorder" })
-  api.nvim_set_hl(state.ns, "NScrollbarOff", { fg = colors.one_bg2 })
-  api.nvim_win_set_hl_ns(win, state.ns)
+  api.nvim_set_hl(state.ns, "NScrollbarOff", { fg = colors.one_bg })
+  api.nvim_win_set_hl_ns(state.win, state.ns)
 
   api.nvim_set_current_win(state.input_win)
 
-  extmarks.run(state.buf, { h = #state.val, w = state.w })
-  extmarks_events.add(state.buf)
+  local volt_opts = { h = #state.val, w = state.w }
+
+  if state.style == "flat" or state.style == "bordered" then
+    local step = state.scroll_step[state.style]
+    volt_opts.h = (volt_opts.h * step) + 2
+  end
+
+  volt.run(state.buf, volt_opts)
+  volt_events.add(state.buf)
 
   ----------------- keymaps --------------------------
-  extmarks.mappings {
-    bufs = { state.buf, state.input_buf },
-  }
+  volt.mappings { bufs = { state.buf, state.input_buf } }
 
   require "nvchad.themes.mappings"
 end

@@ -1,6 +1,13 @@
 local M = {
   index = 1,
-  limit = 15,
+
+  limit = {
+    compact = 15,
+    flat = 6,
+    bordered = 7,
+  },
+
+  start_row = 1,
   xpad = 1,
   word_gap = 5,
 
@@ -17,8 +24,21 @@ local M = {
     "base0D",
   },
 
-  themes_shown={},
-  active_theme = ""
+  themes_shown = {},
+  active_theme = "",
+
+  icons = {
+    compact = "󱓻 ",
+    flat = " ",
+    bordered = "󱓻 ",
+    user = nil,
+  },
+
+  scroll_step = {
+    compact = 1,
+    flat = 3,
+    bordered = 2,
+  },
 }
 
 return M

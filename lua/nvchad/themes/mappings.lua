@@ -11,7 +11,7 @@ local function reload_theme(name)
   require "volt.highlights"
 end
 
-local gg = function(n)
+local set_index = function(n)
   local list = state.themes_shown
 
   if n == 1 and state.index < #list then
@@ -24,19 +24,39 @@ local gg = function(n)
   return state.active_theme
 end
 
+local function scroll_down(n, direction)
+  if direction == "up" then
+    vim.cmd("normal!" .. n .. "")
+  else
+    vim.cmd("normal!" .. n .. "")
+  end
+end
+
 map("i", "<C-n>", function()
   if #state.themes_shown > 0 then
-    local theme = gg(1)
+    local theme = set_index(1)
     reload_theme(theme)
     redraw(state.buf, "all")
+
+    if state.index+1 > state.limit[state.style] then
+      vim.api.nvim_buf_call(state.buf, function()
+        scroll_down(state.scroll_step[state.style], "down")
+      end)
+    end
   end
 end, { buffer = state.input_buf })
 
 map("i", "<C-p>", function()
   if #state.themes_shown > 0 then
-    local theme = gg(-1)
+    local theme = set_index(-1)
     reload_theme(theme)
     redraw(state.buf, "all")
+
+    if state.index > state.limit[state.style] then
+      vim.api.nvim_buf_call(state.buf, function()
+        scroll_down(state.scroll_step[state.style], "up")
+      end)
+    end
   end
 end, { buffer = state.input_buf })
 
@@ -78,6 +98,7 @@ autocmd("TextChangedI", {
   callback = function()
     local input = api.nvim_get_current_line():sub(5, -1)
     input = input:gsub("%s", "")
+    state.index=1
 
     filter_themes(input)
 
