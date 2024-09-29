@@ -40,8 +40,7 @@ local M = {
 
     documentation = {
       border = "single",
-      winhighlight = cmp_style == "default" and "Normal:CmpPmenu,FLoatBorder:CmpBorder"
-        or "Normal:CmpDoc,FloatBorder:CmpDocBorder",
+      winhighlight = "Normal:CmpDoc,FloatBorder:CmpDocBorder",
     },
   },
 }
