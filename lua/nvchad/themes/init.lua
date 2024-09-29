@@ -27,9 +27,10 @@ local gen_word_pad = function()
 end
 
 M.open = function(opts)
+  opts = opts or {}
   state.buf = api.nvim_create_buf(false, true)
   state.input_buf = api.nvim_create_buf(false, true)
-  state.style = opts.style
+  state.style = opts.style or "bordered"
 
   local style = state.style
 
