@@ -47,9 +47,8 @@ This ui plugin is a collection of many UI modules like statusline, tabline, chea
 ## Nvdash
 
 - 150 ~ LOC Dashboard module, minimal & nothing fancy!
-
-![image](https://github.com/user-attachments/assets/d41ecc33-7b0a-4e31-8152-010809469920)
-
+ 
+![2024-09-30-203737_2560x1440_scrot](https://github.com/user-attachments/assets/67e83795-50b7-44fd-8b68-19ded1e31346)
 
 ## Cmp styles
 
