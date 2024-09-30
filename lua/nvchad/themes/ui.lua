@@ -95,9 +95,10 @@ M.bordered = function()
 
     local active = i == state.index
     local active_icon = active and " " or ""
+    local active_hl = active and "ExBlue" or "Normal"
     padding = active and padding - 2 or padding
 
-    local line = { { name .. active_icon .. string.rep(" ", padding) } }
+    local line = { { name .. active_icon .. string.rep(" ", padding), active_hl } }
 
     -- colored icons
     for color_i, color in ipairs(state.order) do
@@ -110,7 +111,7 @@ M.bordered = function()
 
     if i ~= last_index then
       local active_border = (active or state.index == i + 1)
-      local active_hl = active_border and "ExBlue" or "linenr"
+      active_hl = active_border and "ExBlue" or "linenr"
       local icon = active_border and "─" or "-"
       table.insert(result, { { string.rep(icon, state.w - 2), active_hl } })
     end
