@@ -65,6 +65,12 @@ This ui plugin is a collection of many UI modules like statusline, tabline, chea
 ![image](https://github.com/user-attachments/assets/c44e405b-f0f1-4c56-ae58-85c49b9616a0)
 ![image](https://github.com/user-attachments/assets/57e88886-7c95-4e77-a252-2021160cd274)
 
+## Modern Theme Picker
+
+- With 3 different styles : bordered, compact, flat
+
+![image](https://github.com/user-attachments/assets/897e46f1-9ae2-4cc2-8fa2-64eff40a90dd)
+
 ## NvCheatsheet
 
 - Auto-generated mappings cheatsheet module, which has a similar layout to that of CSS's masonry layout.
