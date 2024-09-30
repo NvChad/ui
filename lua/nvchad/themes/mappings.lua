@@ -78,12 +78,6 @@ end, { buffer = state.input_buf })
 
 api.nvim_win_set_cursor(state.input_win, { 1, 6 })
 
-local function filter_themes(searchString)
-  state.themes_shown = vim.tbl_filter(function(value)
-    return string.find(value, searchString) ~= nil
-  end, state.val)
-end
-
 autocmd("TextChangedI", {
   buffer = state.input_buf,
 
@@ -100,7 +94,7 @@ autocmd("TextChangedI", {
 
     state.index = 1
 
-    filter_themes(input)
+    state.themes_shown = require("nvchad.themes.utils").filter(state.val, input)
 
     api.nvim_set_option_value("modifiable", true, { buf = state.buf })
 
