@@ -1,4 +1,5 @@
 local M = {
+  prompt = "   ",
   index = 1,
 
   limit = {

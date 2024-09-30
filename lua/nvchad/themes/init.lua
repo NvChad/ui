@@ -30,6 +30,7 @@ M.open = function(opts)
   opts = opts or {}
   state.buf = api.nvim_create_buf(false, true)
   state.input_buf = api.nvim_create_buf(false, true)
+
   state.style = opts.style or "bordered"
 
   local style = state.style
@@ -39,10 +40,14 @@ M.open = function(opts)
 
   gen_word_pad()
 
-  state.w = state.longest_name + state.word_gap + (#state.order * vim.fn.strwidth(state.icon)) + (state.xpad * 2) + 4
+  state.w = state.longest_name + state.word_gap + (#state.order * vim.fn.strwidth(state.icon)) + (state.xpad * 2)
+
+  if style == "compact" then
+    state.w = state.w + 2 -- 1 x 2 padding on left/right
+  end
 
   if style == "flat" then
-    state.w = state.w + 4
+    state.w = state.w + 8
   end
 
   volt.gen_data {
@@ -77,8 +82,6 @@ M.open = function(opts)
 
   state.input_win = api.nvim_open_win(state.input_buf, true, input_win_opts)
 
-  vim.cmd "startinsert"
-
   state.win = api.nvim_open_win(state.buf, false, {
     row = 2,
     col = -1,
@@ -89,7 +92,9 @@ M.open = function(opts)
     border = { "┌", "─", "┐", "│", "┘", "─", "└", "│" },
   })
 
-  api.nvim_buf_set_lines(state.input_buf, 0, -1, false, { "   " })
+  vim.bo[state.input_buf].buftype = "prompt"
+  vim.fn.prompt_setprompt(state.input_buf, state.prompt)
+  vim.cmd "startinsert"
 
   vim.wo[state.input_win].winhl = "Normal:ExBlack2Bg,FloatBorder:ExBlack2Border"
   api.nvim_set_hl(state.ns, "Normal", { link = "ExDarkBg" })

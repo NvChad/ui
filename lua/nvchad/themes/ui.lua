@@ -91,7 +91,7 @@ M.bordered = function()
     local theme_colors = require("base46.themes." .. name).base_16
 
     -- theme name + palette colors
-    local padding = state.longest_name - #name + state.word_gap + 4
+    local padding = state.longest_name - #name + state.word_gap
 
     local active = i == state.index
     local active_icon = active and " " or ""

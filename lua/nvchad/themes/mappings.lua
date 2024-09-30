@@ -74,16 +74,6 @@ map("i", "<cr>", function()
   require("volt").close()
 end, { buffer = state.input_buf })
 
-map("i", "<BS>", function()
-  local cursor = api.nvim_win_get_cursor(state.input_win)
-  local col = cursor[2]
-
-  if col > 6 then
-    local termcode = api.nvim_replace_termcodes("<BS>", true, false, true)
-    api.nvim_feedkeys(termcode, "n", false)
-  end
-end, { buffer = state.input_buf })
-
 ---------------------- autocmds ----------------------
 
 api.nvim_win_set_cursor(state.input_win, { 1, 6 })
@@ -104,8 +94,10 @@ autocmd("TextChangedI", {
       end)
     end
 
-    local input = api.nvim_get_current_line():sub(5, -1)
+    local promptlen = vim.fn.strwidth(state.prompt)
+    local input = api.nvim_get_current_line():sub(promptlen + 1, -1)
     input = input:gsub("%s", "")
+
     state.index = 1
 
     filter_themes(input)
