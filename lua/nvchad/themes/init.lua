@@ -43,7 +43,7 @@ M.open = function(opts)
   state.w = state.longest_name + state.word_gap + (#state.order * vim.fn.strwidth(state.icon)) + (state.xpad * 2)
 
   if style == "compact" then
-    state.w = state.w + 2 -- 1 x 2 padding on left/right
+    state.w = state.w + 4 -- 1 x 2 padding on left/right + 2 of scrollbar
   end
 
   if style == "flat" then
@@ -114,7 +114,12 @@ M.open = function(opts)
   volt.run(state.buf, volt_opts)
 
   ----------------- keymaps --------------------------
-  volt.mappings { bufs = { state.buf, state.input_buf } }
+  volt.mappings {
+    bufs = { state.buf, state.input_buf },
+    after_close = function()
+      require("plenary.reload").reload_module "nvchad.themes"
+    end,
+  }
 
   require "nvchad.themes.mappings"
 end
