@@ -617,8 +617,7 @@ for example from tailwind, css lsp etc
 ==============================================================================
 9. Telescope extensions                                         *nvui.telescope*
 
-There are 2 telescope extensions available : 
- |themes|, |terms|
+There are 2 telescope extensions available : themes, terms
 
 ------------------------------------------------------------------------------
 9.1 Base46 themes                                       *nvui.telescope.themes*
