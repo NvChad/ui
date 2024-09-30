@@ -8,6 +8,7 @@
 ---@field cheatsheet? NvCheatsheetConfig
 ---@field mason? MasonConfig
 ---@field colorify? ColorifyConfig
+---@field nvdash? NvDashConfig
 
 ---@class Base46Config
 --- List of highlights group to add.
@@ -54,7 +55,6 @@
 ---@field telescope? NvTelescopeConfig
 ---@field statusline? NvStatusLineConfig
 ---@field tabufline? NvTabLineConfig
----@field nvdash? NvDashboardConfig
 --- Whether to enable LSP Semantic Tokens highlighting
 --- List of extras themes for other plugins not in NvChad that you want to compile
 
@@ -114,7 +114,7 @@
 --- ```
 ---@field modules? table<string, fun(): string>
 
----@class NvDashboardConfig
+---@class NvDashConfig
 --- Whether to open dashboard on opening nvim
 ---@field load_on_startup? boolean
 --- Your ascii art

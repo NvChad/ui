@@ -4,7 +4,7 @@ local fn = vim.fn
 
 dofile(vim.g.base46_cache .. "nvdash")
 
-local opts = require("nvconfig").ui.nvdash
+local opts = require("nvconfig").nvdash
 
 api.nvim_create_autocmd("BufLeave", {
   callback = function()

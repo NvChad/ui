@@ -3,7 +3,7 @@ local autocmd = vim.api.nvim_create_autocmd
 local config = require "nvconfig"
 
 -- load nvdash only on empty file
-if config.ui.nvdash.load_on_startup then
+if config.nvdash.load_on_startup then
   local buf_lines = api.nvim_buf_get_lines(0, 0, 1, false)
   local no_buf_content = api.nvim_buf_line_count(0) == 1 and buf_lines[1] == ""
   local bufname = api.nvim_buf_get_name(0)
