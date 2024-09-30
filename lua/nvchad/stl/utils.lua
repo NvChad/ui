@@ -125,7 +125,7 @@ M.lsp_msg = function()
   end
 
   local spinners = { "", "󰪞", "󰪟", "󰪠", "󰪢", "󰪣", "󰪤", "󰪥" }
-  local ms = vim.loop.hrtime() / 1e6
+  local ms = vim.uv.hrtime() / 1e6
   local frame = math.floor(ms / 100) % #spinners
 
   return spinners[frame + 1] .. " " .. msg
