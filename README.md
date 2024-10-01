@@ -1,6 +1,49 @@
 # NvChad UI Plugin 
 
 This ui plugin is a collection of many UI modules like statusline, tabline, cheatsheet, nvdash and much more!
+- Docs at `:h nvui` 
+
+## Install
+
+- Create `lua/chadrc.lua` file that returns a table, can be empty table too.
+- Table structure must be same as [nvconfig.lua](https://github.com/NvChad/ui/blob/v2.5/lua/nvconfig.lua)
+
+In your plugins file
+```lua
+ "nvim-lua/plenary.nvim",
+
+ {
+   "nvchad/ui",
+    config = function()
+      require "nvchad" 
+    end
+ },
+
+ {
+    "nvchad/base46",
+    lazy = true,
+    build = function()
+      require("base46").load_all_highlights()
+    end,
+ },
+```
+
+Base46 setup
+```lua
+ -- put this in your main init.lua file ( before lazy setup )
+ vim.g.base46_cache = vim.fn.stdpath "data" .. "/base46_cache"
+
+ -- put this after lazy setup
+ dofile(vim.g.base46_cache .. "defaults")
+ dofile(vim.g.base46_cache .. "statusline")
+
+-- To load all integrations at once
+ for _, v in ipairs(vim.fn.readdir(vim.g.base46_cache)) do
+   dofile(vim.g.base46_cache .. v)
+ end
+```
+
+## List of Features with screenshots 
 
 ## Tabufline
 
@@ -43,7 +86,6 @@ This ui plugin is a collection of many UI modules like statusline, tabline, chea
 ![image](https://github.com/user-attachments/assets/49d88e64-e185-4992-adde-c5e815a53975)
 ![image](https://github.com/user-attachments/assets/d80bb30a-f18f-44a5-8034-78a3bd2c2c17)
 
-
 ## Nvdash
 
 - 150 ~ LOC Dashboard module, minimal & nothing fancy!
@@ -75,14 +117,6 @@ This ui plugin is a collection of many UI modules like statusline, tabline, chea
 - Auto-generated mappings cheatsheet module, which has a similar layout to that of CSS's masonry layout.
 - It has 2 themes ( grid & simple )
 ![img](https://nvchad.com/features/nvcheatsheet.webp)
-
- 
-
-## Docs
-
-`:h nvui` 
-
-
 
 # Credits
 
