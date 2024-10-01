@@ -65,7 +65,7 @@ end, { buffer = state.input_buf })
 map("i", "<cr>", function()
   local name = state.themes_shown[state.index]
   local chadrc = dofile(vim.fn.stdpath "config" .. "/lua/chadrc.lua")
-  local old_theme = chadrc.ui.theme or chadrc.base46.theme
+  local old_theme = chadrc.base46.theme
 
   old_theme = '"' .. old_theme .. '"'
   require("nvchad.utils").replace_word(old_theme, '"' .. name .. '"')
