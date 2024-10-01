@@ -31,7 +31,7 @@ In your plugins file
 Base46 setup
 ```lua
  -- put this in your main init.lua file ( before lazy setup )
- vim.g.base46_cache = vim.fn.stdpath "data" .. "/base46_cache"
+ vim.g.base46_cache = vim.fn.stdpath "data" .. "/base46_cache/"
 
  -- put this after lazy setup
  dofile(vim.g.base46_cache .. "defaults")
