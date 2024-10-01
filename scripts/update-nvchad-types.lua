@@ -1,11 +1,4 @@
 -- All credits to @lucario as he has made all of this type stuff
-
-local chadrc = pcall(require, "chadrc")
-
-if not chadrc then
-  package.loaded.chadrc = {}
-end
-
 local normalize = vim.fs.normalize
 local fnamemodify = vim.fn.fnamemodify
 -- local nvchad_types_fp = vim.fs.normalize(vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":p:h"))
@@ -27,7 +20,7 @@ local gen_themes = function()
   local contents = {
     "---@meta",
     "--- Don't edit or require this file",
-    "error(\"Requring a meta file\")",
+    "error(\"Requiring a meta file\")",
     "",
     "---@type ThemeName",
     "vim.g.nvchad_theme = 'onedark'",
@@ -61,7 +54,7 @@ local gen_highlights = function()
     "---@meta",
     "",
     "--- Don't edit or require this file",
-    "error(\"Requring a meta file\")",
+    "error(\"Requiring a meta file\")",
     "",
     "---@class HLGroups",
     "",

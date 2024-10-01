@@ -28,4 +28,3 @@ end, {})
 vim.schedule(function()
   require "nvchad.au"
 end)
-

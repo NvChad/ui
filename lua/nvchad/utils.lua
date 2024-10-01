@@ -3,7 +3,7 @@ local fn = vim.fn
 
 M.list_themes = function()
   local default_themes = vim.fn.readdir(vim.fn.stdpath "data" .. "/lazy/base46/lua/base46/themes")
-  local custom_themes = vim.loop.fs_stat(fn.stdpath "config" .. "/lua/themes")
+  local custom_themes = vim.uv.fs_stat(fn.stdpath "config" .. "/lua/themes")
 
   if custom_themes and custom_themes.type == "directory" then
     local themes_tb = fn.readdir(fn.stdpath "config" .. "/lua/themes")

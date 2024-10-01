@@ -79,6 +79,8 @@ M.display = function(opts)
   for k, v in pairs(winopts) do
     vim.wo[win][k] = v
   end
+
+  save_term_info(opts.buf, opts)
 end
 
 local function create(opts)
@@ -91,6 +93,8 @@ local function create(opts)
 
   if opts.cmd and opts.buf then
     cmd = { shell, "-c", format_cmd(opts.cmd) .. "; " .. shell }
+  else
+    cmd = { shell }
   end
 
   M.display(opts)

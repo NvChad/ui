@@ -187,7 +187,7 @@ return {
   theme_check = "shopify-theme-check",
   thriftls = "thriftls",
   tinymist = "tinymist",
-  tsserver = "typescript-language-server",
+  ts_ls = "typescript-language-server",
   twiggy_language_server = "twiggy-language-server",
   typos_lsp = "typos-lsp",
   typst_lsp = "typst-lsp",

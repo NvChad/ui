@@ -1,7 +1,7 @@
 ---@meta
 
 --- Don't edit or require this file
-error("Requring a meta file")
+error("Requiring a meta file")
 
 ---@class HLGroups
 ---@field healthSuccess Base46HLGroups # highlight group for defaults
@@ -23,6 +23,8 @@ error("Requring a meta file")
 ---@field diffOldFile Base46HLGroups # highlight group for git
 ---@field diffNewFile Base46HLGroups # highlight group for git
 ---@field WinSeparator Base46HLGroups # highlight group for defaults
+---@field WinBarNC Base46HLGroups # highlight group for defaults
+---@field WinBar Base46HLGroups # highlight group for defaults
 ---@field WildMenu Base46HLGroups # highlight group for defaults
 ---@field WhichKeyValue Base46HLGroups # highlight group for whichkey
 ---@field WhichKeySeparator Base46HLGroups # highlight group for whichkey
@@ -166,6 +168,8 @@ error("Requring a meta file")
 ---@field NvimTreeEmptyFolderName Base46HLGroups # highlight group for nvimtree
 ---@field NvimTreeCursorLine Base46HLGroups # highlight group for nvimtree
 ---@field NvimInternalError Base46HLGroups # highlight group for defaults
+---@field NvShTitle Base46HLGroups # highlight group for nvshades
+---@field NvDashlazy Base46HLGroups # highlight group for nvdash
 ---@field NvDashButtons Base46HLGroups # highlight group for nvdash
 ---@field NvDashAscii Base46HLGroups # highlight group for nvdash
 ---@field NvChSection Base46HLGroups # highlight group for nvcheatsheet
@@ -360,6 +364,7 @@ error("Requring a meta file")
 ---@field Function Base46HLGroups # highlight group for syntax
 ---@field Folded Base46HLGroups # highlight group for defaults
 ---@field FoldColumn Base46HLGroups # highlight group for defaults
+---@field FloatTitle Base46HLGroups # highlight group for defaults
 ---@field FloatBorder Base46HLGroups # highlight group for defaults
 ---@field Float Base46HLGroups # highlight group for syntax
 ---@field Exception Base46HLGroups # highlight group for defaults
@@ -483,6 +488,7 @@ error("Requring a meta file")
 ---@field CmpItemKindType Base46HLGroups # highlight group for cmp
 ---@field CmpItemKindText Base46HLGroups # highlight group for cmp
 ---@field CmpItemKindTabNine Base46HLGroups # highlight group for cmp
+---@field CmpItemKindSuperMaven Base46HLGroups # highlight group for cmp
 ---@field CmpItemKindStructure Base46HLGroups # highlight group for cmp
 ---@field CmpItemKindStruct Base46HLGroups # highlight group for cmp
 ---@field CmpItemKindSnippet Base46HLGroups # highlight group for cmp
@@ -563,6 +569,12 @@ error("Requring a meta file")
 ---@field ["'@lsp.type.enum'"] Base46HLGroups # highlight group for semantic_tokens
 ---@field ["'@lsp.type.decorator'"] Base46HLGroups # highlight group for semantic_tokens
 ---@field ["'@lsp.type.class'"] Base46HLGroups # highlight group for semantic_tokens
+---@field ["'@ibl.scope.underline.7'"] Base46HLGroups # highlight group for blankline
+---@field ["'@ibl.scope.underline.6'"] Base46HLGroups # highlight group for blankline
+---@field ["'@ibl.scope.underline.5'"] Base46HLGroups # highlight group for blankline
+---@field ["'@ibl.scope.underline.4'"] Base46HLGroups # highlight group for blankline
+---@field ["'@ibl.scope.underline.3'"] Base46HLGroups # highlight group for blankline
+---@field ["'@ibl.scope.underline.2'"] Base46HLGroups # highlight group for blankline
 ---@field ["'@ibl.scope.underline.1'"] Base46HLGroups # highlight group for blankline
 ---@field ["'@event'"] Base46HLGroups # highlight group for semantic_tokens
 
@@ -586,6 +598,8 @@ error("Requring a meta file")
 ---@field diffOldFile Base46HLGroups # highlight group for git
 ---@field diffNewFile Base46HLGroups # highlight group for git
 ---@field WinSeparator Base46HLGroups # highlight group for defaults
+---@field WinBarNC Base46HLGroups # highlight group for defaults
+---@field WinBar Base46HLGroups # highlight group for defaults
 ---@field WildMenu Base46HLGroups # highlight group for defaults
 ---@field WhichKeyValue Base46HLGroups # highlight group for whichkey
 ---@field WhichKeySeparator Base46HLGroups # highlight group for whichkey
@@ -764,6 +778,8 @@ error("Requring a meta file")
 ---@field NvimTreeEmptyFolderName Base46HLGroups # highlight group for nvimtree
 ---@field NvimTreeCursorLine Base46HLGroups # highlight group for nvimtree
 ---@field NvimInternalError Base46HLGroups # highlight group for defaults
+---@field NvShTitle Base46HLGroups # highlight group for nvshades
+---@field NvDashlazy Base46HLGroups # highlight group for nvdash
 ---@field NvDashButtons Base46HLGroups # highlight group for nvdash
 ---@field NvDashAscii Base46HLGroups # highlight group for nvdash
 ---@field NvChSection Base46HLGroups # highlight group for nvcheatsheet
@@ -958,6 +974,7 @@ error("Requring a meta file")
 ---@field Function Base46HLGroups # highlight group for syntax
 ---@field Folded Base46HLGroups # highlight group for defaults
 ---@field FoldColumn Base46HLGroups # highlight group for defaults
+---@field FloatTitle Base46HLGroups # highlight group for defaults
 ---@field FloatBorder Base46HLGroups # highlight group for defaults
 ---@field Float Base46HLGroups # highlight group for syntax
 ---@field Exception Base46HLGroups # highlight group for defaults
@@ -1081,6 +1098,7 @@ error("Requring a meta file")
 ---@field CmpItemKindType Base46HLGroups # highlight group for cmp
 ---@field CmpItemKindText Base46HLGroups # highlight group for cmp
 ---@field CmpItemKindTabNine Base46HLGroups # highlight group for cmp
+---@field CmpItemKindSuperMaven Base46HLGroups # highlight group for cmp
 ---@field CmpItemKindStructure Base46HLGroups # highlight group for cmp
 ---@field CmpItemKindStruct Base46HLGroups # highlight group for cmp
 ---@field CmpItemKindSnippet Base46HLGroups # highlight group for cmp
@@ -1209,6 +1227,12 @@ error("Requring a meta file")
 ---@field ["'@keyword.conditional.ternary'"] Base46HLGroups # highlight group for treesitter
 ---@field ["'@keyword.conditional'"] Base46HLGroups # highlight group for treesitter
 ---@field ["'@keyword'"] Base46HLGroups # highlight group for treesitter
+---@field ["'@ibl.scope.underline.7'"] Base46HLGroups # highlight group for blankline
+---@field ["'@ibl.scope.underline.6'"] Base46HLGroups # highlight group for blankline
+---@field ["'@ibl.scope.underline.5'"] Base46HLGroups # highlight group for blankline
+---@field ["'@ibl.scope.underline.4'"] Base46HLGroups # highlight group for blankline
+---@field ["'@ibl.scope.underline.3'"] Base46HLGroups # highlight group for blankline
+---@field ["'@ibl.scope.underline.2'"] Base46HLGroups # highlight group for blankline
 ---@field ["'@ibl.scope.underline.1'"] Base46HLGroups # highlight group for blankline
 ---@field ["'@function.method.call'"] Base46HLGroups # highlight group for treesitter
 ---@field ["'@function.method'"] Base46HLGroups # highlight group for treesitter
@@ -1257,6 +1281,7 @@ error("Requring a meta file")
 ---| "'nvcheatsheet'"
 ---| "'nvdash'"
 ---| "'nvimtree'"
+---| "'nvshades'"
 ---| "'rainbowdelimiters'"
 ---| "'semantic_tokens'"
 ---| "'statusline'"
