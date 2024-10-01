@@ -4,16 +4,7 @@ local fn = vim.fn
 
 dofile(vim.g.base46_cache .. "nvdash")
 
-local config = require("nvconfig").ui.nvdash
-
-local headerAscii = config.header
-local emmptyLine = string.rep(" ", vim.fn.strwidth(headerAscii[1]))
-
-table.insert(headerAscii, 1, emmptyLine)
-table.insert(headerAscii, 2, emmptyLine)
-
-headerAscii[#headerAscii + 1] = emmptyLine
-headerAscii[#headerAscii + 1] = emmptyLine
+local opts = require("nvconfig").nvdash
 
 api.nvim_create_autocmd("BufLeave", {
   callback = function()
@@ -23,125 +14,130 @@ api.nvim_create_autocmd("BufLeave", {
   end,
 })
 
-local map = function(keys, action)
+local map = function(keys, action, buf)
   for _, v in ipairs(keys) do
-    vim.keymap.set("n", v, action, { buffer = true })
+    vim.keymap.set("n", v, action, { buffer = buf })
   end
 end
 
+local function txt_pad(str, max_str_w)
+  local av = (max_str_w - fn.strwidth(str)) / 2
+  av = math.floor(av)
+  return string.rep(" ", av) .. str .. string.rep(" ", av)
+end
+
+local function btn_gap(txt1, txt2, max_str_w)
+  local btn_len = fn.strwidth(txt1) + #txt2
+  local spacing = max_str_w - btn_len
+  return txt1 .. string.rep(" ", spacing) .. txt2
+end
+
 M.open = function()
-  local buttons = config.buttons
-  local nvdashWidth = #headerAscii[1] + 3
-
-  local max_height = #headerAscii + 4 + (2 * #buttons) -- 4  = extra spaces i.e top/bottom
-  local get_win_height = api.nvim_win_get_height
-
-  vim.g.nv_previous_buf = vim.api.nvim_get_current_buf()
-
-  local buf = vim.api.nvim_create_buf(false, true)
   local win = api.nvim_get_current_win()
+  local ns = api.nvim_create_namespace "nvdash"
+  local winh = api.nvim_win_get_height(win)
+  local winw = api.nvim_win_get_width(win)
+  local buf = vim.api.nvim_create_buf(false, true)
+  local nvdash_w = 0
 
-  -- switch to larger win if cur win is small
-  if nvdashWidth + 6 > api.nvim_win_get_width(0) then
-    vim.api.nvim_set_current_win(api.nvim_list_wins()[2])
-    win = api.nvim_get_current_win()
+  api.nvim_win_set_buf(0, buf)
+
+  ------------------------ find largest string's width -----------------------------
+  for _, val in ipairs(opts.header) do
+    if fn.strwidth(val) > nvdash_w then
+      nvdash_w = #val
+    end
   end
 
-  api.nvim_win_set_buf(win, buf)
-
-  local header = headerAscii
-
-  local function addSpacing_toBtns(txt1, txt2)
-    local btn_len = fn.strwidth(txt1) + fn.strwidth(txt2)
-    local spacing = fn.strwidth(header[1]) - btn_len
-    return txt1 .. string.rep(" ", spacing - 1) .. txt2 .. " "
+  if #opts.buttons[1] == 3 then
+    vim.schedule(function()
+      vim.notify "nvdash buttons: each item must have a txt, and cmd"
+    end)
+    return
   end
 
-  local function addPadding_toHeader(str)
-    local pad = (api.nvim_win_get_width(win) - fn.strwidth(str)) / 2
-    return string.rep(" ", math.floor(pad)) .. str .. " "
-  end
+  for _, val in ipairs(opts.buttons) do
+    local str = type(val.txt) == "string" and val.txt or val.txt()
+    str = val.keys and str .. val.keys or str
 
+    if nvdash_w < fn.strwidth(str) then
+      nvdash_w = #str
+    end
+  end
+  ----------------------- save display txt -----------------------------------------
   local dashboard = {}
 
-  for _, val in ipairs(header) do
-    table.insert(dashboard, val .. " ")
+  for _, v in ipairs(opts.header) do
+    table.insert(dashboard, { txt = txt_pad(v, nvdash_w), hl = "NvDashAscii" })
   end
 
-  for _, val in ipairs(buttons) do
-    local str = type(val) ~= "table" and val() or nil
-    table.insert(dashboard, str or addSpacing_toBtns(val[1], val[2]) .. " ")
-    table.insert(dashboard, header[1] .. " ")
+  for _, v in ipairs(opts.buttons) do
+    local txt
+
+    if not v.keys then
+      local str = type(v.txt) == "string" and v.txt or v.txt()
+      txt = v.rep and string.rep(str, nvdash_w) or txt_pad(str, nvdash_w)
+    else
+      txt = btn_gap(v.txt, v.keys, nvdash_w)
+    end
+
+    table.insert(dashboard, { txt = txt, hl = v.hl, cmd = v.cmd })
+
+    if not v.no_gap then
+      table.insert(dashboard, { txt = string.rep(" ", nvdash_w) })
+    end
   end
 
-  local result = {}
+  local row_i = math.floor((winh / 2) - (#dashboard / 2))
+  local col_i = math.floor((winw / 2) - (nvdash_w / 2))
 
   -- make all lines available
-  for i = 1, math.max(get_win_height(win), max_height) do
-    result[i] = ""
+  local empty_str = {}
+
+  for i = 1, winh do
+    empty_str[i] = string.rep(" ", winw)
   end
 
-  local headerStart_Index = math.abs(math.floor((get_win_height(win) / 2) - (#dashboard / 2))) + 1 -- 1 = To handle zero case
-  local abc = math.abs(math.floor((get_win_height(win) / 2) - (#dashboard / 2))) + 1 -- 1 = To handle zero case
+  -- set text + highlight
+  api.nvim_buf_set_lines(buf, 0, -1, false, empty_str)
+  local key_lines = {}
 
-  -- set ascii
-  for _, val in ipairs(dashboard) do
-    result[headerStart_Index] = addPadding_toHeader(val)
-    headerStart_Index = headerStart_Index + 1
+  for i, v in ipairs(dashboard) do
+    v.txt = "  " .. v.txt .. "  "
+    v.hl = v.hl or "NvDashButtons"
+    local opt = { virt_text_pos = "overlay", virt_text = { { v.txt, v.hl } } }
+    api.nvim_buf_set_extmark(buf, ns, row_i + i, col_i, opt)
+
+    if v.cmd then
+      table.insert(key_lines, { i = row_i + i + 1, cmd = v.cmd })
+    end
   end
 
-  api.nvim_buf_set_lines(buf, 0, -1, false, result)
-
-  local nvdash = api.nvim_create_namespace "nvdash"
-  local horiz_pad_index = math.floor((api.nvim_win_get_width(win) / 2) - (nvdashWidth / 2)) - 2
-
-  for i = abc, abc + #header do
-    api.nvim_buf_add_highlight(buf, nvdash, "NvDashAscii", i, horiz_pad_index, -1)
-  end
-
-  for i = abc + #header - 2, abc + #dashboard do
-    api.nvim_buf_add_highlight(buf, nvdash, "NvDashButtons", i, horiz_pad_index, -1)
-  end
-
-  api.nvim_win_set_cursor(win, { abc + #header, math.floor(vim.o.columns / 2) - 13 })
-
-  local first_btn_line = abc + #header + 2
-  local keybind_lineNrs = {}
-
-  for _, _ in ipairs(buttons) do
-    table.insert(keybind_lineNrs, first_btn_line - 2)
-    first_btn_line = first_btn_line + 2
-  end
-
-  -- disable left/right
-  map({ "h", "l", "<left>", "<right>" }, "")
+  ------------------------------------ keybinds ------------------------------------------
+  local btn_start_i = row_i + #opts.header + 2
+  api.nvim_win_set_cursor(win, { btn_start_i, col_i + 5 })
 
   map({ "k", "<up>" }, function()
     local cur = fn.line "."
-    local target_line = cur == keybind_lineNrs[1] and keybind_lineNrs[#keybind_lineNrs] or cur - 2
-    api.nvim_win_set_cursor(win, { target_line, math.floor(vim.o.columns / 2) - 13 })
-  end)
+    local target_line = cur == key_lines[1].i and key_lines[#key_lines].i or cur - 2
+    api.nvim_win_set_cursor(win, { target_line, col_i + 5 })
+  end, buf)
 
   map({ "j", "<down>" }, function()
     local cur = fn.line "."
-    local target_line = cur == keybind_lineNrs[#keybind_lineNrs] and keybind_lineNrs[1] or cur + 2
-    api.nvim_win_set_cursor(win, { target_line, math.floor(vim.o.columns / 2) - 13 })
-  end)
+    local target_line = cur == key_lines[#key_lines].i and key_lines[1].i or cur + 2
+    api.nvim_win_set_cursor(win, { target_line, col_i + 5 })
+  end, buf)
 
-  -- pressing enter on
-  vim.keymap.set("n", "<CR>", function()
-    for i, val in ipairs(keybind_lineNrs) do
-      if val == fn.line "." then
-        local action = buttons[i][3]
+  map({ "<cr>" }, function()
+    local key = vim.tbl_filter(function(item)
+      return item.i == fn.line "."
+    end, key_lines)
 
-        if type(action) == "string" then
-          vim.cmd(action)
-        elseif type(action) == "function" then
-          action()
-        end
-      end
+    if key[1] and key[1].cmd then
+      vim.cmd(key[1].cmd)
     end
-  end, { buffer = true })
+  end, buf)
 
   require("nvchad.utils").set_cleanbuf_opts "nvdash"
 end

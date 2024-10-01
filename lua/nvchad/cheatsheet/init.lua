@@ -4,18 +4,6 @@ local function capitalize(str)
   return (str:gsub("^%l", string.upper))
 end
 
-M.create_fullsize_win = function(buf)
-  local tbline_height = #vim.o.tabline == 0 and -1 or 0
-
-  vim.api.nvim_open_win(buf, true, {
-    row = 1 + tbline_height,
-    col = 0,
-    width = vim.o.columns,
-    height = vim.o.lines - (3 + tbline_height),
-    relative = "editor",
-  })
-end
-
 M.get_mappings = function(mappings, tb_to_add)
   local excluded_groups = require("nvconfig").cheatsheet.excluded_groups
 

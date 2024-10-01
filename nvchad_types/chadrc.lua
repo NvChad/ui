@@ -7,6 +7,8 @@
 ---@field term? TermConfig
 ---@field cheatsheet? NvCheatsheetConfig
 ---@field mason? MasonConfig
+---@field colorify? ColorifyConfig
+---@field nvdash? NvDashConfig
 
 ---@class Base46Config
 --- List of highlights group to add.
@@ -53,7 +55,6 @@
 ---@field telescope? NvTelescopeConfig
 ---@field statusline? NvStatusLineConfig
 ---@field tabufline? NvTabLineConfig
----@field nvdash? NvDashboardConfig
 --- Whether to enable LSP Semantic Tokens highlighting
 --- List of extras themes for other plugins not in NvChad that you want to compile
 
@@ -66,9 +67,9 @@
 --- nvim-cmp style
 ---@field style? '"default"'|'"flat_light"'|'"flat_dark"'|'"atom"'|'"atom_colored"'
 --- Only has effects when the style is `default`
----@field border_color? string|Base30Colors
---- Whether to have more vibrant color for the currently selected entry in the popup menu
----@field selected_item_bg? "colored"|"simple"
+--- @field icons_left? boolean 
+--- places lspkind icons to the left, only for non-atom styles
+--- @field format_colors? NvCmpFormatColors
 
 ---@class NvTelescopeConfig
 --- Telescope style
@@ -113,24 +114,25 @@
 --- ```
 ---@field modules? table<string, fun(): string>
 
----@class NvDashboardConfig
+---@class NvDashConfig
 --- Whether to open dashboard on opening nvim
 ---@field load_on_startup? boolean
 --- Your ascii art
 --- Each string is one line
 ---@field header? string[],
 --- List of buttons to show on the dashboard
----@field buttons? NvDashButtonConfig[] | function[]
+---@field buttons? NvDashButtonConfig[]
+
+---@class NvDashButtonConfig
+---@field txt string | (fun(): string) # Descrption of the button
+---@field hl? string name of the highlight group
+---@field no_gap? boolean true by default, this wont make next line empty
+---@field rep? boolean used to repeat txt till space available, use only when txt is 1 char
 
 ---@class NvCheatsheetConfig
 --- Cheatsheet theme
 ---@field theme? '"grid"'|'"simple"'
 ---@field excluded_groups? string[]
-
----@class NvDashButtonConfig
----@field [1] string Description for the button
----@field [2] string sequence of keys to press to trigger the keybind
----@field [3] string|fun() A Vim Command/A Lua function to be triggered when pressing the keybind/pressing enter on the line with the description on the dashboard
 
 ---Options for NvChad/ui lsp configuration
 ---@class NvLspConfig
@@ -158,3 +160,17 @@
 ---@class MasonConfig
 ---@field command? boolean
 ---@field pkgs? string[]
+
+---@class ColorifyConfig
+---@field enabled? boolean
+---@field mode? "fg"|"bg"|"virtual"
+---@field virt_text? string
+---@field highlight? ColorifyHL
+
+---@class ColorifyHL
+---@field hex? boolean
+---@field lspvars? boolean
+
+---@class NvCmpFormatColors
+---@field icon? string # icon to use for color swatches
+---@field tailwind? boolean # show colors from tailwind/css/astro lsp in menu

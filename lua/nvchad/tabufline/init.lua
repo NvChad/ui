@@ -80,7 +80,7 @@ end
 M.closeAllBufs = function(include_cur_buf)
   local bufs = vim.t.bufs
 
-  if not include_cur_buf then
+  if include_cur_buf ~= nil and not include_cur_buf then
     table.remove(bufs, buf_index(cur_buf()))
   end
 

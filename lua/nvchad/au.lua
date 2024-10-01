@@ -1,5 +1,17 @@
+local api = vim.api
 local autocmd = vim.api.nvim_create_autocmd
 local config = require "nvconfig"
+
+-- load nvdash only on empty file
+if config.nvdash.load_on_startup then
+  local buf_lines = api.nvim_buf_get_lines(0, 0, 1, false)
+  local no_buf_content = api.nvim_buf_line_count(0) == 1 and buf_lines[1] == ""
+  local bufname = api.nvim_buf_get_name(0)
+
+  if bufname == "" and no_buf_content then
+    require("nvchad.nvdash").open()
+  end
+end
 
 if vim.version().minor >= 10 then
   autocmd("LspProgress", {
@@ -31,10 +43,8 @@ end
 autocmd("VimResized", {
   callback = function()
     if vim.bo.ft == "nvdash" then
-      vim.cmd "bw"
       require("nvchad.nvdash").open()
     elseif vim.bo.ft == "nvcheatsheet" then
-      vim.cmd "bw"
       require("nvchad.cheatsheet." .. config.cheatsheet.theme)()
     end
   end,
@@ -57,8 +67,14 @@ autocmd("BufWritePost", {
   end,
 })
 
-if config.mason.cmd then
-  vim.api.nvim_create_user_command("MasonInstallAll", function()
-    require("nvchad.mason").install_all(config.mason.pkgs)
-  end, {})
+vim.api.nvim_create_user_command("MasonInstallAll", function()
+  require("nvchad.mason").install_all()
+end, {})
+
+if config.colorify.enabled then
+  require("nvchad.colorify").run()
+end
+
+if vim.version().minor < 10 then
+  vim.notify "Please update neovim version to v0.10 at least! NvChad only supports v0.10+"
 end

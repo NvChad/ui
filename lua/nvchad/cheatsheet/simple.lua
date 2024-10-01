@@ -1,5 +1,11 @@
 local api = vim.api
-local genStr = string.rep
+local genstr = string.rep
+local strlen = vim.fn.strwidth
+local gapx = 10
+local heading = {
+  "█▀▀ █░█ █▀▀ ▄▀█ ▀█▀ █▀ █░█ █▀▀ █▀▀ ▀█▀",
+  "█▄▄ █▀█ ██▄ █▀█ ░█░ ▄█ █▀█ ██▄ ██▄ ░█░",
+}
 
 dofile(vim.g.base46_cache .. "nvcheatsheet")
 
@@ -12,135 +18,82 @@ api.nvim_create_autocmd("BufWinLeave", {
 })
 
 return function()
+  local ns = api.nvim_create_namespace "nvcheatsheet"
   local mappings_tb = {}
+  local win_w = api.nvim_win_get_width(0)
   require("nvchad.cheatsheet").organize_mappings(mappings_tb)
 
-  vim.g.nv_previous_buf = api.nvim_get_current_buf()
-
   local buf = api.nvim_create_buf(false, true)
-  require("nvchad.cheatsheet").create_fullsize_win(buf)
-
   local win = api.nvim_get_current_win()
 
   api.nvim_set_current_win(win)
   vim.wo[win].winhl = "NormalFloat:Normal"
 
-  local centerPoint = api.nvim_win_get_width(win) / 2
-
   -- Find largest string i.e mapping desc among all mappings
-  local largest_str = 0
+  local max_strlen = 0
 
   for _, section in pairs(mappings_tb) do
-    for _, keymap in ipairs(section) do
-      largest_str = largest_str > #keymap[1] + #keymap[2] and largest_str or #keymap[2] + #keymap[2]
+    for _, v in ipairs(section) do
+      local curstrlen = strlen(v[1]) + strlen(v[2])
+      max_strlen = max_strlen < curstrlen and curstrlen or max_strlen
     end
   end
 
-  local lineNumsDesc = {}
+  local box_w = max_strlen + gapx + 5
 
-  local result = {
-    "",
-    "                                      ",
-    "                                      ",
-    "█▀▀ █░█ █▀▀ ▄▀█ ▀█▀ █▀ █░█ █▀▀ █▀▀ ▀█▀",
-    "█▄▄ █▀█ ██▄ █▀█ ░█░ ▄█ █▀█ ██▄ ██▄ ░█░",
-    "                                      ",
-    "                                      ",
-    "",
+  local function addpadding(str)
+    local pad = box_w - vim.fn.strwidth(str)
+    local l_pad = math.floor(pad / 2)
+    str = str:gsub("^%l", string.upper)
+    return genstr(" ", l_pad) .. str .. genstr(" ", pad - l_pad)
+  end
+
+  local lines = {
+    { genstr(" ", box_w), "NvChAsciiHeader" },
+    { addpadding(heading[1]), "NvChAsciiHeader" },
+    { addpadding(heading[2]), "NvChAsciiHeader" },
+    { genstr(" ", box_w), "NvChAsciiHeader" },
+    { "" },
   }
 
-  for i, val in ipairs(result) do
-    result[i] = genStr(" ", centerPoint - (vim.fn.strwidth(val) / 2) + 4) .. val .. genStr(" ", 12)
-    lineNumsDesc[#lineNumsDesc + 1] = val == "" and "emptySpace" or "asciiHeader"
-  end
+  local sections = vim.tbl_keys(mappings_tb)
+  table.sort(sections)
 
-  local horiz_index = 0
+  for _, name in ipairs(sections) do
+    table.insert(lines, { addpadding(name), "NvChheading" })
+    table.insert(lines, { genstr(" ", box_w), "NvChSection" })
 
-  local function Capitalize(str)
-    return (str:gsub("^%l", string.upper))
-  end
+    for _, val in ipairs(mappings_tb[name]) do
+      local pad = max_strlen - strlen(val[1]) - strlen(val[2]) + gapx
+      local str = "  " .. val[1] .. genstr(" ", pad) .. val[2] .. "   "
 
-  local function addPadding(str)
-    local padding = largest_str + 30 - #str
-    return genStr(" ", padding / 2) .. Capitalize(str) .. genStr(" ", padding / 2)
-  end
-
-  local mapping_txt_endIndex = 0
-
-  -- Store content in a table in a formatted way
-  for card_name, section in pairs(mappings_tb) do
-    -- Set section headings
-    local heading = addPadding(card_name)
-    local padded_heading = genStr(" ", centerPoint - #heading / 2) .. heading -- centered text
-    local padding_chars = genStr(" ", centerPoint + (#heading / 2) + 2)
-
-    result[#result + 1] = "  " .. padded_heading
-    lineNumsDesc[#lineNumsDesc + 1] = "heading"
-
-    result[#result + 1] = padding_chars
-    lineNumsDesc[#lineNumsDesc + 1] = "paddingBlock"
-
-    -- Set section mappings : description & keybinds
-    for _, keymap in ipairs(section) do
-      local emptySpace = largest_str + 30 - #keymap[1] - #keymap[2] - 10
-
-      local map = Capitalize(keymap[1]) .. genStr(" ", emptySpace) .. keymap[2]
-      local txt = genStr(" ", centerPoint - #map / 2) .. map
-
-      result[#result + 1] = "   " .. txt .. "   "
-
-      if mapping_txt_endIndex == 0 then
-        mapping_txt_endIndex = #result[#result]
-      end
-
-      lineNumsDesc[#lineNumsDesc + 1] = "mapping"
-
-      result[#result + 1] = padding_chars
-      lineNumsDesc[#lineNumsDesc + 1] = "paddingBlock"
-
-      if horiz_index == 0 then
-        horiz_index = math.floor(centerPoint - math.floor(#map / 2))
-      end
+      table.insert(lines, { str, "NvChSection" })
+      table.insert(lines, { genstr(" ", #str), "NvChSection" })
     end
 
-    -- add empty lines after a section
-    result[#result + 1] = "  "
-    result[#result + 1] = "  "
-
-    lineNumsDesc[#lineNumsDesc + 1] = "paddingBlock"
-    lineNumsDesc[#lineNumsDesc + 1] = "emptySpace"
+    table.insert(lines, { "" })
   end
 
-  -- draw content on buffer
-  api.nvim_buf_set_lines(buf, 3, -1, false, result)
+  local start_col = math.floor(win_w / 2) - math.floor(box_w / 2)
 
-  -- set highlights
-  local nvcheatsheet = api.nvim_create_namespace "nvcheatsheet"
+  -- make columns drawable
+  for i = 1, #lines, 1 do
+    api.nvim_buf_set_lines(buf, i, i, false, { string.rep(" ", win_w - 10) })
+  end
 
-  local hlgroups_types = {
-    heading = "NvChHeading",
-    mapping = "NvChSection",
-    paddingBlock = "NvChSection",
-    asciiHeader = "NvChAsciiHeader",
-    emptySpace = "none",
-  }
-
-  for i, val in ipairs(lineNumsDesc) do
-    api.nvim_buf_add_highlight(
-      buf,
-      nvcheatsheet,
-      hlgroups_types[val],
-      i,
-      horiz_index,
-      val == "asciiHeader" and -1 or mapping_txt_endIndex
-    )
+  for row, val in ipairs(lines) do
+    local opts = { virt_text_pos = "overlay", virt_text = { val } }
+    api.nvim_buf_set_extmark(buf, ns, row, start_col, opts)
   end
 
   api.nvim_set_current_buf(buf)
-
   require("nvchad.utils").set_cleanbuf_opts "nvcheatsheet"
 
+  vim.keymap.set("n", "q", function()
+    require("nvchad.tabufline").close_buffer()
+  end, { buffer = buf })
+
   vim.keymap.set("n", "<ESC>", function()
-    vim.cmd "q"
+    require("nvchad.tabufline").close_buffer()
   end, { buffer = buf })
 end

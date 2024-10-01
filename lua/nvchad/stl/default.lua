@@ -26,7 +26,7 @@ end
 
 M.file = function()
   local x = utils.file()
-  local name = " " .. x[2] .. " "
+  local name = " " .. x[2] .. (sep_style == "default" and " " or "")
   return "%#St_file# " .. x[1] .. name .. "%#St_file_sep#" .. sep_r
 end
 
