@@ -8,7 +8,7 @@ local action_set = require "telescope.actions.set"
 local action_state = require "telescope.actions.state"
 
 local function reload_theme(name)
-  require("nvconfig").ui.theme = name
+  require("nvconfig").base46.theme = name
   require("base46").load_all_highlights()
   vim.api.nvim_exec_autocmds("User", { pattern = "NvChadThemeReload" })
 end
@@ -64,7 +64,7 @@ local function switcher()
       actions.select_default:replace(function()
         if action_state.get_selected_entry() then
           local chadrc = dofile(vim.fn.stdpath "config" .. "/lua/chadrc.lua")
-          local old_theme = chadrc.ui and chadrc.ui.theme or chadrc.base46.theme
+          local old_theme = chadrc.base46.theme
           old_theme = '"' .. old_theme .. '"'
 
           local theme = '"' .. action_state.get_selected_entry()[1] .. '"'
