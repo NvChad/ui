@@ -158,35 +158,33 @@ Only those you want to change and the it'll override the defaults.
        lazyload = true,
        order = { "treeOffset", "buffers", "tabs", "btns" },
        modules = nil,
-     },
- 
-     nvdash = {
-      load_on_startup = false,
-
-      header = {
-        "                            ",
-        "     ▄▄         ▄ ▄▄▄▄▄▄▄   ",
-        "   ▄▀███▄     ▄██ █████▀    ",
-        "   ██▄▀███▄   ███           ",
-        "   ███  ▀███▄ ███           ",
-        "   ███    ▀██ ███           ",
-        "   ███      ▀ ███           ",
-        "   ▀██ █████▄▀█▀▄██████▄    ",
-        "     ▀ ▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀   ",
-        "                            ",
-        "     Powered By  eovim    ",
-        "                            ",
-      },
-
-      buttons = {
-        { txt = "  Find File", keys = "Spc f f", cmd = "Telescope find_files" },
-        { txt = "  Recent Files", keys = "Spc f o", cmd = "Telescope oldfiles" },
-	-- more... check nvconfig.lua file for full list of buttons
-      },
-    }
+     }, 
    },
 
-   -- ui table ends there!
+   nvdash = {
+     load_on_startup = false,
+
+     header = {
+       "                            ",
+       "     ▄▄         ▄ ▄▄▄▄▄▄▄   ",
+       "   ▄▀███▄     ▄██ █████▀    ",
+       "   ██▄▀███▄   ███           ",
+       "   ███  ▀███▄ ███           ",
+       "   ███    ▀██ ███           ",
+       "   ███      ▀ ███           ",
+       "   ▀██ █████▄▀█▀▄██████▄    ",
+       "     ▀ ▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀   ",
+       "                            ",
+       "     Powered By  eovim    ",
+       "                            ",
+     },
+
+     buttons = {
+       { txt = "  Find File", keys = "Spc f f", cmd = "Telescope find_files" },
+       { txt = "  Recent Files", keys = "Spc f o", cmd = "Telescope oldfiles" },
+       -- more... check nvconfig.lua file for full list of buttons
+     },
+   }
  
    term = {
      winopts = { number = false },
