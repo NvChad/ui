@@ -1,4 +1,3 @@
-local map = vim.keymap.set
 local api = vim.api
 local autocmd = api.nvim_create_autocmd
 local state = require "nvchad.themes.state"
@@ -11,6 +10,12 @@ local function reload_theme(name)
   require("base46").load_all_highlights()
   require("plenary.reload").reload_module "volt.highlights"
   require "volt.highlights"
+end
+
+local map = function(keys, func, opts)
+  for _, key in ipairs(keys) do
+    vim.keymap.set("i", key, func, opts)
+  end
 end
 
 local set_index = function(n)
@@ -34,7 +39,7 @@ local function scroll_down(n, direction)
   end
 end
 
-map("i", "<C-n>", function()
+map({ "<C-n>", "<Down>" }, function()
   if #state.themes_shown > 0 then
     local theme = set_index(1)
     reload_theme(theme)
@@ -49,7 +54,7 @@ map("i", "<C-n>", function()
   end
 end, { buffer = state.input_buf })
 
-map("i", "<C-p>", function()
+map({ "<C-p>", "<Up>" }, function()
   if #state.themes_shown > 0 then
     local theme = set_index(-1)
     reload_theme(theme)
@@ -62,7 +67,7 @@ map("i", "<C-p>", function()
   end
 end, { buffer = state.input_buf })
 
-map("i", "<cr>", function()
+map({ "<cr>" }, function()
   local name = state.themes_shown[state.index]
   local chadrc = dofile(vim.fn.stdpath "config" .. "/lua/chadrc.lua")
   local old_theme = chadrc.base46.theme
@@ -73,7 +78,7 @@ map("i", "<cr>", function()
   require("volt").close()
 end, { buffer = state.input_buf })
 
-map("i", "<esc>", function()
+map({ "<esc>" }, function()
   require("volt").close()
 end, { buffer = state.input_buf })
 
