@@ -70,7 +70,10 @@ map("i", "<cr>", function()
   old_theme = '"' .. old_theme .. '"'
   require("nvchad.utils").replace_word(old_theme, '"' .. name .. '"')
 
-  vim.cmd.stopinsert()
+  require("volt").close()
+end, { buffer = state.input_buf })
+
+map("i", "<esc>", function()
   require("volt").close()
 end, { buffer = state.input_buf })
 

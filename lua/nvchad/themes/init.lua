@@ -118,6 +118,7 @@ M.open = function(opts)
     bufs = { state.buf, state.input_buf },
     after_close = function()
       require("plenary.reload").reload_module "nvchad.themes"
+      vim.cmd.stopinsert()
     end,
   }
 
