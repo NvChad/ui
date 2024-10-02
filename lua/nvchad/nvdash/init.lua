@@ -44,8 +44,9 @@ M.open = function()
 
   ------------------------ find largest string's width -----------------------------
   for _, val in ipairs(opts.header) do
-    if fn.strwidth(val) > nvdash_w then
-      nvdash_w = #val
+    local headerw = fn.strwidth(val)
+    if headerw > nvdash_w then
+      nvdash_w = headerw
     end
   end
 
