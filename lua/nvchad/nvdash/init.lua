@@ -88,6 +88,11 @@ M.open = function()
     end
   end
 
+  -- if screen height is small
+  if #dashboard > winh then
+    winh = #dashboard + 10
+  end
+
   local row_i = math.floor((winh / 2) - (#dashboard / 2))
   local col_i = math.floor((winw / 2) - (nvdash_w / 2))
 
