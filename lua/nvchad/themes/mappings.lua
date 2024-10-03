@@ -4,6 +4,7 @@ local state = require "nvchad.themes.state"
 local redraw = require("volt").redraw
 
 local scrolled = false
+local textchanged = false
 
 local function reload_theme(name)
   require("nvconfig").base46.theme = name
@@ -113,11 +114,12 @@ autocmd("TextChangedI", {
 
     api.nvim_set_option_value("modifiable", false, { buf = state.buf })
 
-    if #state.themes_shown > 0 then
+    if textchanged and #state.themes_shown > 0 then
       reload_theme(state.themes_shown[1])
     end
 
     redraw(state.buf, "all")
     scrolled = false
+    textchanged = true
   end,
 })
