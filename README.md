@@ -124,6 +124,22 @@ Base46 setup
 
 ![image](https://github.com/user-attachments/assets/c5f3dc55-7810-48ae-879e-25453ab16b71)
 
+## Automatic Mason install 
+
+- MasonInstallAll command will now capture all the mason tools from your config
+- Supported plugins are : lspconfig, nvim-lint, conform.nvim
+- So for example if you have lspconfig like this :
+
+```lua 
+require("lspconfig").html.setup{}
+require("lspconfig").clangd.setup{}
+``` 
+<br/>
+
+Then running MasonInstallAll will install both the mason pkgs 
+
+check `:h nvui.mason` for more info
+
 # Credits
 
 - Huge thanks to [@lucario387](https://github.com/lucario387) for creating `nvchad_types`.
