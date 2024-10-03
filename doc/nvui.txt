@@ -707,6 +707,7 @@ NOTE: API
   {
     icon = "", -- optional
     style = "compact", -- optional! compact/flat/bordered
+    border = false,
   }
 
  example: ~

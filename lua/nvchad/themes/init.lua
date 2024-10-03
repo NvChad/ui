@@ -73,7 +73,7 @@ M.open = function(opts)
     height = 1,
     relative = "editor",
     style = "minimal",
-    border = { "┏", "━", "┓", "┃", "┛", "━", "┗", "┃" },
+    border = "single",
   }
 
   if style == "flat" or style == "bordered" then
@@ -89,19 +89,25 @@ M.open = function(opts)
     height = ((style == "flat" or style == "bordered") and h + 2) or h,
     relative = "win",
     style = "minimal",
-    border = { "┌", "─", "┐", "│", "┘", "─", "└", "│" },
+    border = "single",
   })
 
   vim.bo[state.input_buf].buftype = "prompt"
   vim.fn.prompt_setprompt(state.input_buf, state.prompt)
   vim.cmd "startinsert"
 
-  vim.wo[state.input_win].winhl = "Normal:ExBlack2Bg,FloatBorder:ExBlack2Border"
-  api.nvim_set_hl(state.ns, "Normal", { link = "ExDarkBg" })
-  api.nvim_set_hl(state.ns, "FloatBorder", { link = "ExDarkBorder" })
-  api.nvim_set_hl(state.ns, "NScrollbarOff", { fg = colors.one_bg })
-  api.nvim_win_set_hl_ns(state.win, state.ns)
+  if opts.border then
+    api.nvim_set_hl(state.ns, "FloatBorder", { link = "Comment" })
+    api.nvim_set_hl(state.ns, "Normal", { link = "Normal" })
+    vim.wo[state.input_win].winhl = "Normal:Normal"
+  else
+    vim.wo[state.input_win].winhl = "Normal:ExBlack2Bg,FloatBorder:ExBlack2Border"
+    api.nvim_set_hl(state.ns, "Normal", { link = "ExDarkBg" })
+    api.nvim_set_hl(state.ns, "FloatBorder", { link = "ExDarkBorder" })
+  end
 
+  api.nvim_set_hl(state.ns, "NScrollbarOff", { fg = colors.one_bg2 })
+  api.nvim_win_set_hl_ns(state.win, state.ns)
   api.nvim_set_current_win(state.input_win)
 
   local volt_opts = { h = #state.val, w = state.w }
