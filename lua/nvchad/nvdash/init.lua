@@ -60,9 +60,10 @@ M.open = function()
   for _, val in ipairs(opts.buttons) do
     local str = type(val.txt) == "string" and val.txt or val.txt()
     str = val.keys and str .. val.keys or str
+    local strw = fn.strwidth(str)
 
-    if nvdash_w < fn.strwidth(str) then
-      nvdash_w = #str
+    if nvdash_w < strw then
+      nvdash_w = strw
     end
   end
   ----------------------- save display txt -----------------------------------------
@@ -95,7 +96,7 @@ M.open = function()
   end
 
   local row_i = math.floor((winh / 2) - (#dashboard / 2))
-  local col_i = math.floor((winw / 2) - (nvdash_w / 2))
+  local col_i = math.floor((winw / 2) - math.floor(nvdash_w / 2)) - 6 -- (5 is textoff)
 
   -- make all lines available
   local empty_str = {}
