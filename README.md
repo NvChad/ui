@@ -90,7 +90,7 @@ Base46 setup
 
 - 150 ~ LOC Dashboard module, minimal & nothing fancy!
  
-![2024-09-30-203737_2560x1440_scrot](https://github.com/user-attachments/assets/67e83795-50b7-44fd-8b68-19ded1e31346)
+![nvdash](https://github.com/user-attachments/assets/072c8733-8a44-4cf3-8732-e5fa7eb9459e)
 
 ## Cmp styles
 
