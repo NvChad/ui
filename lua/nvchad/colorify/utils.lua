@@ -1,7 +1,8 @@
 local M = {}
 local api = vim.api
 local get_extmarks = api.nvim_buf_get_extmarks
-local conf = require('nvconfig').colorify
+local conf = require("nvconfig").colorify
+local ns = require("nvchad.colorify.state").ns
 
 function M.is_dark(hex)
   hex = hex:gsub("#", "")
@@ -12,7 +13,7 @@ function M.is_dark(hex)
   return brightness < 128
 end
 
-function M.add_hl(ns, hex)
+function M.add_hl(hex)
   local name = "hex_" .. hex:sub(2)
 
   local fg, bg = hex, hex
@@ -27,18 +28,16 @@ function M.add_hl(ns, hex)
   return name
 end
 
-function M.not_colored(buf, ns, linenr, col, hl_group, opts)
+function M.not_colored(buf, linenr, col, hl_group, opts)
   local ms = get_extmarks(buf, ns, { linenr, col }, { linenr, opts.end_col }, { details = true })
-  ms = #ms == 0 and {} or ms[1]
 
-  local old_hl
-
-  if #ms > 0 then
-    opts.id = ms[1]
-    old_hl = ms[4].hl_group or ms[4].virt_text[1][2]
+  if #ms == 0 then
+    return true
   end
 
-  return #ms == 0 or old_hl ~= hl_group
+  ms = ms[1]
+  opts.id = ms[1]
+  return hl_group ~= (ms[4].hl_group or ms[4].virt_text[1][2])
 end
 
 return M

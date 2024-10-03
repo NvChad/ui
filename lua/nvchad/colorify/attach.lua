@@ -1,12 +1,12 @@
 local fn = vim.fn
 local api = vim.api
 local conf = require("nvconfig").colorify
+local ns = require "nvchad.colorify.state".ns
 
 local get_extmarks = api.nvim_buf_get_extmarks
-
 local methods = require "nvchad.colorify.methods"
 
-local del_extmarks_on_textchange = function(buf, ns)
+local del_extmarks_on_textchange = function(buf)
   vim.b[buf].colorify_attached = true
 
   api.nvim_buf_attach(buf, false, {
@@ -39,9 +39,6 @@ local del_extmarks_on_textchange = function(buf, ns)
 end
 
 return function(buf, event)
-  local ns = api.nvim_get_namespaces().Colorify or api.nvim_create_namespace "Colorify"
-  api.nvim_set_hl_ns(ns)
-
   local winid = vim.fn.bufwinid(buf)
 
   local min = fn.line("w0", winid) - 1
@@ -51,11 +48,11 @@ return function(buf, event)
     local cur_linenr = fn.line(".", winid) - 1
 
     if conf.highlight.hex then
-      methods.hex(ns, buf, cur_linenr, api.nvim_get_current_line())
+      methods.hex(buf, cur_linenr, api.nvim_get_current_line())
     end
 
     if conf.highlight.lspvars then
-      methods.lsp_var(ns, buf, cur_linenr)
+      methods.lsp_var(buf, cur_linenr)
     end
     return
   end
@@ -64,15 +61,15 @@ return function(buf, event)
 
   if conf.highlight.hex then
     for i, str in ipairs(lines) do
-      methods.hex(ns, buf, min + i - 1, str)
+      methods.hex(buf, min + i - 1, str)
     end
   end
 
   if conf.highlight.lspvars then
-    methods.lsp_var(ns, buf, nil, min, max)
+    methods.lsp_var(buf, nil, min, max)
   end
 
   if event == "BufEnter" and not vim.b[buf].colorify_attached then
-    del_extmarks_on_textchange(buf, ns)
+    del_extmarks_on_textchange(buf)
   end
 end
