@@ -83,6 +83,11 @@ map({ "<esc>" }, function()
   require("volt").close()
 end, { buffer = state.input_buf })
 
+-- delete text
+map({ "<C-w>" }, function()
+  vim.api.nvim_input "<c-s-w>"
+end, { buffer = state.input_buf })
+
 ---------------------- autocmds ----------------------
 
 api.nvim_win_set_cursor(state.input_win, { 1, 6 })
