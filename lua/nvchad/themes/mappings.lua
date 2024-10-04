@@ -76,7 +76,8 @@ map("n", { "k", "<Up>" }, move_up, { buffer = state.input_buf })
 
 map({ "i", "n" }, { "<cr>" }, function()
   local name = state.themes_shown[state.index]
-  local chadrc = dofile(vim.fn.stdpath "config" .. "/lua/chadrc.lua")
+  package.loaded.chadrc = nil
+  local chadrc = require "chadrc"
   local old_theme = chadrc.base46.theme
 
   old_theme = '"' .. old_theme .. '"'

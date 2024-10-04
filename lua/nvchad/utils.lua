@@ -23,12 +23,14 @@ M.replace_word = function(old, new, filepath)
   filepath = filepath or vim.fn.stdpath "config" .. "/lua/" .. "chadrc.lua"
 
   local file = io.open(filepath, "r")
-  local added_pattern = string.gsub(old, "-", "%%-") -- add % before - if exists
-  local new_content = file:read("*all"):gsub(added_pattern, new)
+  if file then
+    local added_pattern = string.gsub(old, "-", "%%-") -- add % before - if exists
+    local new_content = file:read("*all"):gsub(added_pattern, new)
 
-  file = io.open(filepath, "w")
-  file:write(new_content)
-  file:close()
+    file = io.open(filepath, "w")
+    file:write(new_content)
+    file:close()
+  end
 end
 
 M.set_cleanbuf_opts = function(ft)

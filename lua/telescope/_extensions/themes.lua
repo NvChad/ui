@@ -63,7 +63,8 @@ local function switcher()
       ------------ save theme to chadrc on enter ----------------
       actions.select_default:replace(function()
         if action_state.get_selected_entry() then
-          local chadrc = dofile(vim.fn.stdpath "config" .. "/lua/chadrc.lua")
+          package.loaded.chadrc = nil
+          local chadrc = require "chadrc"
           local old_theme = chadrc.base46.theme
           old_theme = '"' .. old_theme .. '"'
 
