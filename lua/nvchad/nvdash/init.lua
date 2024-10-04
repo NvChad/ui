@@ -1,6 +1,7 @@
 local M = {}
 local api = vim.api
 local fn = vim.fn
+local strw = api.nvim_strwidth
 
 dofile(vim.g.base46_cache .. "nvdash")
 
@@ -21,13 +22,13 @@ local map = function(keys, action, buf)
 end
 
 local function txt_pad(str, max_str_w)
-  local av = (max_str_w - fn.strwidth(str)) / 2
+  local av = (max_str_w - strw(str)) / 2
   av = math.floor(av)
   return string.rep(" ", av) .. str .. string.rep(" ", av)
 end
 
 local function btn_gap(txt1, txt2, max_str_w)
-  local btn_len = fn.strwidth(txt1) + #txt2
+  local btn_len = strw(txt1) + #txt2
   local spacing = max_str_w - btn_len
   return txt1 .. string.rep(" ", spacing) .. txt2
 end
@@ -44,7 +45,7 @@ M.open = function()
 
   ------------------------ find largest string's width -----------------------------
   for _, val in ipairs(opts.header) do
-    local headerw = fn.strwidth(val)
+    local headerw = strw(val)
     if headerw > nvdash_w then
       nvdash_w = headerw
     end
@@ -60,10 +61,10 @@ M.open = function()
   for _, val in ipairs(opts.buttons) do
     local str = type(val.txt) == "string" and val.txt or val.txt()
     str = val.keys and str .. val.keys or str
-    local strw = fn.strwidth(str)
+    local w = strw(str)
 
-    if nvdash_w < strw then
-      nvdash_w = strw
+    if nvdash_w < w then
+      nvdash_w = w
     end
   end
   ----------------------- save display txt -----------------------------------------

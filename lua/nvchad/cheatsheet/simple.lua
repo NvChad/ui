@@ -1,6 +1,6 @@
 local api = vim.api
 local genstr = string.rep
-local strlen = vim.fn.strwidth
+local strw = api.nvim_strwidth
 local gapx = 10
 local heading = {
   "█▀▀ █░█ █▀▀ ▄▀█ ▀█▀ █▀ █░█ █▀▀ █▀▀ ▀█▀",
@@ -34,7 +34,7 @@ return function()
 
   for _, section in pairs(mappings_tb) do
     for _, v in ipairs(section) do
-      local curstrlen = strlen(v[1]) + strlen(v[2])
+      local curstrlen = strw(v[1]) + strw(v[2])
       max_strlen = max_strlen < curstrlen and curstrlen or max_strlen
     end
   end
@@ -42,7 +42,7 @@ return function()
   local box_w = max_strlen + gapx + 5
 
   local function addpadding(str)
-    local pad = box_w - vim.fn.strwidth(str)
+    local pad = box_w - strw(str)
     local l_pad = math.floor(pad / 2)
     str = str:gsub("^%l", string.upper)
     return genstr(" ", l_pad) .. str .. genstr(" ", pad - l_pad)
@@ -64,7 +64,7 @@ return function()
     table.insert(lines, { genstr(" ", box_w), "NvChSection" })
 
     for _, val in ipairs(mappings_tb[name]) do
-      local pad = max_strlen - strlen(val[1]) - strlen(val[2]) + gapx
+      local pad = max_strlen - strw(val[1]) - strw(val[2]) + gapx
       local str = "  " .. val[1] .. genstr(" ", pad) .. val[2] .. "   "
 
       table.insert(lines, { str, "NvChSection" })

@@ -104,7 +104,7 @@ autocmd("TextChangedI", {
       end)
     end
 
-    local promptlen = vim.fn.strwidth(state.prompt)
+    local promptlen = api.nvim_strwidth(state.prompt)
     local input = api.nvim_get_current_line():sub(promptlen + 1, -1)
     input = input:gsub("%s", "")
 
