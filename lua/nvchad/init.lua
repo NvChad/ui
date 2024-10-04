@@ -2,7 +2,9 @@ local api = vim.api
 local config = require "nvconfig"
 local new_cmd = api.nvim_create_user_command
 
-vim.o.statusline = "%!v:lua.require('nvchad.stl." .. config.ui.statusline.theme .. "')()"
+if config.ui.statusline.enabled then
+  vim.o.statusline = "%!v:lua.require('nvchad.stl." .. config.ui.statusline.theme .. "')()"
+end
 
 if config.ui.tabufline.enabled then
   require "nvchad.tabufline.lazyload"

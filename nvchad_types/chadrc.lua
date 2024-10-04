@@ -76,6 +76,7 @@
 ---@field style? '"borderless"'|'"bordered"'
 
 ---@class NvStatusLineConfig
+---@field enabled? boolean
 --- statusline theme
 ---@field theme? '"default"'|'"vscode"'|'"vscode_colored"'|'"minimal"'
 --- Separator style for NvChad Statusline
