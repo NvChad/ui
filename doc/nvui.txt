@@ -28,10 +28,11 @@ CONTENTS                                                         *nvui.contents*
     5.3 Code Runner                                   |nvui.term.runner|
  
  6. `Base46 Theming`                                    |nvui.base46|
-    6.1 Highlight Override                            |nvui.base46.highlights|
-    6.2 Customize Themes                              |nvui.base46.edit_themes|
-    6.3 Integrations                                  |nvui.base46.integrations|
-    6.4 Local Themes                                  |nvui.base46.local_themes|
+    6.1 Api                                           |nvui.base46.api|
+    6.2 Highlight Override                            |nvui.base46.highlights|
+    6.3 Customize Themes                              |nvui.base46.edit_themes|
+    6.4 Integrations                                  |nvui.base46.integrations|
+    6.5 Local Themes                                  |nvui.base46.local_themes|
 
  7. `Lsp`                                               |nvui.lsp|
     5.1 Signature Help                                |nvui.lsp.signature|
@@ -492,7 +493,48 @@ Note: You can load all cache files at once instead of lazyloading them
  end
 <
 ------------------------------------------------------------------------------
-6.1 Highlight override                                  *nvui.base46.highlights*
+6.1 Base46 API                                                 *nvui.base46.api*
+
+Get theme colors: ~
+>lua
+ local colors = dofile(vim.g.base46_cache .. "colors")
+ print(colors.black2)
+<
+Compile: ~
+
+If for some reason you highlights look weird then compile base46 highlights 
+>lua
+ require("base46").compile()
+ require("base46").load_all_highlights() -- compiles+loads them
+<
+Toggle Theme: ~
+>lua
+ -- toggles themes from M.base46.theme_toggle
+ require("base46").toggle_theme() 
+<
+Toggle transparency: ~
+>lua
+ require('base46').toggle_transparency()
+<
+Theme Switching manually: ~
+
+Users sometimes use scripts or programs that set system theme, like pywal etc
+To change the theme without theme switcher:
+>lua
+ require("nvconfig").base46.theme = 'nord'
+ require("base46").load_all_highlights()
+
+Setting themes outside of Neovim: ~
+>bash
+ # run code that saves theme name in chadrc first
+ # then loop over all nvim instances and send the function!
+ 
+ for addr in $XDG_RUNTIME_DIR/nvim.*; do
+  nvim --server $addr --remote-send ':lua require("nvchad.utils").reload() <cr>'
+ done
+
+------------------------------------------------------------------------------
+6.2 Highlight override                                  *nvui.base46.highlights*
 
 - Make sure you use a valid highlight group.
 - Check your theme colors in the base46 theme dir
@@ -523,7 +565,7 @@ Note: You can load all cache files at once instead of lazyloading them
 - To add new highlight groups, use |hl_add|
 
 ------------------------------------------------------------------------------
-6.2 Customize themes                                   *nvui.base46.edit_themes*
+6.3 Customize themes                                   *nvui.base46.edit_themes*
 
 To edit an already existing theme, use `base46.changed_themes` option.
 >lua
@@ -542,7 +584,7 @@ To edit an already existing theme, use `base46.changed_themes` option.
  }
 <
 ------------------------------------------------------------------------------
-6.3 Base46 integrations                               *nvui.base46.integrations*
+6.4 Base46 integrations                               *nvui.base46.integrations*
 
 An integration file is a group of highlight groups, for example cmp
 integration, telescope etc.
@@ -573,7 +615,7 @@ It's preferred to put the dofile code in your plugin's config func
  }
 <
 ------------------------------------------------------------------------------
-6.4 Local themes		                      *nvui.base46.local_themes*
+6.5 Local themes		                      *nvui.base46.local_themes*
 
 - Put the theme file in `lua/themes/` folder 
 - Check the base46 readme for theme file structure 
@@ -674,7 +716,6 @@ These are the default options for cmp UI
  options = vim.tbl_deep_extend("force", options, require "nvchad.cmp")
  require("cmp").setup(options)
 
-
 ==============================================================================
 12. Mason                                                           *nvui.mason*
 
@@ -691,7 +732,6 @@ NOTE: API
 >lua
  require("nvchad.mason").install_all()
 
- 
 ==============================================================================
 13. Modern Theme picker                                      *nvui.theme-picker*
 
