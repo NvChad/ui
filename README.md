@@ -6,7 +6,7 @@ This ui plugin is a collection of many UI modules like statusline, tabline, chea
 ## Install
 
 - Create `lua/chadrc.lua` file that returns a table, can be empty table too.
-- Table structure must be same as [nvconfig.lua](https://github.com/NvChad/ui/blob/v2.5/lua/nvconfig.lua)
+- Table structure must be same as [nvconfig.lua](https://github.com/NvChad/ui/blob/v3.0/lua/nvconfig.lua)
 
 In your plugins file
 ```lua
