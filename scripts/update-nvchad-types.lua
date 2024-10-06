@@ -39,7 +39,7 @@ local gen_themes = function()
     local theme_name = get_base_name(name)
     table.insert(contents, 9, "---| '\"" .. theme_name .. "\"'")
     table.insert(contents,
-      string.format("---@field %s ThemeTable # Changes for %s theme",
+      string.format("---@field %s? ThemeTable # Changes for %s theme",
         theme_name:match("[^%l%u_]") and '["' .. theme_name .. '"]' or theme_name, theme_name))
   end
 
