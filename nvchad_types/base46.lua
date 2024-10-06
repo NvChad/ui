@@ -8,7 +8,7 @@
 --- integer between 0 and 100, level of opacity
 --- Only applied for floating windows, popupmenu
 --- Check `:h highlight-blend` for more information
----@field blend? integer 
+---@field blend? integer
 ---@field bold? boolean bolded text or not
 ---@field standout? boolean decorations
 ---@field underline? boolean decorations
@@ -29,19 +29,22 @@
 ---@field ctermbg? number Sets background of cterm color
 ---@field cterm? string comma-separated list of cterm opts. For more information, check `:h highlight-args`
 
+--- Functionality added via https://github.com/NvChad/base46/pull/262
+---@alias MixedColor table<Base46Colors, Base46Colors, integer>
+
 ---@class Base46HLGroups : APISetHighlightOpts
 --- Color name or Hex code of foreground
 --- if fg is "NONE", remove the foreground color
----@field fg? string|Base30Colors|'"NONE"'
+---@field fg? string|MixedColor|Base46Colors|'"NONE"'
 --- Color name or Hex code of background
 --- if bg is "NONE", remove the background color
----@field bg? string|table|Base30Colors|'"NONE"' 
+---@field bg? string|MixedColor|Base46Colors|'"NONE"'
 --- Color name or hex code that will be used for underline colors
 --- - If sp is `NONE`, use transparent color for special
 --- - If sp is `bg` or `background`, use normal background color
 --- - If sp is `fg` or `foreground`, use normal foreground color
 --- See :h guisp for more information
----@field sp? string|Base30Colors|'"NONE"'|'"bg"'|'"background"'|'"fg"'|'"foreground"'
+---@field sp? string|MixedColor|Base46Colors|'"NONE"'|'"bg"'|'"background"'|'"fg"'|'"foreground"'
 
 ---@alias HLTable table<string, Base46HLGroups>
 
