@@ -8,6 +8,7 @@ local options = {
     changed_themes = {},
     transparency = false,
     theme_toggle = { "onedark", "one_light" },
+    subtle_hover = false,
   },
 
   ui = {
