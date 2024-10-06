@@ -17,16 +17,7 @@ M.run = function()
     "WinScrolled",
     "BufEnter",
   }, {
-    -- callback = function(args)
     callback = function(args)
-      local tblen = #state.events
-
-      if state.events[tblen] == "BufEnter" and args.event == "WinScrolled" then
-        return
-      end
-
-      table.insert(state.events, args.event)
-
       if vim.bo[args.buf].bl then
         M.attach(args.buf, args.event)
       end

@@ -28,7 +28,7 @@ M.hex = function(buf, line, str)
 end
 
 M.lsp_var = function(buf, line, min, max)
-  local param = { textDocument = vim.lsp.util.make_text_document_params() }
+  local param = { textDocument = vim.lsp.util.make_text_document_params(buf) }
 
   for _, client in pairs(vim.lsp.get_clients { bufnr = buf }) do
     if client.server_capabilities.colorProvider then
