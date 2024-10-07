@@ -140,18 +140,18 @@
 ---@field signature? boolean showing LSP function signatures as you type
 
 ---@class TermSizes
----@field sp number
----@field vsp number
----@field ["bo sp"] number
----@field ["bo vsp"] number
+---@field sp? number
+---@field vsp? number
+---@field ["bo sp"]? number
+---@field ["bo vsp"]? number
 
 ---@class TermFloat
----@field relative string
----@field row number
----@field col number
----@field width number
----@field height number
----@field border string
+---@field relative? string
+---@field row? number
+---@field col? number
+---@field width? number
+---@field height? number
+---@field border? string
 
 ---@class TermConfig
 ---@field winopts? table
