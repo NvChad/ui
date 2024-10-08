@@ -123,6 +123,11 @@ M.open = function(opts)
   volt.mappings {
     bufs = { state.buf, state.input_buf },
     after_close = function()
+      if not state.confirmed then
+        require("plenary.reload").reload_module "chadrc"
+        local theme = require("chadrc").base46.theme
+        require("nvchad.themes.utils").reload_theme(theme)
+      end
       require("plenary.reload").reload_module "nvchad.themes"
       vim.cmd.stopinsert()
     end,

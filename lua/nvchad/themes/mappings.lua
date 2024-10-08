@@ -2,16 +2,10 @@ local api = vim.api
 local autocmd = api.nvim_create_autocmd
 local state = require "nvchad.themes.state"
 local redraw = require("volt").redraw
+local utils = require "nvchad.themes.utils"
 
 local scrolled = false
 local textchanged = false
-
-local function reload_theme(name)
-  require("nvconfig").base46.theme = name
-  require("base46").load_all_highlights()
-  require("plenary.reload").reload_module "volt.highlights"
-  require "volt.highlights"
-end
 
 local map = function(mode, keys, func, opts)
   for _, key in ipairs(keys) do
@@ -43,7 +37,7 @@ end
 local function move_down()
   if #state.themes_shown > 0 then
     local theme = set_index(1)
-    reload_theme(theme)
+    utils.reload_theme(theme)
     redraw(state.buf, "all")
 
     if state.index + 1 > state.limit[state.style] then
@@ -61,7 +55,7 @@ map("n", { "j", "<Down>" }, move_down, { buffer = state.input_buf })
 local function move_up()
   if #state.themes_shown > 0 then
     local theme = set_index(-1)
-    reload_theme(theme)
+    utils.reload_theme(theme)
     redraw(state.buf, "all")
 
     api.nvim_buf_call(state.buf, function()
@@ -75,10 +69,10 @@ map("i", { "<C-p>", "<Up>" }, move_up, { buffer = state.input_buf })
 map("n", { "k", "<Up>" }, move_up, { buffer = state.input_buf })
 
 map({ "i", "n" }, { "<cr>" }, function()
+  state.confirmed = true
   local name = state.themes_shown[state.index]
   package.loaded.chadrc = nil
-  local chadrc = require "chadrc"
-  local old_theme = chadrc.base46.theme
+  local old_theme = require("chadrc").base46.theme
 
   old_theme = '"' .. old_theme .. '"'
   require("nvchad.utils").replace_word(old_theme, '"' .. name .. '"')
@@ -111,7 +105,7 @@ autocmd("TextChangedI", {
 
     state.index = 1
 
-    state.themes_shown = require("nvchad.themes.utils").filter(state.val, input)
+    state.themes_shown = utils.filter(state.val, input)
 
     api.nvim_set_option_value("modifiable", true, { buf = state.buf })
 
@@ -123,7 +117,7 @@ autocmd("TextChangedI", {
     api.nvim_set_option_value("modifiable", false, { buf = state.buf })
 
     if textchanged and #state.themes_shown > 0 then
-      reload_theme(state.themes_shown[1])
+      utils.reload_theme(state.themes_shown[1])
     end
 
     redraw(state.buf, "all")

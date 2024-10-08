@@ -64,8 +64,7 @@ local function switcher()
       actions.select_default:replace(function()
         if action_state.get_selected_entry() then
           package.loaded.chadrc = nil
-          local chadrc = require "chadrc"
-          local old_theme = chadrc.base46.theme
+          local old_theme = require("chadrc").base46.theme
           old_theme = '"' .. old_theme .. '"'
 
           local theme = '"' .. action_state.get_selected_entry()[1] .. '"'
