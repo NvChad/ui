@@ -9,6 +9,7 @@
 ---@field mason? MasonConfig
 ---@field colorify? ColorifyConfig
 ---@field nvdash? NvDashConfig
+---@field theme_switcher? ThemeSwitcherConfig
 
 ---@class Base46Config
 --- List of highlights group to add.
@@ -67,7 +68,7 @@
 --- nvim-cmp style
 ---@field style? '"default"'|'"flat_light"'|'"flat_dark"'|'"atom"'|'"atom_colored"'
 --- Only has effects when the style is `default`
---- @field icons_left? boolean 
+--- @field icons_left? boolean
 --- places lspkind icons to the left, only for non-atom styles
 --- @field format_colors? NvCmpFormatColors
 
@@ -175,3 +176,15 @@
 ---@class NvCmpFormatColors
 ---@field icon? string # icon to use for color swatches
 ---@field tailwind? boolean # show colors from tailwind/css/astro lsp in menu
+
+---@class ThemeSwitcherConfig
+---@field mappings? ThemeSwitcherMappings
+---@field style? "bordered" | "compact" | "flat"
+---@field icon? string
+---@field border? boolean
+
+---@class ThemeSwitcherMappings
+--- Mappings for insert mode
+---@field i? table<string, {string, string, function}> # A table where the first value is a keybind, the second value is a description, and the third value is a function to execute
+--- Mappings for normal mode
+---@field n? table<string, {string, string, function}> # A table where the first value is a keybind, the second value is a description, and the third value is a function to execute

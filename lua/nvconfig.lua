@@ -110,6 +110,12 @@ local options = {
     virt_text = "󱓻 ",
     highlight = { hex = true, lspvars = true },
   },
+
+  theme_switcher = {
+    border = false,
+    style = "bordered", -- bordered, compact, flat
+    mappings = {}, -- add your own keymaps here
+  },
 }
 
 local status, chadrc = pcall(require, "chadrc")

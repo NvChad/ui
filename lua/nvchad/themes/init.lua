@@ -27,7 +27,9 @@ local gen_word_pad = function()
 end
 
 M.open = function(opts)
-  opts = opts or {}
+  local theme_opts = require("nvconfig").theme_switcher
+  opts = vim.tbl_deep_extend("force", opts or {}, theme_opts)
+
   state.buf = api.nvim_create_buf(false, true)
   state.input_buf = api.nvim_create_buf(false, true)
 
@@ -37,6 +39,8 @@ M.open = function(opts)
 
   state.icons.user = opts.icon
   state.icon = state.icons.user or state.icons[style]
+
+  state.mappings = opts.mappings
 
   gen_word_pad()
 

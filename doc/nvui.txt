@@ -215,6 +215,12 @@ Only those you want to change and the it'll override the defaults.
      virt_text = "󱓻 ",
      highlight = { hex = true, lspvars = true },
    },
+
+   theme_switcher = {
+     border = false,
+     style = "bordered", -- bordered, compact, flat
+     mappings = {}, -- add your own keymaps here
+   },
  }
  
 ==============================================================================

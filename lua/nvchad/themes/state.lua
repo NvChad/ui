@@ -8,6 +8,8 @@ local M = {
     bordered = 7,
   },
 
+  mappings = {},
+
   start_row = 1,
   xpad = 1,
   word_gap = 5,
@@ -40,6 +42,9 @@ local M = {
     flat = 3,
     bordered = 2,
   },
+
+  scrolled = false,
+  textchanged = false,
 }
 
 return M
