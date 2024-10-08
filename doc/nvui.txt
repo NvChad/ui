@@ -335,7 +335,7 @@ separator_style: ~
 
 Order: ~
   - The order can be found at 
-    `https://github.com/nvui.ui/blob/v2.5/lua/nvui.stl/utils.lua#L12`
+    `https://github.com/NvChad/ui/blob/v3.0/lua/nvchad/stl/utils.lua`
 
 ==============================================================================
 5. Term                                                              *nvui.term*
