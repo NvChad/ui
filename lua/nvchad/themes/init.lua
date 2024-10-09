@@ -134,6 +134,10 @@ M.open = function(opts)
   }
 
   require "nvchad.themes.mappings"
+
+  if opts.mappings then
+    opts.mappings(state.input_buf)
+  end
 end
 
 return M

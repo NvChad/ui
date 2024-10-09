@@ -3,9 +3,7 @@ local autocmd = api.nvim_create_autocmd
 local state = require "nvchad.themes.state"
 local redraw = require("volt").redraw
 local utils = require "nvchad.themes.utils"
-
-local scrolled = false
-local textchanged = false
+local nvapi = require "nvchad.themes.api"
 
 local map = function(mode, keys, func, opts)
   for _, key in ipairs(keys) do
@@ -13,60 +11,10 @@ local map = function(mode, keys, func, opts)
   end
 end
 
-local set_index = function(n)
-  local list = state.themes_shown
-
-  if n == 1 and state.index < #list then
-    state.index = state.index + n
-  elseif n == -1 and state.index > 1 then
-    state.index = state.index + n
-  end
-
-  state.active_theme = list[state.index]
-  return state.active_theme
-end
-
-local function scroll_down(n, direction)
-  if direction == "up" then
-    vim.cmd("normal!" .. n .. "")
-  else
-    vim.cmd("normal!" .. n .. "")
-  end
-end
-
-local function move_down()
-  if #state.themes_shown > 0 then
-    local theme = set_index(1)
-    utils.reload_theme(theme)
-    redraw(state.buf, "all")
-
-    if state.index + 1 > state.limit[state.style] then
-      api.nvim_buf_call(state.buf, function()
-        scrolled = true
-        scroll_down(state.scroll_step[state.style], "down")
-      end)
-    end
-  end
-end
-
-map("i", { "<C-n>", "<Down>" }, move_down, { buffer = state.input_buf })
-map("n", { "j", "<Down>" }, move_down, { buffer = state.input_buf })
-
-local function move_up()
-  if #state.themes_shown > 0 then
-    local theme = set_index(-1)
-    utils.reload_theme(theme)
-    redraw(state.buf, "all")
-
-    api.nvim_buf_call(state.buf, function()
-      scrolled = true
-      scroll_down(state.scroll_step[state.style], "up")
-    end)
-  end
-end
-
-map("i", { "<C-p>", "<Up>" }, move_up, { buffer = state.input_buf })
-map("n", { "k", "<Up>" }, move_up, { buffer = state.input_buf })
+map("i", { "<C-n>", "<Down>" }, nvapi.move_down, { buffer = state.input_buf })
+map("n", { "j", "<Down>" }, nvapi.move_down, { buffer = state.input_buf })
+map("i", { "<C-p>", "<Up>" }, nvapi.move_up, { buffer = state.input_buf })
+map("n", { "k", "<Up>" }, nvapi.move_up, { buffer = state.input_buf })
 
 map({ "i", "n" }, { "<cr>" }, function()
   state.confirmed = true
@@ -93,7 +41,7 @@ autocmd("TextChangedI", {
   buffer = state.input_buf,
 
   callback = function()
-    if scrolled then
+    if state.scrolled then
       api.nvim_buf_call(state.buf, function()
         vim.cmd "normal! gg"
       end)
@@ -116,12 +64,12 @@ autocmd("TextChangedI", {
 
     api.nvim_set_option_value("modifiable", false, { buf = state.buf })
 
-    if textchanged and #state.themes_shown > 0 then
+    if state.textchanged and #state.themes_shown > 0 then
       utils.reload_theme(state.themes_shown[1])
     end
 
     redraw(state.buf, "all")
-    scrolled = false
-    textchanged = true
+    state.scrolled = false
+    state.textchanged = true
   end,
 })

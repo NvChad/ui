@@ -1,4 +1,6 @@
 local M = {
+  scrolled = false,
+  textchanged = false,
   prompt = "   ",
   index = 1,
 
