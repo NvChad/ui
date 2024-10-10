@@ -28,7 +28,7 @@ return function(lines)
     relative = "editor",
     style = "minimal",
     border = "single",
-    title={{"  NvChad News ", "floattitle"}},
+    title={{"  NvChad News ", "healthSuccess"}},
     title_pos = "center",
   })
 
