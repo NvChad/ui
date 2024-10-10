@@ -24,6 +24,20 @@ local M = {
         format_kk.tailwind(entry, item)
       end
 
+      -- item.abbr maxwidth and minwidth
+      local ellipsis_char = '…'
+      local abbr_maxwidth = math.floor(vim.o.columns / 2)
+      local abbr_minwidth = 0
+
+      local abbr = item.abbr
+      local truncated_abbr = vim.fn.strcharpart(abbr, 0, abbr_maxwidth)
+      if truncated_abbr ~= abbr then
+        item.abbr = truncated_abbr .. ellipsis_char
+      elseif string.len(abbr) < abbr_minwidth then
+        local padding = string.rep(' ', abbr_minwidth - string.len(abbr))
+        item.abbr = abbr .. padding
+      end
+
       return item
     end,
 
