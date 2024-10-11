@@ -5,6 +5,18 @@ local format_kk = require "nvchad.cmp.format"
 local atom_styled = cmp_style == "atom" or cmp_style == "atom_colored"
 local fields = (atom_styled or cmp_ui.icons_left) and { "kind", "abbr", "menu" } or { "abbr", "kind", "menu" }
 
+local abbr_opts = cmp_ui.format_abbr or {}
+if not abbr_opts.maxwidth then
+    abbr_opts.maxwidth = math.floor(vim.o.columns / 2)
+    vim.api.nvim_create_autocmd("VimResized", {
+        group = vim.api.nvim_create_augroup("NvCmpAbbrMaxwidth", { clear = true }),
+        pattern = "*",
+        callback = function()
+            abbr_opts.maxwidth = math.floor(vim.o.columns / 2)
+        end
+    })
+end
+
 local M = {
   formatting = {
     format = function(entry, item)
@@ -26,8 +38,8 @@ local M = {
 
       -- item.abbr maxwidth and minwidth
       local ellipsis_char = '…'
-      local abbr_maxwidth = 29
-      local abbr_minwidth = 0
+      local abbr_maxwidth = abbr_opts.maxwidth
+      local abbr_minwidth = abbr_opts.minwidth or 0
 
       local abbr = item.abbr
       local truncated_abbr = vim.fn.strcharpart(abbr, 0, abbr_maxwidth)
