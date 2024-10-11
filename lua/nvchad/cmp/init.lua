@@ -7,15 +7,17 @@ local fields = (atom_styled or cmp_ui.icons_left) and { "kind", "abbr", "menu" }
 
 local abbr_opts = cmp_ui.format_abbr or {}
 if not abbr_opts.maxwidth then
-    abbr_opts.maxwidth = math.floor(vim.o.columns / 2)
-    vim.api.nvim_create_autocmd("VimResized", {
-        group = vim.api.nvim_create_augroup("NvCmpAbbrMaxwidth", { clear = true }),
-        pattern = "*",
-        callback = function()
-            abbr_opts.maxwidth = math.floor(vim.o.columns / 2)
-        end
-    })
+  vim.api.nvim_create_autocmd("VimResized", {
+    group = vim.api.nvim_create_augroup("NvCmpAbbrMaxwidth", { clear = true }),
+    pattern = "*",
+    callback = function()
+      abbr_opts.maxwidth = math.floor(vim.o.columns / 2)
+      abbr_opts.minwidth = math.min(abbr_opts.minwidth, abbr_opts.maxwidth)
+    end
+  })
 end
+abbr_opts.maxwidth = abbr_opts.maxwidth or math.floor(vim.o.columns / 2)
+abbr_opts.minwidth = abbr_opts.minwidth and math.min(abbr_opts.minwidth, abbr_opts.maxwidth) or 0
 
 local M = {
   formatting = {
@@ -37,17 +39,11 @@ local M = {
       end
 
       -- item.abbr maxwidth and minwidth
-      local ellipsis_char = '…'
-      local abbr_maxwidth = abbr_opts.maxwidth
-      local abbr_minwidth = abbr_opts.minwidth or 0
-
-      local abbr = item.abbr
-      local truncated_abbr = vim.fn.strcharpart(abbr, 0, abbr_maxwidth)
-      if truncated_abbr ~= abbr then
-        item.abbr = truncated_abbr .. ellipsis_char
-      elseif string.len(abbr) < abbr_minwidth then
-        local padding = string.rep(' ', abbr_minwidth - string.len(abbr))
-        item.abbr = abbr .. padding
+      local abbr_len = #item.abbr
+      if abbr_len > abbr_opts.maxwidth then
+        item.abbr = string.sub(item.abbr, 1, abbr_opts.maxwidth) .. '…'
+      elseif abbr_len < abbr_opts.minwidth then
+        item.abbr = item.abbr .. string.rep(' ', abbr_opts.minwidth - abbr_len)
       end
 
       return item
