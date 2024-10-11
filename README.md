@@ -120,12 +120,6 @@ Base46 setup
 - It has 2 themes ( grid & simple )
 ![img](https://nvchad.com/features/nvcheatsheet.webp)
 
-## Colorify
-
-- Colors hex color on buffer and lsp colors on the buffer, like tailwind etc
-
-![image](https://github.com/user-attachments/assets/c5f3dc55-7810-48ae-879e-25453ab16b71)
-
 ## Automatic Mason install 
 
 - MasonInstallAll command will now capture all the mason tools from your config
