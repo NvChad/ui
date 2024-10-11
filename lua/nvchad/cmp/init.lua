@@ -26,7 +26,7 @@ local M = {
 
       -- item.abbr maxwidth and minwidth
       local ellipsis_char = '…'
-      local abbr_maxwidth = math.floor(vim.o.columns / 2)
+      local abbr_maxwidth = 29
       local abbr_minwidth = 0
 
       local abbr = item.abbr
