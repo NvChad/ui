@@ -5,19 +5,14 @@ local format_kk = require "nvchad.cmp.format"
 local atom_styled = cmp_style == "atom" or cmp_style == "atom_colored"
 local fields = (atom_styled or cmp_ui.icons_left) and { "kind", "abbr", "menu" } or { "abbr", "kind", "menu" }
 
-local abbr_opts = cmp_ui.format_abbr or {}
-if not abbr_opts.maxwidth then
-  vim.api.nvim_create_autocmd("VimResized", {
-    group = vim.api.nvim_create_augroup("NvCmpAbbrMaxwidth", { clear = true }),
-    pattern = "*",
-    callback = function()
-      abbr_opts.maxwidth = math.floor(vim.o.columns / 2)
-      abbr_opts.minwidth = math.min(abbr_opts.minwidth, abbr_opts.maxwidth)
-    end
-  })
-end
-abbr_opts.maxwidth = abbr_opts.maxwidth or math.floor(vim.o.columns / 2)
-abbr_opts.minwidth = abbr_opts.minwidth and math.min(abbr_opts.minwidth, abbr_opts.maxwidth) or 0
+local abbr_maxwidth = require('bit').rshift(vim.o.columns, 1)
+vim.api.nvim_create_autocmd("VimResized", {
+  group = vim.api.nvim_create_augroup("NvCmpAbbrMaxwidth", { clear = true }),
+  pattern = "*",
+  callback = function()
+    abbr_maxwidth = require('bit').rshift(vim.o.columns, 1)
+  end
+})
 
 local M = {
   formatting = {
@@ -38,12 +33,9 @@ local M = {
         format_kk.tailwind(entry, item)
       end
 
-      -- item.abbr maxwidth and minwidth
-      local abbr_len = #item.abbr
-      if abbr_len > abbr_opts.maxwidth then
-        item.abbr = string.sub(item.abbr, 1, abbr_opts.maxwidth) .. '…'
-      elseif abbr_len < abbr_opts.minwidth then
-        item.abbr = item.abbr .. string.rep(' ', abbr_opts.minwidth - abbr_len)
+      -- item.abbr maxwidth
+      if #item.abbr > abbr_maxwidth then
+        item.abbr = string.sub(item.abbr, 1, abbr_maxwidth) .. '…'
       end
 
       return item
