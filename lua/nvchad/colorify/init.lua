@@ -3,7 +3,6 @@ local api = vim.api
 
 local state = require "nvchad.colorify.state"
 state.ns = api.nvim_create_namespace "Colorify"
-api.nvim_set_hl_ns(state.ns)
 
 M.attach = require "nvchad.colorify.attach"
 

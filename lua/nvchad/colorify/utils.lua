@@ -24,7 +24,7 @@ function M.add_hl(hex)
     bg = "none"
   end
 
-  api.nvim_set_hl(ns, name, { fg = fg, bg = bg })
+  api.nvim_set_hl(0, name, { fg = fg, bg = bg, default = true })
   return name
 end
 
