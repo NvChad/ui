@@ -80,7 +80,7 @@ local dir = vim.fn.stdpath "data" .. "/nvnotify"
 if not vim.uv.fs_stat(dir) then
   vim.fn.mkdir(dir, "p")
   require "nvchad.winmes" {
-    { "* NvChad UI v3.0 has released! Check https://nvchad.com/news/nvui", "added" },
+    { "* NvChad UI v3.0 has been released! Check https://nvchad.com/news/nvui", "added" },
     { "* Docs have been added at :h nvui, don't forget to read them!" },
     { "* Check the Volt plugin showcase at https://nvchad.com/news/volt" },
   }
