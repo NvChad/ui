@@ -1,4 +1,6 @@
 local M = {}
+local api = vim.api
+local config = require "nvconfig"
 
 local function capitalize(str)
   return (str:gsub("^%l", string.upper))
@@ -44,7 +46,8 @@ M.get_mappings = function(mappings, tb_to_add)
   end
 end
 
-M.organize_mappings = function(tb_to_add)
+M.organize_mappings = function()
+  local tb_to_add = {}
   local modes = { "n", "i", "v", "t" }
 
   for _, mode in ipairs(modes) do
@@ -55,6 +58,8 @@ M.organize_mappings = function(tb_to_add)
     require("nvchad.cheatsheet").get_mappings(bufkeymaps, tb_to_add)
   end
 
+  return tb_to_add
+
   -- remove groups which have only 1 mapping
   -- for key, x in pairs(tb_to_add) do
   --   if #x <= 1 then
@@ -62,5 +67,49 @@ M.organize_mappings = function(tb_to_add)
   --   end
   -- end
 end
+
+M.autocmds = function(buf)
+  require("nvchad.utils").set_cleanbuf_opts "nvcheatsheet"
+
+  local group_id = api.nvim_create_augroup("NvCh", { clear = true })
+
+  api.nvim_create_autocmd("BufWinLeave", {
+    group = group_id,
+    buffer = buf,
+    callback = function()
+      vim.g.nvcheatsheet_displayed = false
+      api.nvim_del_augroup_by_name "NvCh"
+    end,
+  })
+
+  api.nvim_create_autocmd({ "WinResized", "VimResized" }, {
+    group = group_id,
+    callback = function()
+      require("nvchad.cheatsheet." .. config.cheatsheet.theme)(vim.g.nvch_buf, vim.g.nvch_win, "redraw")
+    end,
+  })
+
+  vim.keymap.set("n", "q", function()
+    require("nvchad.tabufline").close_buffer()
+  end, { buffer = buf })
+
+  vim.keymap.set("n", "<ESC>", function()
+    require("nvchad.tabufline").close_buffer()
+  end, { buffer = buf })
+
+  vim.g.nvch_buf = buf
+  vim.g.nvch_win = vim.fn.bufwinid(buf)
+end
+
+M.rand_hlgroup = function()
+  local hlgroups =
+    { "blue", "red", "green", "yellow", "orange", "baby_pink", "purple", "white", "cyan", "vibrant_green", "teal" }
+
+  return "NvChHead" .. hlgroups[math.random(1, #hlgroups)]
+end
+
+M.state = {
+  mappings_tb = {},
+}
 
 return M
