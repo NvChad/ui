@@ -41,17 +41,6 @@ if config.lsp.signature then
   })
 end
 
--- redraw dashboard/cheatsheet
-autocmd("VimResized", {
-  callback = function()
-    if vim.bo.ft == "nvdash" then
-      require("nvchad.nvdash").open()
-    elseif vim.bo.ft == "nvcheatsheet" then
-      require("nvchad.cheatsheet." .. config.cheatsheet.theme)()
-    end
-  end,
-})
-
 -- reload the plugin!
 autocmd("BufWritePost", {
   pattern = vim.tbl_map(function(path)

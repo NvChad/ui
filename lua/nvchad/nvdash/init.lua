@@ -7,14 +7,6 @@ dofile(vim.g.base46_cache .. "nvdash")
 
 local opts = require("nvconfig").nvdash
 
-api.nvim_create_autocmd("BufLeave", {
-  callback = function()
-    if vim.bo.ft == "nvdash" then
-      vim.g.nvdash_displayed = false
-    end
-  end,
-})
-
 local map = function(keys, action, buf)
   for _, v in ipairs(keys) do
     vim.keymap.set("n", v, action, { buffer = buf })
@@ -33,15 +25,22 @@ local function btn_gap(txt1, txt2, max_str_w)
   return txt1 .. string.rep(" ", spacing) .. txt2
 end
 
-M.open = function()
-  local win = api.nvim_get_current_win()
+M.open = function(buf, win, action)
+  action = action or "open"
+  win = win or api.nvim_get_current_win()
   local ns = api.nvim_create_namespace "nvdash"
   local winh = api.nvim_win_get_height(win)
   local winw = api.nvim_win_get_width(win)
-  local buf = vim.api.nvim_create_buf(false, true)
+  buf = buf or vim.api.nvim_create_buf(false, true)
+
+  vim.g.nvdash_buf = buf
+  vim.g.nvdash_win = win
+
   local nvdash_w = 0
 
-  api.nvim_win_set_buf(0, buf)
+  if action == "open" then
+    api.nvim_win_set_buf(0, buf)
+  end
 
   ------------------------ find largest string's width -----------------------------
   for _, val in ipairs(opts.header) do
@@ -148,6 +147,30 @@ M.open = function()
   end, buf)
 
   require("nvchad.utils").set_cleanbuf_opts "nvdash"
+
+  if action == "redraw" then
+    return
+  end
+
+  ----------------------- autocmds -----------------------------
+  local group_id = api.nvim_create_augroup("NvdashAu", { clear = true })
+
+  api.nvim_create_autocmd("BufWinLeave", {
+    group = group_id,
+    buffer = buf,
+    callback = function()
+      vim.g.nvdash_displayed = false
+      api.nvim_del_augroup_by_name "NvdashAu"
+    end,
+  })
+
+  api.nvim_create_autocmd({ "WinResized", "VimResized" }, {
+    group = group_id,
+    callback = function()
+      vim.bo[vim.g.nvdash_buf].ma = true
+      require("nvchad.nvdash").open(vim.g.nvdash_buf, vim.g.nvdash_win, "redraw")
+    end,
+  })
 end
 
 return M
