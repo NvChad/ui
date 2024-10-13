@@ -13,7 +13,7 @@ if config.nvdash.load_on_startup then
   end
 end
 
-if vim.version().minor >= 10 then
+if config.ui.statusline.enabled then
   autocmd("LspProgress", {
     callback = function(args)
       if string.find(args.match, "end") then
