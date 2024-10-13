@@ -27,14 +27,16 @@ end
 if config.lsp.signature then
   autocmd("LspAttach", {
     callback = function(args)
-      local client = vim.lsp.get_client_by_id(args.data.client_id)
+      vim.schedule(function()
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
 
-      if client then
-        local signatureProvider = client.server_capabilities.signatureHelpProvider
-        if signatureProvider and signatureProvider.triggerCharacters then
-          require("nvchad.lsp.signature").setup(client, args.buf)
+        if client then
+          local signatureProvider = client.server_capabilities.signatureHelpProvider
+          if signatureProvider and signatureProvider.triggerCharacters then
+            require("nvchad.lsp.signature").setup(client, args.buf)
+          end
         end
-      end
+      end)
     end,
   })
 end
