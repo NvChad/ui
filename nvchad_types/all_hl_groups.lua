@@ -554,6 +554,12 @@ error("Requiring a meta file")
 ---@field Added Base46HLGroups # highlight group for defaults
 ---@field ["'@regexp'"] Base46HLGroups # highlight group for semantic_tokens
 ---@field ["'@modifier'"] Base46HLGroups # highlight group for semantic_tokens
+---@field ["'@markup.heading.6.markdown'"] Base46HLGroups # highlight group for markview
+---@field ["'@markup.heading.5.markdown'"] Base46HLGroups # highlight group for markview
+---@field ["'@markup.heading.4.markdown'"] Base46HLGroups # highlight group for markview
+---@field ["'@markup.heading.3.markdown'"] Base46HLGroups # highlight group for markview
+---@field ["'@markup.heading.2.markdown'"] Base46HLGroups # highlight group for markview
+---@field ["'@markup.heading.1.markdown'"] Base46HLGroups # highlight group for markview
 ---@field ["'@lsp.type.variable'"] Base46HLGroups # highlight group for semantic_tokens
 ---@field ["'@lsp.type.typeParamater'"] Base46HLGroups # highlight group for semantic_tokens
 ---@field ["'@lsp.type.type'"] Base46HLGroups # highlight group for semantic_tokens
@@ -1199,6 +1205,12 @@ error("Requiring a meta file")
 ---@field ["'@markup.link.label'"] Base46HLGroups # highlight group for treesitter
 ---@field ["'@markup.link'"] Base46HLGroups # highlight group for treesitter
 ---@field ["'@markup.italic'"] Base46HLGroups # highlight group for treesitter
+---@field ["'@markup.heading.6.markdown'"] Base46HLGroups # highlight group for markview
+---@field ["'@markup.heading.5.markdown'"] Base46HLGroups # highlight group for markview
+---@field ["'@markup.heading.4.markdown'"] Base46HLGroups # highlight group for markview
+---@field ["'@markup.heading.3.markdown'"] Base46HLGroups # highlight group for markview
+---@field ["'@markup.heading.2.markdown'"] Base46HLGroups # highlight group for markview
+---@field ["'@markup.heading.1.markdown'"] Base46HLGroups # highlight group for markview
 ---@field ["'@markup.heading'"] Base46HLGroups # highlight group for treesitter
 ---@field ["'@lsp.type.variable'"] Base46HLGroups # highlight group for semantic_tokens
 ---@field ["'@lsp.type.typeParamater'"] Base46HLGroups # highlight group for semantic_tokens
@@ -1274,6 +1286,7 @@ error("Requiring a meta file")
 ---| "'hop'"
 ---| "'lsp'"
 ---| "'lspsaga'"
+---| "'markview'"
 ---| "'mason'"
 ---| "'navic'"
 ---| "'neogit'"
