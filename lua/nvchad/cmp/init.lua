@@ -5,14 +5,7 @@ local format_kk = require "nvchad.cmp.format"
 local atom_styled = cmp_style == "atom" or cmp_style == "atom_colored"
 local fields = (atom_styled or cmp_ui.icons_left) and { "kind", "abbr", "menu" } or { "abbr", "kind", "menu" }
 
-local abbr_maxwidth = bit.rshift(vim.o.columns, 1)
-vim.api.nvim_create_autocmd("VimResized", {
-  group = vim.api.nvim_create_augroup("NvCmpAbbrMaxwidth", { clear = true }),
-  pattern = "*",
-  callback = function()
-    abbr_maxwidth = bit.rshift(vim.o.columns, 1)
-  end
-})
+local abbr_maxwidth = cmp_ui.abbr_maxwidth or 60
 
 local M = {
   formatting = {
