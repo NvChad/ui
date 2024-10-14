@@ -65,6 +65,10 @@ M.open = function(buf, win, action)
     if nvdash_w < w then
       nvdash_w = w
     end
+
+    if val.keys then
+      map({ val.keys }, "<cmd>" .. val.cmd .. "<cr>", buf)
+    end
   end
   ----------------------- save display txt -----------------------------------------
   local dashboard = {}
