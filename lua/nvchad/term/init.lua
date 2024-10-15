@@ -102,7 +102,7 @@ local function create(opts)
   save_term_info(opts.buf, opts)
 
   if not buf_exists then
-    vim.fn.termopen(cmd, opts)
+    vim.fn.termopen(cmd, opts.termopen_opts)
   end
 
   vim.g.nvhterm = opts.pos == "sp"
