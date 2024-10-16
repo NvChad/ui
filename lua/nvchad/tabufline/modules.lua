@@ -10,6 +10,7 @@ local strep = string.rep
 local style_buf = require("nvchad.tabufline.utils").style_buf
 local cur_buf = api.nvim_get_current_buf
 local config = require("nvconfig").ui.tabufline
+local BUF_WIDTH = 21
 
 g.toggle_theme_icon = "   "
 
@@ -64,7 +65,7 @@ M.buffers = function()
   local has_current = false -- have we seen current buffer yet?
 
   for i, nr in ipairs(vim.t.bufs) do
-    if ((#buffers + 1) * 23) > available_space() then
+    if ((#buffers + 1) * BUF_WIDTH) > available_space() then
       if has_current then
         break
       end
@@ -73,7 +74,7 @@ M.buffers = function()
     end
 
     has_current = cur_buf() == nr or has_current
-    table.insert(buffers, style_buf(nr, i))
+    table.insert(buffers, style_buf(nr, i, BUF_WIDTH))
   end
 
   return table.concat(buffers) .. txt("%=", "Fill") -- buffers + empty space
