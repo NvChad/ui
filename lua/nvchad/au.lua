@@ -13,17 +13,6 @@ if config.nvdash.load_on_startup then
   end
 end
 
-if config.ui.statusline.enabled then
-  autocmd("LspProgress", {
-    callback = function(args)
-      if string.find(args.match, "end") then
-        vim.cmd "redrawstatus"
-      end
-      vim.cmd "redrawstatus"
-    end,
-  })
-end
-
 if config.lsp.signature then
   autocmd("LspAttach", {
     callback = function(args)
