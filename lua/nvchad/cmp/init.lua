@@ -5,6 +5,8 @@ local format_kk = require "nvchad.cmp.format"
 local atom_styled = cmp_style == "atom" or cmp_style == "atom_colored"
 local fields = (atom_styled or cmp_ui.icons_left) and { "kind", "abbr", "menu" } or { "abbr", "kind", "menu" }
 
+local abbr_maxwidth = cmp_ui.abbr_maxwidth or 60
+
 local M = {
   formatting = {
     format = function(entry, item)
@@ -22,6 +24,11 @@ local M = {
 
       if cmp_ui.format_colors.tailwind then
         format_kk.tailwind(entry, item)
+      end
+
+      -- item.abbr maxwidth
+      if #item.abbr > abbr_maxwidth then
+        item.abbr = string.sub(item.abbr, 1, abbr_maxwidth) .. '…'
       end
 
       return item
