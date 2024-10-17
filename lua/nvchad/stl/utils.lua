@@ -166,7 +166,10 @@ M.autocmds = function()
       local progress = ""
 
       if data.percentage then
-        local icon = spinners[math.floor(data.percentage / spinner_w) + 1]
+        -- Provide a default values to prevent nil
+        spinner_w = spinner_w or 1
+        local icon_index = math.floor(math.max(0, math.min(100, data.percentage)) / spinner_w) + 1
+        local icon = type(spinners) == "table" and spinners[icon_index] or ""
         progress = icon .. " " .. data.percentage .. "%% "
       end
 
