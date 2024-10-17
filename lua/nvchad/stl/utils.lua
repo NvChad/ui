@@ -155,8 +155,7 @@ M.separators = {
 
 M.state = { lsp_msg = "" }
 
-local spinners = { "", "󰪞", "󰪟", "󰪠", "󰪢", "󰪣", "󰪤", "󰪥" }
-local spinner_w = 100 / #spinners
+local spinners = { "", "", "", "󰪞", "󰪟", "󰪠", "󰪢", "󰪣", "󰪤", "󰪥" }
 
 M.autocmds = function()
   vim.api.nvim_create_autocmd("LspProgress", {
@@ -166,7 +165,7 @@ M.autocmds = function()
       local progress = ""
 
       if data.percentage then
-        local icon = spinners[math.floor(data.percentage / spinner_w) + 1]
+        local icon = spinners[math.floor(data.percentage / 10)]
         progress = icon .. " " .. data.percentage .. "%% "
       end
 
