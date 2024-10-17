@@ -165,7 +165,8 @@ M.autocmds = function()
       local progress = ""
 
       if data.percentage then
-        local icon = spinners[math.floor(data.percentage / 10)]
+        local idx = math.max(1, math.floor(data.percentage / 10))
+        local icon = spinners[idx]
         progress = icon .. " " .. data.percentage .. "%% "
       end
 
