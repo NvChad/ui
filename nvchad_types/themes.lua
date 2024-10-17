@@ -61,6 +61,7 @@ vim.g.nvchad_theme = 'onedark'
 ---| '"everforest_light"'
 ---| '"everforest"'
 ---| '"everblush"'
+---| '"eldritch"'
 ---| '"doomchad"'
 ---| '"decay"'
 ---| '"dark_horizon"'
@@ -93,6 +94,7 @@ vim.g.nvchad_theme = 'onedark'
 ---@field dark_horizon? ThemeTable # Changes for dark_horizon theme
 ---@field decay? ThemeTable # Changes for decay theme
 ---@field doomchad? ThemeTable # Changes for doomchad theme
+---@field eldritch? ThemeTable # Changes for eldritch theme
 ---@field everblush? ThemeTable # Changes for everblush theme
 ---@field everforest? ThemeTable # Changes for everforest theme
 ---@field everforest_light? ThemeTable # Changes for everforest_light theme
