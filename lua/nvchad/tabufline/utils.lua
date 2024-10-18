@@ -40,7 +40,7 @@ local function gen_unique_name(oldname, index)
   end
 end
 
-M.style_buf = function(nr, i)
+M.style_buf = function(nr, i, width)
   -- add fileicon + name
   local icon = "󰈚"
   local is_curbuf = cur_buf() == nr
@@ -61,7 +61,7 @@ M.style_buf = function(nr, i)
   end
 
   -- padding around bufname; 15= maxnamelen + 2 icon & space + 2 close icon
-  local pad = math.floor((23 - #name - 5) / 2)
+  local pad = math.floor((width - #name - 5) / 2)
   pad = pad <= 0 and 1 or pad
 
   local maxname_len = 15
