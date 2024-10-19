@@ -26,6 +26,9 @@ In your plugins file
       require("base46").load_all_highlights()
     end,
  },
+
+ "nvchad/volt", -- optional, needed for theme switcher
+ -- or just use Telescope themes
 ```
 
 Base46 setup

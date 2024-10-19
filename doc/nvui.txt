@@ -106,6 +106,8 @@ In your plugins file
       require("base46").load_all_highlights()
     end,
  },
+
+ "nvchad/volt", -- optional, needed for theme switcher
 <
 Base46 setup
 >lua
