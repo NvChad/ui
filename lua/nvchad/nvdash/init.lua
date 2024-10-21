@@ -42,8 +42,10 @@ M.open = function(buf, win, action)
     api.nvim_win_set_buf(0, buf)
   end
 
+  local header = type(opts.header) == "function" and opts.header() or opts.header
+
   ------------------------ find largest string's width -----------------------------
-  for _, val in ipairs(opts.header) do
+  for _, val in ipairs(header) do
     local headerw = strw(val)
     if headerw > nvdash_w then
       nvdash_w = headerw
@@ -73,7 +75,7 @@ M.open = function(buf, win, action)
   ----------------------- save display txt -----------------------------------------
   local dashboard = {}
 
-  for _, v in ipairs(opts.header) do
+  for _, v in ipairs(header) do
     table.insert(dashboard, { txt = txt_pad(v, nvdash_w), hl = "NvDashAscii" })
   end
 
@@ -125,7 +127,7 @@ M.open = function(buf, win, action)
   end
 
   ------------------------------------ keybinds ------------------------------------------
-  local btn_start_i = row_i + #opts.header + 2
+  local btn_start_i = row_i + #header + 2
   api.nvim_win_set_cursor(win, { btn_start_i, col_i + 5 })
 
   map({ "k", "<up>" }, function()

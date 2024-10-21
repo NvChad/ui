@@ -120,7 +120,7 @@
 ---@field load_on_startup? boolean
 --- Your ascii art
 --- Each string is one line
----@field header? string[],
+---@field header? string[] | (fun(): string[])
 --- List of buttons to show on the dashboard
 ---@field buttons? NvDashButtonConfig[]
 
