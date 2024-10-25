@@ -40,4 +40,5 @@ return {
   Copilot = "",
   Codeium = "",
   TabNine = "",
+  BladeNav = "",
 }
