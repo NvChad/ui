@@ -14,9 +14,9 @@ In your plugins file
 
  {
    "nvchad/ui",
-    config = function()
-      require "nvchad" 
-    end
+   config = function()
+     require "nvchad" 
+   end
  },
 
  {
@@ -26,6 +26,14 @@ In your plugins file
       require("base46").load_all_highlights()
     end,
  },
+
+ {
+    "nvim-tree/nvim-web-devicons",
+    opts = function()
+      dofile(vim.g.base46_cache .. "devicons")
+      return { override = require "nvchad.icons.devicons" }
+    end,
+  },
 
  "nvchad/volt", -- optional, needed for theme switcher
  -- or just use Telescope themes
