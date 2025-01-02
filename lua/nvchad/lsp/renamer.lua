@@ -17,7 +17,7 @@ return function()
   vim.fn.prompt_setprompt(buf, "")
   vim.api.nvim_input "A"
 
-  vim.keymap.set({ "i", "n" }, "<Esc>", "<cmd>q<CR>", { buffer = buf })
+  vim.keymap.set({ "i", "n" }, "<Esc>", "<cmd>q!<CR>", { buffer = buf })
 
   vim.fn.prompt_setcallback(buf, function(text)
     local newName = vim.trim(text)
