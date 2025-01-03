@@ -11,18 +11,19 @@ local style_buf = require("nvchad.tabufline.utils").style_buf
 local cur_buf = api.nvim_get_current_buf
 local config = require("nvconfig").ui.tabufline
 
+local M = {}
 g.toggle_theme_icon = "   "
 
----------------------------------------------------------- btn actions functions ----------------------------------------------
+------------------------------- btn actions functions -----------------------------------
 
 vim.cmd [[
-   function! TbGoToBuf(bufnr,b,c,d)
-        call luaeval('require("nvchad.tabufline").goto_buf(_A)', a:bufnr)
+  function! TbGoToBuf(bufnr,b,c,d)
+    call luaeval('require("nvchad.tabufline").goto_buf(_A)', a:bufnr)
   endfunction]]
 
 vim.cmd [[
-   function! TbKillBuf(bufnr,b,c,d) 
-        call luaeval('require("nvchad.tabufline").close_buffer(_A)', a:bufnr)
+  function! TbKillBuf(bufnr,b,c,d) 
+    call luaeval('require("nvchad.tabufline").close_buffer(_A)', a:bufnr)
   endfunction]]
 
 vim.cmd "function! TbNewTab(a,b,c,d) \n tabnew \n endfunction"
@@ -31,7 +32,7 @@ vim.cmd "function! TbCloseAllBufs(a,b,c,d) \n lua require('nvchad.tabufline').cl
 vim.cmd "function! TbToggle_theme(a,b,c,d) \n lua require('base46').toggle_theme() \n endfunction"
 vim.cmd "function! TbToggleTabs(a,b,c,d) \n let g:TbTabsToggled = !g:TbTabsToggled | redrawtabline \n endfunction"
 
--------------------------------------------------------- functions ------------------------------------------------------------
+---------------------------------- functions -------------------------------------------
 
 local function getNvimTreeWidth()
   for _, win in pairs(api.nvim_tabpage_list_wins(0)) do
@@ -41,9 +42,6 @@ local function getNvimTreeWidth()
   end
   return 0
 end
-
-------------------------------------- modules -----------------------------------------
-local M = {}
 
 local function available_space()
   local str = ""
@@ -57,6 +55,8 @@ local function available_space()
   local modules = api.nvim_eval_statusline(str, { use_tabline = true })
   return vim.o.columns - modules.width
 end
+
+------------------------------------- modules -----------------------------------------
 
 M.treeOffset = function()
   return "%#NvimTreeNormal#" .. strep(" ", getNvimTreeWidth())
