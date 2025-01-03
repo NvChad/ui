@@ -62,7 +62,7 @@ M.style_buf = function(nr, i)
   end
 
   -- padding around bufname; 15= maxnamelen + 2 icon & space + 2 close icon
-  local pad = math.floor((23 - #name - 5) / 2)
+  local pad = math.floor((21 - #name - 5) / 2)
   pad = pad <= 0 and 1 or pad
 
   local maxname_len = 15
