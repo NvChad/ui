@@ -68,6 +68,8 @@
 ---@field style? '"default"'|'"flat_light"'|'"flat_dark"'|'"atom"'|'"atom_colored"'
 --- Only has effects when the style is `default`
 --- @field icons_left? boolean 
+--- Max width of main completion text in cmp
+--- @field abbr_maxwidth? integer
 --- places lspkind icons to the left, only for non-atom styles
 --- @field format_colors? NvCmpFormatColors
 
