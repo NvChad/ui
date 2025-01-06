@@ -1,5 +1,4 @@
 local M = {}
-local version = vim.version().minor
 
 M.stbufnr = function()
   return vim.api.nvim_win_get_buf(vim.g.statusline_winid or 0)
@@ -114,25 +113,11 @@ M.git = function()
 end
 
 M.lsp_msg = function()
-  if version < 10 then
-    return ""
-  end
-
-  local msg = vim.lsp.status()
-
-  if #msg == 0 or vim.o.columns < 120 then
-    return ""
-  end
-
-  local spinners = { "", "󰪞", "󰪟", "󰪠", "󰪢", "󰪣", "󰪤", "󰪥" }
-  local ms = vim.uv.hrtime() / 1e6
-  local frame = math.floor(ms / 100) % #spinners
-
-  return spinners[frame + 1] .. " " .. msg
+  return vim.o.columns < 120 and "" or M.state.lsp_msg
 end
 
 M.lsp = function()
-  if rawget(vim, "lsp") and version >= 10 then
+  if rawget(vim, "lsp") then
     for _, client in ipairs(vim.lsp.get_clients()) do
       if client.attached_buffers[M.stbufnr()] then
         return (vim.o.columns > 100 and "   LSP ~ " .. client.name .. " ") or "   LSP "
@@ -167,5 +152,29 @@ M.separators = {
   block = { left = "█", right = "█" },
   arrow = { left = "", right = "" },
 }
+
+M.state = { lsp_msg = "" }
+
+local spinners = { "", "", "", "󰪞", "󰪟", "󰪠", "󰪢", "󰪣", "󰪤", "󰪥" }
+
+M.autocmds = function()
+  vim.api.nvim_create_autocmd("LspProgress", {
+    pattern = { "begin", "end" },
+    callback = function(args)
+      local data = args.data.params.value
+      local progress = ""
+
+      if data.percentage then
+        local idx = math.max(1, math.floor(data.percentage / 10))
+        local icon = spinners[idx]
+        progress = icon .. " " .. data.percentage .. "%% "
+      end
+
+      local str = progress .. (data.message or "") .. " " .. (data.title or "")
+      M.state.lsp_msg = data.kind == "end" and "" or str
+      vim.cmd.redrawstatus()
+    end,
+  })
+end
 
 return M

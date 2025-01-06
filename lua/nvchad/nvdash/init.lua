@@ -2,18 +2,7 @@ local M = {}
 local api = vim.api
 local fn = vim.fn
 local strw = api.nvim_strwidth
-
-dofile(vim.g.base46_cache .. "nvdash")
-
 local opts = require("nvconfig").nvdash
-
-api.nvim_create_autocmd("BufLeave", {
-  callback = function()
-    if vim.bo.ft == "nvdash" then
-      vim.g.nvdash_displayed = false
-    end
-  end,
-})
 
 local map = function(keys, action, buf)
   for _, v in ipairs(keys) do
@@ -33,29 +22,38 @@ local function btn_gap(txt1, txt2, max_str_w)
   return txt1 .. string.rep(" ", spacing) .. txt2
 end
 
-M.open = function()
-  local win = api.nvim_get_current_win()
+M.open = function(buf, win, action)
+  action = action or "open"
+
+  win = win or api.nvim_get_current_win()
+
+  if not vim.bo.buflisted and action == 'open' then
+    win = vim.fn.bufwinid(vim.t.bufs[1])
+    api.nvim_set_current_win(win)
+  end
+
   local ns = api.nvim_create_namespace "nvdash"
   local winh = api.nvim_win_get_height(win)
   local winw = api.nvim_win_get_width(win)
-  local buf = vim.api.nvim_create_buf(false, true)
+  buf = buf or vim.api.nvim_create_buf(false, true)
+
+  vim.g.nvdash_buf = buf
+  vim.g.nvdash_win = win
+
   local nvdash_w = 0
 
-  api.nvim_win_set_buf(0, buf)
+  if action == "open" then
+    api.nvim_win_set_buf(0, buf)
+  end
+
+  local header = type(opts.header) == "function" and opts.header() or opts.header
 
   ------------------------ find largest string's width -----------------------------
-  for _, val in ipairs(opts.header) do
+  for _, val in ipairs(header) do
     local headerw = strw(val)
     if headerw > nvdash_w then
       nvdash_w = headerw
     end
-  end
-
-  if #opts.buttons[1] == 3 then
-    vim.schedule(function()
-      vim.notify "nvdash buttons: each item must have a txt, and cmd"
-    end)
-    return
   end
 
   for _, val in ipairs(opts.buttons) do
@@ -66,11 +64,15 @@ M.open = function()
     if nvdash_w < w then
       nvdash_w = w
     end
+
+    if val.keys then
+      map({ val.keys }, "<cmd>" .. val.cmd .. "<cr>", buf)
+    end
   end
   ----------------------- save display txt -----------------------------------------
   local dashboard = {}
 
-  for _, v in ipairs(opts.header) do
+  for _, v in ipairs(header) do
     table.insert(dashboard, { txt = txt_pad(v, nvdash_w), hl = "NvDashAscii" })
   end
 
@@ -103,7 +105,7 @@ M.open = function()
   local empty_str = {}
 
   for i = 1, winh do
-    empty_str[i] = string.rep(" ", winw)
+    empty_str[i] = string.rep("", winw)
   end
 
   -- set text + highlight
@@ -113,8 +115,8 @@ M.open = function()
   for i, v in ipairs(dashboard) do
     v.txt = "  " .. v.txt .. "  "
     v.hl = v.hl or "NvDashButtons"
-    local opt = { virt_text_pos = "overlay", virt_text = { { v.txt, v.hl } } }
-    api.nvim_buf_set_extmark(buf, ns, row_i + i, col_i, opt)
+    local opt = { virt_text_win_col = col_i, virt_text = { { v.txt, v.hl } } }
+    api.nvim_buf_set_extmark(buf, ns, row_i + i, 0, opt)
 
     if v.cmd then
       table.insert(key_lines, { i = row_i + i + 1, cmd = v.cmd })
@@ -122,8 +124,12 @@ M.open = function()
   end
 
   ------------------------------------ keybinds ------------------------------------------
-  local btn_start_i = row_i + #opts.header + 2
-  api.nvim_win_set_cursor(win, { btn_start_i, col_i + 5 })
+  vim.wo[win].virtualedit = "all"
+  local btn_start_i = row_i + #header + 2
+
+  if col_i > 0 then
+    api.nvim_win_set_cursor(win, { btn_start_i, col_i + 5 })
+  end
 
   map({ "k", "<up>" }, function()
     local cur = fn.line "."
@@ -147,7 +153,31 @@ M.open = function()
     end
   end, buf)
 
-  require("nvchad.utils").set_cleanbuf_opts "nvdash"
+  require("nvchad.utils").set_cleanbuf_opts("nvdash", buf)
+
+  if action == "redraw" then
+    return
+  end
+
+  ----------------------- autocmds -----------------------------
+  local group_id = api.nvim_create_augroup("NvdashAu", { clear = true })
+
+  api.nvim_create_autocmd("BufWinLeave", {
+    group = group_id,
+    buffer = buf,
+    callback = function()
+      vim.g.nvdash_displayed = false
+      api.nvim_del_augroup_by_name "NvdashAu"
+    end,
+  })
+
+  api.nvim_create_autocmd({ "WinResized", "VimResized" }, {
+    group = group_id,
+    callback = function()
+      vim.bo[vim.g.nvdash_buf].ma = true
+      require("nvchad.nvdash").open(vim.g.nvdash_buf, vim.g.nvdash_win, "redraw")
+    end,
+  })
 end
 
 return M

@@ -10,7 +10,6 @@ local action_state = require "telescope.actions.state"
 local function reload_theme(name)
   require("nvconfig").base46.theme = name
   require("base46").load_all_highlights()
-  vim.api.nvim_exec_autocmds("User", { pattern = "NvChadThemeReload" })
 end
 
 local function switcher()

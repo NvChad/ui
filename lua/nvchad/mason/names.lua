@@ -66,7 +66,7 @@ return {
   fsautocomplete = "fsautocomplete",
   gitlab_ci_ls = "gitlab-ci-ls",
   glint = "glint",
-  glsl_analyzer = "glsl-analyzer",
+  glsl_analyzer = "glsl_analyzer",
   glslls = "glslls",
   golangci_lint_ls = "golangci-lint-langserver",
   gopls = "gopls",

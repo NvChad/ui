@@ -1,6 +1,6 @@
 local cmp_ui = require("nvconfig").ui.cmp
 local cmp_style = cmp_ui.style
-local format_kk = require "nvchad.cmp.format"
+local format_color = require "nvchad.cmp.format"
 
 local atom_styled = cmp_style == "atom" or cmp_style == "atom_colored"
 local fields = (atom_styled or cmp_ui.icons_left) and { "kind", "abbr", "menu" } or { "abbr", "kind", "menu" }
@@ -9,19 +9,24 @@ local M = {
   formatting = {
     format = function(entry, item)
       local icons = require "nvchad.icons.lspkind"
+      local icon = icons[item.kind] or ""
+      local kind = item.kind or ""
 
-      item.menu = cmp_ui.lspkind_text and item.kind or ""
-      item.menu_hl_group = atom_styled and "LineNr" or "CmpItemKind" .. (item.kind or "")
-
-      item.kind = item.kind and icons[item.kind] .. " " or ""
-      item.kind = cmp_ui.icons_left and item.kind or " " .. item.kind
-
-      if atom_styled or cmp_ui.icons_left then
-        item.menu = " " .. item.menu
+      if atom_styled then
+        item.menu = kind
+        item.menu_hl_group = "LineNr"
+        item.kind = " " .. icon .. " "
+      elseif cmp_ui.icons_left then
+        item.menu = kind
+        item.menu_hl_group = "CmpItemKind" .. kind
+        item.kind = icon
+      else
+        item.kind = " " .. icon .. " " .. kind
+        item.menu_hl_group = "comment"
       end
 
-      if cmp_ui.format_colors.tailwind then
-        format_kk.tailwind(entry, item)
+      if kind == "Color" and cmp_ui.format_colors.tailwind then
+        format_color.tailwind(entry, item, (not (atom_styled or cmp_ui.icons_left) and kind) or "")
       end
 
       if #item.abbr > cmp_ui.abbr_maxwidth then

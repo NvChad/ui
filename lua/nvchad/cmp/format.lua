@@ -1,9 +1,9 @@
 local M = {}
 local api = vim.api
 local cmp_ui = require("nvconfig").ui.cmp
-local colors_icon = cmp_ui.format_colors.icon .. " "
+local icon = cmp_ui.format_colors.icon .. " "
 
-M.tailwind = function(entry, item)
+M.tailwind = function(entry, item, kind_txt)
   local entryItem = entry:get_completion_item()
   local color = entryItem.documentation
 
@@ -14,7 +14,7 @@ M.tailwind = function(entry, item)
       api.nvim_set_hl(0, hl, { fg = color })
     end
 
-    item.kind = cmp_ui.icons_left and colors_icon or " " .. colors_icon
+    item.kind = ((cmp_ui.icons_left and icon) or (" " .. icon)) .. kind_txt
     item.kind_hl_group = hl
     item.menu_hl_group = hl
   end

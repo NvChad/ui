@@ -106,6 +106,8 @@ In your plugins file
       require("base46").load_all_highlights()
     end,
  },
+
+ "nvzone/volt", -- optional, needed for theme switcher
 <
 Base46 setup
 >lua
@@ -121,6 +123,8 @@ Base46 setup
 
 These are the default options for UI/Base46 plugin. No need to write them all 
 Only those you want to change and the it'll override the defaults.
+
+nvconfig file : |https://github.com/NvChad/ui/blob/v3.0/lua/nvconfig.lua|
 >lua
  {
    base46 = {
@@ -159,6 +163,7 @@ Only those you want to change and the it'll override the defaults.
        lazyload = true,
        order = { "treeOffset", "buffers", "tabs", "btns" },
        modules = nil,
+       bufwidth = 21,
      }, 
    },
 
@@ -207,7 +212,7 @@ Only those you want to change and the it'll override the defaults.
      excluded_groups = { "terminal (t)", "autopairs", "Nvim", "Opens" }, -- can add group name or with mode
    },
 
-   mason = { pkgs = {} },
+   mason = { pkgs = {}, skip = {} },
 
    colorify = {
      enabled = true,
@@ -549,7 +554,7 @@ Setting themes outside of Neovim: ~
       -- Pmenu = { bg = "#ffffff" }, this works too
         
       -- lighten or darken base46 theme variable
-      -- this will use the black color from nvui.theme & lighten it by 5x
+      -- this will use the black color from base46.theme & lighten it by 2x
       -- negative number will darken it
       Normal = {
         bg = { "black", 2 }

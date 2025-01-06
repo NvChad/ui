@@ -13,7 +13,6 @@ local options = {
   ui = {
     cmp = {
       icons_left = false, -- only for non-atom styles!
-      lspkind_text = true,
       style = "default", -- default/flat_light/flat_dark/atom/atom_colored
       abbr_maxwidth = 60,
       format_colors = {
@@ -40,6 +39,7 @@ local options = {
       lazyload = true,
       order = { "treeOffset", "buffers", "tabs", "btns" },
       modules = nil,
+      bufwidth = 21,
     },
   },
 
@@ -61,13 +61,13 @@ local options = {
     },
 
     buttons = {
-      { txt = "  Find File", keys = "Spc f f", cmd = "Telescope find_files" },
-      { txt = "  Recent Files", keys = "Spc f o", cmd = "Telescope oldfiles" },
-      { txt = "󰈭  Find Word", keys = "Spc f w", cmd = "Telescope live_grep" },
-      { txt = "󱥚  Themes", keys = "Spc t h", cmd = ":lua require('nvchad.themes').open()" },
-      { txt = "  Mappings", keys = "Spc c h", cmd = "NvCheatsheet" },
+      { txt = "  Find File", keys = "ff", cmd = "Telescope find_files" },
+      { txt = "  Recent Files", keys = "fo", cmd = "Telescope oldfiles" },
+      { txt = "󰈭  Find Word", keys = "fw", cmd = "Telescope live_grep" },
+      { txt = "󱥚  Themes", keys = "th", cmd = ":lua require('nvchad.themes').open()" },
+      { txt = "  Mappings", keys = "ch", cmd = "NvCheatsheet" },
 
-      { txt = "─", hl = "NvDashLazy", no_gap = true, rep = true },
+      { txt = "─", hl = "NvDashFooter", no_gap = true, rep = true },
 
       {
         txt = function()
@@ -75,11 +75,11 @@ local options = {
           local ms = math.floor(stats.startuptime) .. " ms"
           return "  Loaded " .. stats.loaded .. "/" .. stats.count .. " plugins in " .. ms
         end,
-        hl = "NvDashLazy",
+        hl = "NvDashFooter",
         no_gap = true,
       },
 
-      { txt = "─", hl = "NvDashLazy", no_gap = true, rep = true },
+      { txt = "─", hl = "NvDashFooter", no_gap = true, rep = true },
     },
   },
 
@@ -103,7 +103,7 @@ local options = {
     excluded_groups = { "terminal (t)", "autopairs", "Nvim", "Opens" }, -- can add group name or with mode
   },
 
-  mason = { pkgs = {} },
+  mason = { pkgs = {}, skip = {} },
 
   colorify = {
     enabled = true,

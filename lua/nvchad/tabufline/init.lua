@@ -2,6 +2,7 @@ local M = {}
 local api = vim.api
 local cur_buf = api.nvim_get_current_buf
 local set_buf = api.nvim_set_current_buf
+local get_opt = api.nvim_get_option_value
 
 local function buf_index(bufnr)
   for i, value in ipairs(vim.t.bufs) do
@@ -45,7 +46,7 @@ M.close_buffer = function(bufnr)
     local bufhidden = vim.bo.bufhidden
 
     -- force close floating wins or nonbuflisted
-    if (not vim.bo[bufnr].buflisted) or api.nvim_win_get_config(0).zindex then
+    if api.nvim_win_get_config(0).zindex then
       vim.cmd "bw"
       return
 
@@ -57,12 +58,9 @@ M.close_buffer = function(bufnr)
       -- handle unlisted
     elseif not vim.bo.buflisted then
       local tmpbufnr = vim.t.bufs[1]
-
-      if vim.g.nv_previous_buf and api.nvim_buf_is_valid(vim.g.nv_previous_buf) then
-        tmpbufnr = vim.g.nv_previous_buf
-      end
-
-      vim.cmd("b" .. tmpbufnr .. " | bw" .. bufnr)
+      api.nvim_set_current_win(vim.fn.bufwinid(bufnr))
+      api.nvim_set_current_buf(tmpbufnr)
+      vim.cmd("bw" .. bufnr)
       return
     else
       vim.cmd "enew"
@@ -117,6 +115,25 @@ M.move_buf = function(n)
 
   vim.t.bufs = bufs
   vim.cmd "redrawtabline"
+end
+
+M.goto_buf = function(bufnr)
+  local cur_win = api.nvim_get_current_win()
+  local fixedbuf = api.nvim_get_option_value("winfixbuf", { win = cur_win })
+
+  if fixedbuf then
+    for _, v in ipairs(api.nvim_list_wins()) do
+      local buflisted = get_opt("buflisted", { buf = api.nvim_win_get_buf(v) })
+      local tmp_fixedbuf = get_opt("winfixbuf", { win = v })
+
+      if buflisted and not tmp_fixedbuf then
+        api.nvim_set_current_win(v)
+        break
+      end
+    end
+  end
+
+  api.nvim_set_current_buf(bufnr)
 end
 
 return M

@@ -1,5 +1,6 @@
 local M = {}
 local fn = vim.fn
+local opt_local = vim.api.nvim_set_option_value
 
 M.list_themes = function()
   local default_themes = vim.fn.readdir(vim.fn.stdpath "data" .. "/lazy/base46/lua/base46/themes")
@@ -33,21 +34,18 @@ M.replace_word = function(old, new, filepath)
   end
 end
 
-M.set_cleanbuf_opts = function(ft)
-  local opt = vim.opt_local
-
-  opt.buflisted = false
-  opt.modifiable = false
-  opt.buftype = "nofile"
-  opt.number = false
-  opt.list = false
-  opt.wrap = false
-  opt.relativenumber = false
-  opt.cursorline = false
-  opt.colorcolumn = "0"
-  opt.foldcolumn = "0"
-
-  vim.opt_local.filetype = ft
+M.set_cleanbuf_opts = function(ft, buf)
+  opt_local("buflisted", false, { buf = buf })
+  opt_local("modifiable", false, { buf = buf })
+  opt_local("buftype", "nofile", { buf = buf })
+  opt_local("number", false, { scope = "local" })
+  opt_local("list", false, { scope = "local" })
+  opt_local("wrap", false, { scope = "local" })
+  opt_local("relativenumber", false, { scope = "local" })
+  opt_local("cursorline", false, { scope = "local" })
+  opt_local("colorcolumn", "0", { scope = "local" })
+  opt_local("foldcolumn", "0", { scope = "local" })
+  opt_local("ft", ft, { buf = buf })
   vim.g[ft .. "_displayed"] = true
 end
 

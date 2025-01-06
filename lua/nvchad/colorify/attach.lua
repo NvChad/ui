@@ -1,7 +1,7 @@
 local fn = vim.fn
 local api = vim.api
 local conf = require("nvconfig").colorify
-local ns = require "nvchad.colorify.state".ns
+local ns = require("nvchad.colorify.state").ns
 
 local get_extmarks = api.nvim_buf_get_extmarks
 local methods = require "nvchad.colorify.methods"
@@ -24,6 +24,10 @@ local del_extmarks_on_textchange = function(buf)
         row1, col1, row2, col2 = s_row, 0, s_row + old_e_row, 0
       else
         row1, col1, row2, col2 = s_row, s_col, s_row, s_col + old_e_col
+      end
+
+      if api.nvim_get_mode().mode ~= "i" then
+        col1, col2 = 0, -1
       end
 
       local ms = get_extmarks(b, ns, { row1, col1 }, { row2, col2 }, { overlap = true })

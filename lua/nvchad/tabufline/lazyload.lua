@@ -4,18 +4,11 @@ local get_opt = api.nvim_get_option_value
 local cur_buf = api.nvim_get_current_buf
 local autocmd = vim.api.nvim_create_autocmd
 
--- store listed buffers in tab local var
-vim.t.bufs = vim.t.bufs or vim.api.nvim_list_bufs()
-
-local listed_bufs = {}
-
-for _, val in ipairs(vim.t.bufs) do
-  if vim.bo[val].buflisted then
-    table.insert(listed_bufs, val)
-  end
-end
-
-vim.t.bufs = listed_bufs
+-- store listed buffers in tab l
+vim.t.bufs = vim.t.bufs
+  or vim.tbl_filter(function(buf)
+    return vim.fn.buflisted(buf) == 1
+  end, vim.api.nvim_list_bufs())
 
 -- autocmds for tabufline -> store bufnrs on bufadd, bufenter events
 -- thx to https://github.com/ii14 & stores buffer per tab -> table
@@ -46,13 +39,6 @@ autocmd({ "BufAdd", "BufEnter", "tabnew" }, {
     end
 
     vim.t.bufs = bufs
-
-    -- used for knowing previous active buf for term module's runner func
-    if args.event == "BufEnter" then
-      local buf_history = vim.g.buf_history or {}
-      table.insert(buf_history, args.buf)
-      vim.g.buf_history = buf_history
-    end
   end,
 })
 

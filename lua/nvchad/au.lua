@@ -13,42 +13,22 @@ if config.nvdash.load_on_startup then
   end
 end
 
-if vim.version().minor >= 10 then
-  autocmd("LspProgress", {
-    callback = function(args)
-      if string.find(args.match, "end") then
-        vim.cmd "redrawstatus"
-      end
-      vim.cmd "redrawstatus"
-    end,
-  })
-end
-
 if config.lsp.signature then
   autocmd("LspAttach", {
     callback = function(args)
-      local client = vim.lsp.get_client_by_id(args.data.client_id)
+      vim.schedule(function()
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
 
-      if client then
-        local signatureProvider = client.server_capabilities.signatureHelpProvider
-        if signatureProvider and signatureProvider.triggerCharacters then
-          require("nvchad.lsp.signature").setup(client, args.buf)
+        if client then
+          local signatureProvider = client.server_capabilities.signatureHelpProvider
+          if signatureProvider and signatureProvider.triggerCharacters then
+            require("nvchad.lsp.signature").setup(client, args.buf)
+          end
         end
-      end
+      end)
     end,
   })
 end
-
--- redraw dashboard/cheatsheet
-autocmd("VimResized", {
-  callback = function()
-    if vim.bo.ft == "nvdash" then
-      require("nvchad.nvdash").open()
-    elseif vim.bo.ft == "nvcheatsheet" then
-      require("nvchad.cheatsheet." .. config.cheatsheet.theme)()
-    end
-  end,
-})
 
 -- reload the plugin!
 autocmd("BufWritePost", {
@@ -80,7 +60,7 @@ local dir = vim.fn.stdpath "data" .. "/nvnotify"
 if not vim.uv.fs_stat(dir) then
   vim.fn.mkdir(dir, "p")
   require "nvchad.winmes" {
-    { "* NvChad UI v3.0 has released! Check https://nvchad.com/news/nvui", "added" },
+    { "* NvChad UI v3.0 has been released! Check https://nvchad.com/news/nvui", "added" },
     { "* Docs have been added at :h nvui, don't forget to read them!" },
     { "* Check the Volt plugin showcase at https://nvchad.com/news/volt" },
   }

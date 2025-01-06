@@ -24,7 +24,7 @@
 ---@field hl_add? HLTable
 --- List of highlight groups that is part of base46 default integration that you want to change
 --- ```lua
----     hl_overrde = {
+---     hl_override = {
 ---       ["HLName"] = {fg = "red"},
 ---     }
 --- ```
@@ -63,13 +63,12 @@
 --- Whether to add colors to icons in nvim-cmp popup menu
 ---@field icons? boolean
 --- Whether to also have the lsp kind highlighted with the icons as well or not
----@field lspkind_text? boolean
 --- nvim-cmp style
 ---@field style? '"default"'|'"flat_light"'|'"flat_dark"'|'"atom"'|'"atom_colored"'
 --- Only has effects when the style is `default`
---- @field icons_left? boolean 
 --- Max width of main completion text in cmp
 --- @field abbr_maxwidth? integer
+--- @field icons_left? boolean
 --- places lspkind icons to the left, only for non-atom styles
 --- @field format_colors? NvCmpFormatColors
 
@@ -104,6 +103,7 @@
 --- If false, load tabufline on startup
 --- If true, load tabufline when there is at least 2 buffers opened
 ---@field lazyload? boolean
+---@field bufwidth? number
 --- The order is a list of module names from default modules + your modules
 ---@field order? ('"treeOffset"'|'"buffers"'|'"tabs"'|'"btns"')[] | string[]
 --- Show numbers on tabufline buffer tabs
@@ -122,7 +122,7 @@
 ---@field load_on_startup? boolean
 --- Your ascii art
 --- Each string is one line
----@field header? string[],
+---@field header? string[] | (fun(): string[])
 --- List of buttons to show on the dashboard
 ---@field buttons? NvDashButtonConfig[]
 
