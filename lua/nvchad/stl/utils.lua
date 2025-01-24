@@ -161,6 +161,11 @@ M.autocmds = function()
   vim.api.nvim_create_autocmd("LspProgress", {
     pattern = { "begin", "report", "end" },
     callback = function(args)
+      -- Ensure params exists before accessing its fields
+      if not args.data or not args.data.params then
+        return
+      end
+
       local data = args.data.params.value
       local progress = ""
 
