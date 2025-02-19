@@ -28,8 +28,10 @@ M.open = function(buf, win, action)
   win = win or api.nvim_get_current_win()
 
   if not vim.bo.buflisted and action == 'open' then
-    win = vim.fn.bufwinid(vim.t.bufs[1])
-    api.nvim_set_current_win(win)
+    if vim.t.bufs[1] then
+      win = vim.fn.bufwinid(vim.t.bufs[1])
+      api.nvim_set_current_win(win)
+    end
   end
 
   local ns = api.nvim_create_namespace "nvdash"
