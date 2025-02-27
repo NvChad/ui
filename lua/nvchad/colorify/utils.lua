@@ -16,6 +16,10 @@ end
 function M.add_hl(hex)
   local name = "hex_" .. hex:sub(2)
 
+  if api.nvim_get_hl(0, { name = name }).fg then
+    return name
+  end
+
   local fg, bg = hex, hex
 
   if conf.mode == "bg" then
