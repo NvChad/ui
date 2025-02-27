@@ -40,4 +40,14 @@ function M.not_colored(buf, linenr, col, hl_group, opts)
   return hl_group ~= (ms[4].hl_group or ms[4].virt_text[1][2])
 end
 
+function M.col_in_range(bufnr, line, col)
+  local lines = api.nvim_buf_get_lines(bufnr, line, line + 1, false)
+
+  if not lines or #lines == 0 then
+    return false
+  end
+
+  return col >= 0 and col <= #lines[1]
+end
+
 return M

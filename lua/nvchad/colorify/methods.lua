@@ -63,7 +63,10 @@ M.lsp_var = function(buf, line, min, max)
             opts.virt_text = { { conf.virt_text, hl_group } }
           end
 
-          if needs_hl(buf, range_start.line, range_start.character, hl_group, opts) then
+          if
+            utils.col_in_range(buf, range_start.line, range_end.character)
+            and needs_hl(buf, range_start.line, range_start.character, hl_group, opts)
+          then
             set_extmark(buf, ns, range_start.line, range_start.character, opts)
           end
         end
