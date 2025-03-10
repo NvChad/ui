@@ -61,7 +61,7 @@ M.cwd = function()
 end
 
 M.cursor = function()
-  return gen_block("", "%l/%c", "%#St_Pos_sep#", "%#St_Pos_bg#", "%#St_Pos_txt#")
+  return gen_block("", "%l/%v", "%#St_Pos_sep#", "%#St_Pos_bg#", "%#St_Pos_txt#")
 end
 
 M["%="] = "%="

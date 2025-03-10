@@ -26,7 +26,7 @@ M.lsp = function()
   return "%#St_Lsp#" .. utils.lsp()
 end
 
-M.cursor = "%#StText# Ln %l, Col %c "
+M.cursor = "%#StText# Ln %l, Col %v "
 M["%="] = "%="
 
 M.cwd = function()

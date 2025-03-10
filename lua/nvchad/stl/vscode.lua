@@ -23,7 +23,7 @@ M.git = utils.git
 M.lsp_msg = utils.lsp_msg
 M.diagnostics = utils.diagnostics
 M.lsp = utils.lsp
-M.cursor = "%#StText# Ln %l, Col %c  "
+M.cursor = "%#StText# Ln %l, Col %v  "
 M["%="] = "%="
 
 M.cwd = function()
