@@ -50,7 +50,7 @@ M.style_buf = function(nr, i, w)
   local icon_hl = new_hl("DevIconDefault", tbHlName)
 
   local name = filename(buf_name(nr))
-  name = not name and " No Name " or (gen_unique_name(name, i) or name)
+  name = name and (gen_unique_name(name, i) or name) or " No Name "
 
   if name ~= " No Name " then
     local devicon, devicon_hl = require("nvim-web-devicons").get_icon(name)
