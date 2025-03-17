@@ -67,6 +67,8 @@ M.buffers = function()
   local buffers = {}
   local has_current = false -- have we seen current buffer yet?
 
+  vim.t.bufs = vim.tbl_filter(vim.api.nvim_buf_is_valid, vim.t.bufs)
+
   for i, nr in ipairs(vim.t.bufs) do
     if ((#buffers + 1) * opts.bufwidth) > available_space() then
       if has_current then
