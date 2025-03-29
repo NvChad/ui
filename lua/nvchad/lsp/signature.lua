@@ -32,7 +32,7 @@ M.setup = function(client, bufnr)
     buffer = bufnr,
     callback = function()
       if check_triggeredChars(triggerChars) then
-        vim.lsp.buf.signature_help()
+        vim.lsp.buf.signature_help { focus = false }
       end
     end,
   })
