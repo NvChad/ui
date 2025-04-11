@@ -4,12 +4,16 @@ local config = require "nvconfig"
 
 -- load nvdash only on empty file
 if config.nvdash.load_on_startup then
-  local buf_lines = api.nvim_buf_get_lines(0, 0, 1, false)
-  local no_buf_content = api.nvim_buf_line_count(0) == 1 and buf_lines[1] == ""
-  local bufname = api.nvim_buf_get_name(0)
+  local opening_file = vim.fn.expand "%:p"
+  local is_dir = vim.fn.isdirectory(opening_file) == 1
 
-  if bufname == "" and no_buf_content then
+  if is_dir or opening_file == "" then
+    if is_dir then
+      vim.cmd.cd(opening_file)
+    end
+    local current_buffer = vim.api.nvim_get_current_buf()
     require("nvchad.nvdash").open()
+    vim.api.nvim_buf_delete(current_buffer, { force = true, unload = false })
   end
 end
 
