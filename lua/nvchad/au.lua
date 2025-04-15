@@ -8,9 +8,6 @@ if config.nvdash.load_on_startup then
   local is_dir = vim.fn.isdirectory(opening_file) == 1
 
   if is_dir or opening_file == "" then
-    if is_dir then
-      vim.cmd.cd(opening_file)
-    end
     local current_buffer = vim.api.nvim_get_current_buf()
     require("nvchad.nvdash").open()
     vim.api.nvim_buf_delete(current_buffer, { force = true, unload = false })
