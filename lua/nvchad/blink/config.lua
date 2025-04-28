@@ -12,8 +12,8 @@ local opts = {
     ["<CR>"] = { "accept", "fallback" },
     ["<C-b>"] = { "scroll_documentation_up", "fallback" },
     ["<C-f>"] = { "scroll_documentation_down", "fallback" },
-    ['<S-Tab>'] = { 'select_prev', 'fallback' },
-    ['<Tab>'] = { 'select_next', 'fallback' },
+    ["<Tab>"] = { "select_next", "snippet_forward", "fallback" },
+    ["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
   },
 
   completion = {
