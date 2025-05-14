@@ -1,5 +1,6 @@
 local lsp = vim.lsp
 local api = vim.api
+local opts = require("nvconfig").ui.renamer
 
 local function get_text_at_range(range, position_encoding)
   return api.nvim_buf_get_text(
@@ -60,26 +61,38 @@ return function()
     local winopts = {
       height = 1,
       style = "minimal",
-      border = "single",
+      border = opts.border,
       row = 1,
       col = 1,
       relative = "cursor",
-      width = #to_rename + 15,
-      title = { { " Renamer ", "@comment.danger" } },
+      width = #to_rename + opts.right_padding,
+      title = { { " " .. opts.title .. " ", opts.title_hl_group } },
       title_pos = "center",
     }
 
     local win = api.nvim_open_win(buf, true, winopts)
-    vim.wo[win].winhl = "Normal:Normal,FloatBorder:Removed"
+    vim.wo[win].winhl = "Normal:Normal,FloatBorder:" .. opts.border_hl_group
     api.nvim_set_current_win(win)
 
-    api.nvim_buf_set_lines(buf, 0, -1, true, { " " .. to_rename })
+    if opts.show_original then
+      api.nvim_buf_set_lines(buf, 0, -1, true, { " " .. to_rename })
+    else
+      api.nvim_buf_set_lines(buf, 0, -1, true, { " " })
+    end
 
     vim.bo[buf].buftype = "prompt"
     vim.fn.prompt_setprompt(buf, "")
-    vim.api.nvim_input "A"
+    if opts.mode == "insert" then
+      vim.api.nvim_input "A"
+    else
+      vim.api.nvim_input "$"
+    end
 
-    vim.keymap.set({ "i", "n" }, "<Esc>", function()
+    local exitMapModes = { "n" }
+    if opts.mode == "insert" then
+      exitMapModes = { "i", "n" }
+    end
+    vim.keymap.set(exitMapModes, "<Esc>", function()
       api.nvim_buf_delete(buf, { force = true })
     end, { buffer = buf })
 

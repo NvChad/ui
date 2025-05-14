@@ -165,6 +165,16 @@ nvconfig file : |https://github.com/NvChad/ui/blob/v3.0/lua/nvconfig.lua|
        modules = nil,
        bufwidth = 21,
      }, 
+
+     renamer = {
+       border = "single",
+       border_hl_group = "Removed",
+       right_padding = 15,
+       title = "Renamer",
+       title_hl_group = "@comment.danger",
+       mode = "insert",
+       show_original = true,
+     },
    },
 
    nvdash = {
@@ -643,9 +653,21 @@ It's preferred to put the dofile code in your plugin's config func
 ------------------------------------------------------------------------------
 7.2 Renamer                                                   *nvui.lsp.renamer*
 
-This is a function will will rename variable under cursor
+This function renames the variable under the cursor.
 >lua
  require "nvchad.lsp.renamer"()
+
+UI can be customized by changing options in your chadrc
+>lua
+  renamer = {
+    border = "single", -- single/double/bold/rounded/solid/string[]
+    border_hl_group = "Removed",
+    right_padding = 15,
+    title = "Renamer",
+    title_hl_group = "@comment.danger",
+    mode = "insert", -- insert/normal
+    show_original = true, -- set to false if you don't want to autofill
+  },
 
 ==============================================================================
 8. Colorify			                                 *nvui.colorify*
