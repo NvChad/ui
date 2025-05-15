@@ -39,16 +39,6 @@ local options = {
       modules = nil,
       bufwidth = 21,
     },
-
-    renamer = {
-      border = "single",
-      border_hl_group = "Removed",
-      right_padding = 15,
-      title = "Renamer",
-      title_hl_group = "@comment.danger",
-      mode = "insert",
-      show_original = true,
-    },
   },
 
   nvdash = {
