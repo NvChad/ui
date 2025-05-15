@@ -165,16 +165,6 @@ nvconfig file : |https://github.com/NvChad/ui/blob/v3.0/lua/nvconfig.lua|
        modules = nil,
        bufwidth = 21,
      }, 
-
-     renamer = {
-       border = "single",
-       border_hl_group = "Removed",
-       right_padding = 15,
-       title = "Renamer",
-       title_hl_group = "@comment.danger",
-       mode = "insert",
-       show_original = true,
-     },
    },
 
    nvdash = {
@@ -657,17 +647,18 @@ This function renames the variable under the cursor.
 >lua
  require "nvchad.lsp.renamer"()
 
-UI can be customized by changing options in your chadrc
+UI can be customized by passing a table of options to this function. Defaults
+are listed in the example.
 >lua
-  renamer = {
-    border = "single", -- single/double/bold/rounded/solid/string[]
-    border_hl_group = "Removed",
-    right_padding = 15,
-    title = "Renamer",
-    title_hl_group = "@comment.danger",
-    mode = "insert", -- insert/normal
-    show_original = true, -- set to false if you don't want to autofill
-  },
+ require "nvchad.lsp.renamer"({
+   border = "single", -- see :h winborder for additional options
+   border_hl_group = "Removed",
+   right_padding = 15,
+   title = "Renamer",
+   title_hl_group = "@comment.danger",
+   mode = "insert", -- insert/normal
+   show_original = true, -- set to false if you don't want to autofill
+ })
 
 ==============================================================================
 8. Colorify			                                 *nvui.colorify*

@@ -1,6 +1,5 @@
 local lsp = vim.lsp
 local api = vim.api
-local opts = require("nvconfig").ui.renamer
 
 local function get_text_at_range(range, position_encoding)
   return api.nvim_buf_get_text(
@@ -54,9 +53,20 @@ local function get_symbol_to_rename(cb)
   end
 end
 
-return function()
+return function(opts)
   get_symbol_to_rename(function(to_rename)
     local buf = api.nvim_create_buf(false, true)
+
+    local default_opts = {
+      border = "single",
+      right_padding = 15,
+      title = "Rename",
+      title_hl_group = "@comment.danger",
+      border_hl_group = "Removed",
+      show_original = "true",
+      mode = "insert",
+    }
+    opts = vim.tbl_deep_extend('force', default_opts, opts or {})
 
     local winopts = {
       height = 1,
