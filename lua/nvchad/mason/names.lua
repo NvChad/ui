@@ -98,6 +98,7 @@ return {
   lemminx = "lemminx",
   lexical = "lexical",
   ltex = "ltex-ls",
+  ltex_plus = "ltex-ls-plus",
   lua_ls = "lua-language-server",
   luau_lsp = "luau-lsp",
   lwc_ls = "lwc-language-server",
