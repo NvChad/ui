@@ -656,8 +656,8 @@ are listed in the example.
    right_padding = 15,
    title = "Renamer",
    title_hl_group = "@comment.danger",
-   mode = "insert", -- insert/normal
    show_original = true, -- set to false if you don't want to autofill
+   allow_normal = false, -- set to true to access normal in renamer prompt
  })
 
 ==============================================================================

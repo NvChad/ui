@@ -63,8 +63,8 @@ return function(opts)
       title = "Rename",
       title_hl_group = "@comment.danger",
       border_hl_group = "Removed",
-      show_original = "true",
-      mode = "insert",
+      show_original = true,
+      allow_normal = false,
     }
     opts = vim.tbl_deep_extend('force', default_opts, opts or {})
 
@@ -92,17 +92,16 @@ return function(opts)
 
     vim.bo[buf].buftype = "prompt"
     vim.fn.prompt_setprompt(buf, "")
-    if opts.mode == "insert" then
-      vim.api.nvim_input "A"
-    else
-      vim.api.nvim_input "$"
-    end
 
-    local exitMapModes = { "n" }
-    if opts.mode == "insert" then
-      exitMapModes = { "i", "n" }
+    vim.api.nvim_input "A"
+
+    local modes
+    if opts.allow_normal then
+      modes = { "n" }
+    else
+      modes = { "n", "i" }
     end
-    vim.keymap.set(exitMapModes, "<Esc>", function()
+    vim.keymap.set(modes, "<Esc>", function()
       api.nvim_buf_delete(buf, { force = true })
     end, { buffer = buf })
 
