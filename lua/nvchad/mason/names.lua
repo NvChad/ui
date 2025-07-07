@@ -205,6 +205,7 @@ return {
   visualforce_ls = "visualforce-language-server",
   vls = "vls",
   volar = "vue-language-server",
+  vue_ls = "vue-language-server",
   vtsls = "vtsls",
   vuels = "vetur-vls",
   wgsl_analyzer = "wgsl-analyzer",
