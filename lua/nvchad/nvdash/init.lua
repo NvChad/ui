@@ -16,13 +16,17 @@ local function btn_gap(txt1, txt2, max_str_w)
   return txt1 .. string.rep(" ", spacing) .. txt2
 end
 
-local multicolumn_strw = function(tb)
+local multicolumn_strw = function(tb, buf)
   local pad = tb.pad or 0
   local c = 0 - pad
 
   for _, v in ipairs(tb) do
     pad = (v.pad and v.pad ~= "full" and v.pad) or pad
     c = c + strw(v.txt) + pad
+
+    if buf and v.keys then
+      map({ v.keys }, "<cmd>" .. v.cmd .. "<cr>", buf)
+    end
   end
 
   return c
@@ -94,7 +98,7 @@ M.open = function(buf, win, action)
     local w
 
     if v.multicolumn then
-      w = multicolumn_strw(v)
+      w = multicolumn_strw(v, action == "open" and buf or nil)
       btn_widths[i] = w
     else
       w = strw(type(v.txt) == "string" and v.txt or v.txt() .. (v.keys or ""))
