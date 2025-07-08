@@ -28,9 +28,8 @@ local multicolumn_strw = function(tb)
   return c
 end
 
-local function multicolumn_virt_texts(tb, total_w)
+local function multicolumn_virt_texts(tb, total_w, virt_w)
   local line = {}
-  local virt_w = multicolumn_strw(tb)
 
   for _, v in ipairs(tb) do
     local txt = type(v.txt) == "string" and v.txt or v.txt()
@@ -89,12 +88,14 @@ M.open = function(buf, win, action)
   opts.buttons = type(opts.buttons) == "table" and opts.buttons or opts.buttons()
 
   local groups_maxw = {}
+  local btn_widths = {}
 
-  for _, v in ipairs(opts.buttons) do
+  for i, v in ipairs(opts.buttons) do
     local w
 
     if v.multicolumn then
       w = multicolumn_strw(v)
+      btn_widths[i] = w
     else
       w = strw(type(v.txt) == "string" and v.txt or v.txt() .. (v.keys or ""))
     end
@@ -114,18 +115,22 @@ M.open = function(buf, win, action)
     end
   end
 
-  for _, v in ipairs(opts.buttons) do
-    local w
+  for i, v in ipairs(opts.buttons) do
+    local w = nvdash_w
     local col, opt
 
     if v.multicolumn then
-      w = v.content == "fit" and groups_maxw[v.group] or nvdash_w
-      col = math.floor((winw / 2) - math.floor(w / 2)) - 6
-      opt = { virt_text_win_col = col, virt_text = multicolumn_virt_texts(v, w) }
-    else
-      w = v.content == "fit" and groups_maxw[v.group] or nvdash_w
+      if v.content == "fit" or v.group then
+        w = groups_maxw[v.group] or btn_widths[i]
+      end
 
+      col = math.floor((winw / 2) - math.floor(w / 2)) - 6
+      opt = { virt_text_win_col = col, virt_text = multicolumn_virt_texts(v, w, btn_widths[i]) }
+    else
       local str = type(v.txt) == "string" and v.txt or v.txt()
+      if v.content == "fit" or v.group then
+        w = groups_maxw[v.group] or strw(str)
+      end
 
       if v.rep then
         str = string.rep(str, w)
