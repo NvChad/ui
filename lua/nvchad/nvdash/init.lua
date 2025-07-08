@@ -16,6 +16,33 @@ local function btn_gap(txt1, txt2, max_str_w)
   return txt1 .. string.rep(" ", spacing) .. txt2
 end
 
+local multicolumn_strw = function(tb)
+  local c = 0 - tb.pad
+
+  for _, v in ipairs(tb) do
+    local pad = v.pad and v.pad ~= "full" and v.pad or tb.pad
+    c = c + strw(v.txt) + pad
+  end
+
+  return c
+end
+
+local function multicolumn_virt_texts(tb, total_w)
+  local line = {}
+  local virt_w = multicolumn_strw(tb)
+
+  for _, v in ipairs(tb) do
+    local txt = type(v.txt) == "string" and v.txt or v.txt()
+    table.insert(line, { txt, v.hl })
+
+    v.pad = v.pad == "full" and total_w - virt_w or v.pad
+
+    table.insert(line, { string.rep(" ", v.pad or tb.pad) })
+  end
+
+  return line
+end
+
 M.open = function(buf, win, action)
   action = action or "open"
 
@@ -36,65 +63,68 @@ M.open = function(buf, win, action)
   vim.g.nvdash_buf = buf
   vim.g.nvdash_win = win
 
-  local nvdash_w = 0
+  local nvdash_w = 1
 
   if action == "open" then
     api.nvim_win_set_buf(0, buf)
   end
 
-  local header = type(opts.header) == "function" and opts.header() or opts.header
+  opts.header = type(opts.header) == "function" and opts.header() or opts.header
 
   ------------------------ find largest string's width -----------------------------
-  for _, val in ipairs(header) do
+  for _, val in ipairs(opts.header) do
     local headerw = strw(val)
     if headerw > nvdash_w then
       nvdash_w = headerw
     end
   end
 
-  for _, val in ipairs(opts.buttons) do
-    local str = type(val.txt) == "string" and val.txt or val.txt()
-    str = val.keys and str .. val.keys or str
-    local w = strw(str)
+  opts.buttons = type(opts.buttons) == "table" and opts.buttons or opts.buttons()
+
+  local buttons = {}
+
+  for _, v in ipairs(opts.buttons) do
+    local w
+    local col, opt
+    -- v.align = v.align or 'left'
+
+    if v.multicolumn then
+      w = v.align == "left" and nvdash_w or multicolumn_strw(v)
+      col = math.floor((winw / 2) - math.floor(w / 2)) - 6
+      opt = { virt_text_win_col = col, virt_text = multicolumn_virt_texts(v, w) }
+    else
+      local str = type(v.txt) == "string" and v.txt or v.txt()
+      w = v.align == "left" and nvdash_w or strw(str .. (v.keys or ""))
+      str = v.rep and string.rep(str, nvdash_w - 1) or str
+
+      col = math.floor((winw / 2) - math.floor(w / 2)) - 6
+      opt = { virt_text_win_col = col, virt_text = { { str, v.hl or "NvdashButtons" } } }
+    end
+
+    table.insert(buttons, opt)
+
+    if not v.no_gap then
+      table.insert(buttons, { virt_text = { { "" } } })
+    end
 
     if nvdash_w < w then
       nvdash_w = w
     end
 
-    if val.keys then
-      map({ val.keys }, "<cmd>" .. val.cmd .. "<cr>", buf)
+    if v.keys then
+      map({ v.keys }, "<cmd>" .. v.cmd .. "<cr>", buf)
     end
   end
+
   ----------------------- save display txt -----------------------------------------
-  local dashboard = {}
-
-  for _, v in ipairs(header) do
-    table.insert(dashboard, { txt = v, hl = "NvDashAscii" })
-  end
-
-  for _, v in ipairs(opts.buttons) do
-    local txt
-
-    if not v.keys then
-      local str = type(v.txt) == "string" and v.txt or v.txt()
-      txt = v.rep and string.rep(str, nvdash_w) or str
-    else
-      txt = btn_gap(v.txt, v.keys, nvdash_w)
-    end
-
-    table.insert(dashboard, { txt = txt, hl = v.hl, cmd = v.cmd })
-
-    if not v.no_gap then
-      table.insert(dashboard, { txt = string.rep(" ", nvdash_w) })
-    end
-  end
+  local dashboard_h = #opts.header + #buttons + 3
 
   -- if screen height is small
-  if #dashboard > winh then
-    winh = #dashboard + 10
+  if dashboard_h > winh then
+    winh = dashboard_h + 10
   end
 
-  local row_i = math.floor((winh / 2) - (#dashboard / 2))
+  local row_i = math.floor((winh / 2) - (dashboard_h / 2))
   local col_i = math.floor((winw / 2) - math.floor(nvdash_w / 2)) - 6 -- (5 is textoff)
 
   -- make all lines available
@@ -103,26 +133,24 @@ M.open = function(buf, win, action)
     empty_str[i] = string.rep("", winw)
   end
 
-  -- set text + highlight
+  ------------------------------ EXTMARKS : set text + highlight -------------------------------
   api.nvim_buf_set_lines(buf, 0, -1, false, empty_str)
   local key_lines = {}
+  local header_h = #opts.header
 
-  for i, v in ipairs(dashboard) do
-    v.txt = "  " .. v.txt .. "  "
-    v.hl = v.hl or "NvDashButtons"
-
-    local col = math.floor((winw / 2) - math.floor(strw(v.txt) / 2)) - 6
-    local opt = { virt_text_win_col = col, virt_text = { { v.txt, v.hl } } }
+  for i, v in ipairs(opts.header) do
+    local col = math.floor((winw / 2) - math.floor(strw(v) / 2)) - 6
+    local opt = { virt_text_win_col = col, virt_text = { { v, "NvDashAscii" } } }
     api.nvim_buf_set_extmark(buf, ns, row_i + i, 0, opt)
+  end
 
-    if v.cmd then
-      table.insert(key_lines, { i = row_i + i + 1, cmd = v.cmd })
-    end
+  for i, v in ipairs(buttons) do
+    api.nvim_buf_set_extmark(buf, ns, row_i + header_h + i, 0, v)
   end
 
   ------------------------------------ keybinds ------------------------------------------
   vim.wo[win].virtualedit = "all"
-  local btn_start_i = row_i + #header + 2
+  local btn_start_i = row_i + #opts.header
 
   if col_i > 0 then
     api.nvim_win_set_cursor(win, { btn_start_i, col_i + 5 })

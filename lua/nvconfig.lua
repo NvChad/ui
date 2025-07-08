@@ -65,7 +65,7 @@ local options = {
       { txt = "󱥚  Themes", keys = "th", cmd = ":lua require('nvchad.themes').open()" },
       { txt = "  Mappings", keys = "ch", cmd = "NvCheatsheet" },
 
-      { txt = "─", hl = "NvDashFooter", no_gap = true, rep = true },
+      { txt = "─", hl = "NvDashFooter", no_gap = true, rep = true, align='left' },
 
       {
         txt = function()
@@ -77,7 +77,7 @@ local options = {
         no_gap = true,
       },
 
-      { txt = "─", hl = "NvDashFooter", no_gap = true, rep = true },
+      { txt = "─", hl = "NvDashFooter", no_gap = true, rep = true,align='left' },
     },
   },
 
