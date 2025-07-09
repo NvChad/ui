@@ -39,9 +39,8 @@ local function multicolumn_virt_texts(tb, total_w, virt_w)
     local txt = type(v.txt) == "string" and v.txt or v.txt()
     table.insert(line, { txt, v.hl })
 
-    v.pad = v.pad == "full" and total_w - virt_w or v.pad
-
-    table.insert(line, { string.rep(" ", v.pad or tb.pad or 0) })
+    local pad = v.pad == "full" and total_w - virt_w or v.pad
+    table.insert(line, { string.rep(" ", pad or tb.pad or 0) })
   end
 
   return line
