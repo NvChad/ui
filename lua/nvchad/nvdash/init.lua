@@ -93,6 +93,7 @@ M.open = function(buf, win, action)
 
   local groups_maxw = {}
   local btn_widths = {}
+  local key_lines = {}
 
   for i, v in ipairs(opts.buttons) do
     local w
@@ -109,9 +110,7 @@ M.open = function(buf, win, action)
     end
 
     if v.group then
-      if not groups_maxw[v.group] then
-        groups_maxw[v.group] = 0
-      end
+      groups_maxw[v.group] = groups_maxw[v.group] or 0
 
       if groups_maxw[v.group] < w then
         groups_maxw[v.group] = w
@@ -136,19 +135,17 @@ M.open = function(buf, win, action)
         w = groups_maxw[v.group] or strw(str)
       end
 
-      if v.rep then
-        str = string.rep(str, w)
-      end
-
-      if v.keys then
-        str = btn_gap(str, v.keys, w)
-      end
-
+      str = v.rep and string.rep(str, w) or str
+      str = v.keys and btn_gap(str, v.keys, w) or str
       col = math.floor((winw / 2) - math.floor(w / 2)) - 6
       opt = { virt_text_win_col = col, virt_text = { { str, v.hl or "NvdashButtons" } } }
     end
 
     table.insert(ui, opt)
+
+    if v.cmd then
+      table.insert(key_lines, { i = #ui, cmd = v.cmd, col = col })
+    end
 
     if not v.no_gap then
       table.insert(ui, { virt_text = { { "" } } })
@@ -163,12 +160,13 @@ M.open = function(buf, win, action)
   local dashboard_h = #ui + 3
 
   -- if screen height is small
-  if dashboard_h > winh then
-    winh = dashboard_h + 10
-  end
+  winh = dashboard_h > winh and dashboard_h or winh
 
   local row_i = math.floor((winh / 2) - (dashboard_h / 2))
-  local col_i = math.floor((winw / 2) - math.floor(nvdash_w / 2)) - 6 -- (5 is textoff)
+
+  for i, v in ipairs(key_lines) do
+    key_lines[i].i = v.i + row_i + 1
+  end
 
   -- make all lines available
   local empty_str = {}
@@ -178,7 +176,6 @@ M.open = function(buf, win, action)
 
   ------------------------------ EXTMARKS : set text + highlight -------------------------------
   api.nvim_buf_set_lines(buf, 0, -1, false, empty_str)
-  local key_lines = {}
 
   for i, v in ipairs(ui) do
     api.nvim_buf_set_extmark(buf, ns, row_i + i, 0, v)
@@ -190,32 +187,36 @@ M.open = function(buf, win, action)
 
   ------------------------------------ keybinds ------------------------------------------
   vim.wo[win].virtualedit = "all"
-  local btn_start_i = row_i + #opts.header
 
-  if col_i > 0 then
-    api.nvim_win_set_cursor(win, { btn_start_i, col_i + 5 })
+  if key_lines[1] then
+    api.nvim_win_set_cursor(win, { key_lines[1].i, key_lines[1].col })
+  end
+
+  local key_movements = function(n, cmd)
+    local curline = fn.line "."
+
+    for i, v in ipairs(key_lines) do
+      if v.i == curline then
+        local x = key_lines[i + n] or key_lines[n == 1 and 1 or #key_lines]
+        if cmd and x.cmd then
+          vim.cmd(x.cmd)
+        else
+          return { x.i, x.col }
+        end
+      end
+    end
   end
 
   map({ "k", "<up>" }, function()
-    local cur = fn.line "."
-    local target_line = cur == key_lines[1].i and key_lines[#key_lines].i or cur - 2
-    api.nvim_win_set_cursor(win, { target_line, col_i + 5 })
+    api.nvim_win_set_cursor(win, key_movements(-1, false))
   end, buf)
 
   map({ "j", "<down>" }, function()
-    local cur = fn.line "."
-    local target_line = cur == key_lines[#key_lines].i and key_lines[1].i or cur + 2
-    api.nvim_win_set_cursor(win, { target_line, col_i + 5 })
+    api.nvim_win_set_cursor(win, key_movements(1, false))
   end, buf)
 
   map({ "<cr>" }, function()
-    local key = vim.tbl_filter(function(item)
-      return item.i == fn.line "."
-    end, key_lines)
-
-    if key[1] and key[1].cmd then
-      vim.cmd(key[1].cmd)
-    end
+    key_movements(0, true)
   end, buf)
 
   require("nvchad.utils").set_cleanbuf_opts("nvdash", buf)
