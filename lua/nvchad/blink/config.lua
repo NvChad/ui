@@ -17,7 +17,7 @@ local opts = {
   },
 
   completion = {
-    ghost_text = { enabled = true },
+    -- ghost_text = { enabled = true },
     documentation = {
       auto_show = true,
       auto_show_delay_ms = 200,
