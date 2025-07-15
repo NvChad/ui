@@ -1,6 +1,5 @@
 local M = {}
 local api = vim.api
-local fn = vim.fn
 local get_opt = api.nvim_get_option_value
 local strep = string.rep
 local cur_buf = api.nvim_get_current_buf
@@ -65,9 +64,8 @@ M.style_buf = function(nr, i, w)
   local pad = math.floor((w - #name - 5) / 2)
   pad = pad <= 0 and 1 or pad
 
-  local maxname_len = 15
-
-  name = string.sub(name, 1, 13) .. (#name > maxname_len and ".." or "")
+  local maxname_len = w - 5
+  name = string.sub(name, 1, maxname_len - 2) .. (#name > maxname_len and ".." or "")
   name = M.txt(name, tbHlName)
 
   name = strep(" ", pad - 1) .. (icon_hl .. icon .. name) .. strep(" ", pad - 1)

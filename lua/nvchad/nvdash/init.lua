@@ -10,12 +10,6 @@ local map = function(keys, action, buf)
   end
 end
 
-local function txt_pad(str, max_str_w)
-  local av = (max_str_w - strw(str)) / 2
-  av = math.floor(av)
-  return string.rep(" ", av) .. str .. string.rep(" ", av)
-end
-
 local function btn_gap(txt1, txt2, max_str_w)
   local btn_len = strw(txt1) + #txt2
   local spacing = max_str_w - btn_len
@@ -27,7 +21,7 @@ M.open = function(buf, win, action)
 
   win = win or api.nvim_get_current_win()
 
-  if not vim.bo.buflisted and action == 'open' then
+  if not vim.bo.buflisted and action == "open" then
     if vim.t.bufs[1] then
       win = vim.fn.bufwinid(vim.t.bufs[1])
       api.nvim_set_current_win(win)
@@ -75,7 +69,7 @@ M.open = function(buf, win, action)
   local dashboard = {}
 
   for _, v in ipairs(header) do
-    table.insert(dashboard, { txt = txt_pad(v, nvdash_w), hl = "NvDashAscii" })
+    table.insert(dashboard, { txt = v, hl = "NvDashAscii" })
   end
 
   for _, v in ipairs(opts.buttons) do
@@ -83,7 +77,7 @@ M.open = function(buf, win, action)
 
     if not v.keys then
       local str = type(v.txt) == "string" and v.txt or v.txt()
-      txt = v.rep and string.rep(str, nvdash_w) or txt_pad(str, nvdash_w)
+      txt = v.rep and string.rep(str, nvdash_w) or str
     else
       txt = btn_gap(v.txt, v.keys, nvdash_w)
     end
@@ -105,7 +99,6 @@ M.open = function(buf, win, action)
 
   -- make all lines available
   local empty_str = {}
-
   for i = 1, winh do
     empty_str[i] = string.rep("", winw)
   end
@@ -117,7 +110,9 @@ M.open = function(buf, win, action)
   for i, v in ipairs(dashboard) do
     v.txt = "  " .. v.txt .. "  "
     v.hl = v.hl or "NvDashButtons"
-    local opt = { virt_text_win_col = col_i, virt_text = { { v.txt, v.hl } } }
+
+    local col = math.floor((winw / 2) - math.floor(strw(v.txt) / 2)) - 6
+    local opt = { virt_text_win_col = col, virt_text = { { v.txt, v.hl } } }
     api.nvim_buf_set_extmark(buf, ns, row_i + i, 0, opt)
 
     if v.cmd then

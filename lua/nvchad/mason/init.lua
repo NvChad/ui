@@ -6,8 +6,10 @@ local skipped = require("nvconfig").mason.skip
 M.get_pkgs = function()
   local tools = {}
 
-  local lsps = require("lspconfig.util").available_servers()
-  vim.list_extend(tools, lsps)
+  local native_lsps = vim.tbl_keys(vim.lsp._enabled_configs or {})
+  local lspconfig_lsps = require("lspconfig.util").available_servers()
+  vim.list_extend(tools, lspconfig_lsps)
+  vim.list_extend(tools, native_lsps)
 
   local conform_exists, conform = pcall(require, "conform")
 

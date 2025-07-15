@@ -2,8 +2,6 @@ local api = vim.api
 local fn = vim.fn
 local g = vim.g
 
-dofile(vim.g.base46_cache .. "tbline")
-
 local txt = require("nvchad.tabufline.utils").txt
 local btn = require("nvchad.tabufline.utils").btn
 local strep = string.rep

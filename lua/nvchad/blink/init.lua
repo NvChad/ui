@@ -34,6 +34,7 @@ M.menu = {
   scrollbar = false,
   border = atom_styled and "none" or "single",
   draw = {
+    padding = { atom_styled and 0 or 1, 1 },
     columns = menu_cols,
     components = M.components,
   },

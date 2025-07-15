@@ -68,12 +68,14 @@ if opts.lazyload then
         vim.o.showtabline = 2
         vim.o.tabline = "%!v:lua.require('nvchad.tabufline.modules')()"
         vim.api.nvim_del_augroup_by_name "TabuflineLazyLoad"
+        dofile(vim.g.base46_cache .. "tbline")
       end
     end,
   })
 else
   vim.o.showtabline = 2
   vim.o.tabline = "%!v:lua.require('nvchad.tabufline.modules')()"
+  dofile(vim.g.base46_cache .. "tbline")
 end
 
 autocmd("FileType", {

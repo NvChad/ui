@@ -326,6 +326,13 @@ error("Requiring a meta file")
 ---@field NavicIconsArray? Base46HLGroups # highlight group for navic
 ---@field MoreMsg? Base46HLGroups # highlight group for defaults
 ---@field ModeMsg? Base46HLGroups # highlight group for defaults
+---@field MiniTablineVisible? Base46HLGroups # highlight group for mini-tabline
+---@field MiniTablineTabpagesection? Base46HLGroups # highlight group for mini-tabline
+---@field MiniTablineModifiedVisible? Base46HLGroups # highlight group for mini-tabline
+---@field MiniTablineModifiedHidden? Base46HLGroups # highlight group for mini-tabline
+---@field MiniTablineModifiedCurrent? Base46HLGroups # highlight group for mini-tabline
+---@field MiniTablineHidden? Base46HLGroups # highlight group for mini-tabline
+---@field MiniTablineCurrent? Base46HLGroups # highlight group for mini-tabline
 ---@field MatchWord? Base46HLGroups # highlight group for defaults
 ---@field MatchParen? Base46HLGroups # highlight group for defaults
 ---@field MasonMutedBlock? Base46HLGroups # highlight group for mason
@@ -1037,6 +1044,13 @@ error("Requiring a meta file")
 ---@field NavicIconsArray? Base46HLGroups # highlight group for navic
 ---@field MoreMsg? Base46HLGroups # highlight group for defaults
 ---@field ModeMsg? Base46HLGroups # highlight group for defaults
+---@field MiniTablineVisible? Base46HLGroups # highlight group for mini-tabline
+---@field MiniTablineTabpagesection? Base46HLGroups # highlight group for mini-tabline
+---@field MiniTablineModifiedVisible? Base46HLGroups # highlight group for mini-tabline
+---@field MiniTablineModifiedHidden? Base46HLGroups # highlight group for mini-tabline
+---@field MiniTablineModifiedCurrent? Base46HLGroups # highlight group for mini-tabline
+---@field MiniTablineHidden? Base46HLGroups # highlight group for mini-tabline
+---@field MiniTablineCurrent? Base46HLGroups # highlight group for mini-tabline
 ---@field MatchWord? Base46HLGroups # highlight group for defaults
 ---@field MatchParen? Base46HLGroups # highlight group for defaults
 ---@field MasonMutedBlock? Base46HLGroups # highlight group for mason
@@ -1486,6 +1500,7 @@ error("Requiring a meta file")
 ---| "'lspsaga'"
 ---| "'markview'"
 ---| "'mason'"
+---| "'mini-tabline'"
 ---| "'navic'"
 ---| "'neogit'"
 ---| "'notify'"
