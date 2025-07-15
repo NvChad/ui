@@ -86,15 +86,25 @@ M.display = function(opts)
   save_term_info(opts.buf, opts)
 end
 
+local function is_windows()
+  return vim.uv.os_uname().sysname:find "Windows" ~= nil
+end
+
 local function create(opts)
   local buf_exists = opts.buf
   opts.buf = opts.buf or vim.api.nvim_create_buf(false, true)
 
   -- handle cmd opt
   local shell = vim.o.shell
-  local cmd = shell
+  local cmd = { shell }
 
-  if opts.cmd and opts.buf then
+  if is_windows() then
+    local shellcmdflag = vim.o.shellcmdflag
+
+    for flag in string.gmatch(shellcmdflag, "%S+") do
+      table.insert(cmd, flag)
+    end
+  elseif opts.cmd and opts.buf then
     cmd = { shell, "-c", format_cmd(opts.cmd) .. "; " .. shell }
   else
     cmd = { shell }
