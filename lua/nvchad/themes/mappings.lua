@@ -20,7 +20,8 @@ map({ "i", "n" }, { "<cr>" }, function()
   state.confirmed = true
   local name = state.themes_shown[state.index]
   package.loaded.chadrc = nil
-  local old_theme = require("chadrc").base46.theme
+  local chadrc = require("chadrc")
+  local old_theme = (chadrc.ui and chadrc.ui.theme) or chadrc.base46.theme
 
   old_theme = '"' .. old_theme .. '"'
   require("nvchad.utils").replace_word(old_theme, '"' .. name .. '"')
