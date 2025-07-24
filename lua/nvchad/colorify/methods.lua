@@ -7,6 +7,14 @@ local needs_hl = utils.not_colored
 
 local M = {}
 
+local function to_hex(r, g, b, a)
+  local clamp = function(x)
+    x = math.floor((x or 0) * (a or 1) * 255 + 0.5)
+    return math.max(0, math.min(x, 255))
+  end
+  return string.format("#%02x%02x%02x", clamp(r), clamp(g), clamp(b))
+end
+
 M.hex = function(buf, line, str)
   for col, hex in str:gmatch "()(#%x%x%x%x%x%x)" do
     col = col - 1
@@ -53,8 +61,7 @@ M.lsp_var = function(buf, line, min, max)
             a = a / 255
           end
 
-          local hex = string.format("#%02x%02x%02x", r * a * 255, g * a * 255, b * a * 255)
-
+          local hex = to_hex(r, g, b, a)
           local hl_group = utils.add_hl(hex)
 
           local range_start = match.range.start
