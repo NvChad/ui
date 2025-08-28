@@ -27,6 +27,7 @@ return {
   cmake = "cmake-language-server",
   cobol_ls = "cobol-language-support",
   codeqlls = "codeql",
+  copilot_ls = "copilot-language-server",
   coq_lsp = "coq-lsp",
   crystalline = "crystalline",
   csharp_ls = "csharp-language-server",
