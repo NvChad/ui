@@ -86,37 +86,29 @@ M.display = function(opts)
   save_term_info(opts.buf, opts)
 end
 
-local function is_windows()
-  return vim.uv.os_uname().sysname:find "Windows" ~= nil
-end
-
 local function create(opts)
   local buf_exists = opts.buf
   opts.buf = opts.buf or vim.api.nvim_create_buf(false, true)
 
-  -- handle cmd opt
+  -- handle cmd and flag
   local shell = vim.o.shell
+  local shellcmdflag = vim.o.shellcmdflag
   local cmd = { shell }
 
-  if is_windows() then
-    local shellcmdflag = vim.o.shellcmdflag
+  if vim.uv.os_uname().sysname:find "Windows" == nil then
+    cmd = { shell, "-c" }
+  end
 
-    for flag in string.gmatch(shellcmdflag, "%S+") do
-      table.insert(cmd, flag)
-    end
-  elseif opts.cmd and opts.buf then
-    cmd = { shell, "-c", format_cmd(opts.cmd) .. "; " .. shell }
-  else
-    cmd = { shell }
+  for flag in string.gmatch(shellcmdflag, "%S+") do
+    table.insert(cmd, flag)
   end
 
   M.display(opts)
 
   save_term_info(opts.buf, opts)
 
-  opts.termopen_opts = vim.tbl_extend("force", opts.termopen_opts or {}, { detach = false })
   if not buf_exists then
-    vim.fn.termopen(cmd, opts.termopen_opts)
+    vim.fn.jobstart(cmd, { term = true })
   end
 
   vim.g.nvhterm = opts.pos == "sp"
