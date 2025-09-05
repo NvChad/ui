@@ -93,10 +93,10 @@ local function create(opts)
   -- handle cmd and flag
   local shell = vim.o.shell
   local shellcmdflag = vim.o.shellcmdflag
-  local cmd = { shell }
+  local cmd = { shell, "-c" }
 
-  if vim.uv.os_uname().sysname:find "Windows" == nil then
-    cmd = { shell, "-c" }
+  if vim.uv.os_uname().sysname:find "Windows" ~= nil then
+    cmd = { shell }
   end
 
   for flag in string.gmatch(shellcmdflag, "%S+") do
