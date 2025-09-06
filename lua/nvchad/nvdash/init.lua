@@ -210,10 +210,20 @@ M.open = function(buf, win, action)
         if cmd and x.cmd then
           vim.cmd(x.cmd)
         else
-          return { x.i, x.col }
+          local line = api.nvim_buf_get_lines(buf, x.i - 1, x.i, false)[1] or ""
+          local col = math.max(0, math.min(x.col, #line))
+          return { x.i, col }
         end
       end
     end
+
+    if key_lines[1] then
+      local line = api.nvim_buf_get_lines(buf, key_lines[1].i - 1, key_lines[1].i, false)[1] or ""
+      local col = math.max(0, math.min(key_lines[1].col, #line))
+      return { key_lines[1].i, col }
+    end
+
+    return { 1, 0 }
   end
 
   map({ "k", "<up>" }, function()
