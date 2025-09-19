@@ -5,6 +5,9 @@ local set_buf = api.nvim_set_current_buf
 local get_opt = api.nvim_get_option_value
 
 local function buf_index(bufnr)
+  if not vim.t or not vim.t.bufs then
+    return
+  end
   for i, value in ipairs(vim.t.bufs) do
     if value == bufnr then
       return i
@@ -16,11 +19,14 @@ M.next = function()
   local bufs = vim.t.bufs
   local curbufIndex = buf_index(cur_buf())
 
-  if not curbufIndex then
+  if not curbufIndex and vim.t and vim.t.bufs then
     set_buf(vim.t.bufs[1])
     return
   end
 
+  if not vim.t or not vim.t.bufs then
+    return
+  end
   set_buf((curbufIndex == #bufs and bufs[1]) or bufs[curbufIndex + 1])
 end
 
@@ -28,12 +34,14 @@ M.prev = function()
   local bufs = vim.t.bufs
   local curbufIndex = buf_index(cur_buf())
 
-  if not curbufIndex then
+  if not curbufIndex and vim.t and vim.t.bufs then
     set_buf(vim.t.bufs[1])
     return
   end
 
-  set_buf((curbufIndex == 1 and bufs[#bufs]) or bufs[curbufIndex - 1])
+  if vim.t and vim.t.bufs then
+    set_buf((curbufIndex == 1 and bufs[#bufs]) or bufs[curbufIndex - 1])
+  end
 end
 
 M.close_buffer = function(bufnr)
