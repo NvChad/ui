@@ -92,12 +92,12 @@ local function create(opts)
 
   -- handle cmd and flag
   local shell = vim.o.shell
-  local shellcmdflag = vim.o.shellcmdflag
-  local cmd = { shell, "-c" }
 
-  if vim.uv.os_uname().sysname:find "Windows" ~= nil then
-    cmd = { shell }
-  end
+  -- shellcmdflag needs to be configured manually
+  -- if no flag is needed, you may need to set `shellcmdflag = ""` in nvim config.
+
+  local shellcmdflag = vim.o.shellcmdflag
+  local cmd = { shell }
 
   for flag in string.gmatch(shellcmdflag, "%S+") do
     table.insert(cmd, flag)
