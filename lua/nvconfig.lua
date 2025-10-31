@@ -75,6 +75,7 @@ local options = {
         end,
         hl = "NvDashFooter",
         no_gap = true,
+        content = "fit",
       },
 
       { txt = "─", hl = "NvDashFooter", no_gap = true, rep = true },
@@ -82,6 +83,7 @@ local options = {
   },
 
   term = {
+    startinsert = true,
     base46_colors = true,
     winopts = { number = false, relativenumber = false },
     sizes = { sp = 0.3, vsp = 0.2, ["bo sp"] = 0.3, ["bo vsp"] = 0.2 },

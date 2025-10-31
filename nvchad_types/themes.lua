@@ -17,6 +17,7 @@ vim.g.nvchad_theme = 'onedark'
 ---| '"tokyonight"'
 ---| '"tokyodark"'
 ---| '"sweetpastel"'
+---| '"sunrise_breeze"'
 ---| '"starlight"'
 ---| '"solarized_osaka"'
 ---| '"solarized_light"'
@@ -52,6 +53,7 @@ vim.g.nvchad_theme = 'onedark'
 ---| '"monochrome"'
 ---| '"monekai"'
 ---| '"mito-laser"'
+---| '"midnight_breeze"'
 ---| '"melange"'
 ---| '"material-lighter"'
 ---| '"material-deep-ocean"'
@@ -146,6 +148,7 @@ vim.g.nvchad_theme = 'onedark'
 ---@field ["material-deep-ocean"]? ThemeTable # Changes for material-deep-ocean theme
 ---@field ["material-lighter"]? ThemeTable # Changes for material-lighter theme
 ---@field melange? ThemeTable # Changes for melange theme
+---@field midnight_breeze? ThemeTable # Changes for midnight_breeze theme
 ---@field ["mito-laser"]? ThemeTable # Changes for mito-laser theme
 ---@field monekai? ThemeTable # Changes for monekai theme
 ---@field monochrome? ThemeTable # Changes for monochrome theme
@@ -181,6 +184,7 @@ vim.g.nvchad_theme = 'onedark'
 ---@field solarized_light? ThemeTable # Changes for solarized_light theme
 ---@field solarized_osaka? ThemeTable # Changes for solarized_osaka theme
 ---@field starlight? ThemeTable # Changes for starlight theme
+---@field sunrise_breeze? ThemeTable # Changes for sunrise_breeze theme
 ---@field sweetpastel? ThemeTable # Changes for sweetpastel theme
 ---@field tokyodark? ThemeTable # Changes for tokyodark theme
 ---@field tokyonight? ThemeTable # Changes for tokyonight theme

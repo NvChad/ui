@@ -89,13 +89,16 @@ M.autocmds = function(buf)
     end,
   })
 
-  vim.keymap.set("n", "q", function()
-    require("nvchad.tabufline").close_buffer()
-  end, { buffer = buf })
+  local close_buf = function()
+    if config.ui.tabufline.enabled then
+      require("nvchad.tabufline").close_buffer()
+    else
+      vim.cmd "bd"
+    end
+  end
 
-  vim.keymap.set("n", "<ESC>", function()
-    require("nvchad.tabufline").close_buffer()
-  end, { buffer = buf })
+  vim.keymap.set("n", "q", close_buf, { buffer = buf })
+  vim.keymap.set("n", "<ESC>", close_buf, { buffer = buf })
 
   vim.g.nvch_buf = buf
   vim.g.nvch_win = vim.fn.bufwinid(buf)

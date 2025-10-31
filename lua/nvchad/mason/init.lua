@@ -41,6 +41,14 @@ M.get_pkgs = function()
   return pkgs
 end
 
+local function parse_package(package_name)
+  local name, version = package_name:match "^([^@]+)@?(.*)$"
+  return {
+    name = name,
+    version = version ~= "" and version or nil,
+  }
+end
+
 M.install_all = function()
   vim.cmd "Mason"
 
@@ -48,10 +56,11 @@ M.install_all = function()
 
   mr.refresh(function()
     for _, tool in ipairs(M.get_pkgs()) do
-      local p = mr.get_package(tool)
+      local pkg = parse_package(tool)
+      local p = mr.get_package(pkg.name)
 
       if not p:is_installed() then
-        p:install()
+        p:install { version = pkg.version }
       end
     end
   end)

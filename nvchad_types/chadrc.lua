@@ -82,7 +82,7 @@
 ---@field theme? '"default"'|'"vscode"'|'"vscode_colored"'|'"minimal"'
 --- Separator style for NvChad Statusline
 ---     - Only when the *theme* is `minimal`, "round" or "block" will be having effect
----@field separator_style? '"default"'|'"round"'|'"block"'|'"arrow"'
+---@field separator_style? '"default"'|'"round"'|'"block"'|'"arrow"'|{ left: string, right: string }
 --- The list of module names from default modules + your modules
 --- Check https://github.com/NvChad/ui/blob/v2.5/lua/nvchad/stl/utils.lua#L12 for the modules of each statusline theme
 ---@field order? string[]

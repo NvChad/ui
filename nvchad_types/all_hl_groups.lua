@@ -588,6 +588,16 @@ error("Requiring a meta file")
 ---@field BufferLineBufferSelected? Base46HLGroups # highlight group for bufferline
 ---@field BufferLineBackground? Base46HLGroups # highlight group for bufferline
 ---@field Boolean? Base46HLGroups # highlight group for syntax
+---@field BlinkPairsYellow? Base46HLGroups # highlight group for blink-pair
+---@field BlinkPairsViolet? Base46HLGroups # highlight group for blink-pair
+---@field BlinkPairsUnmatched? Base46HLGroups # highlight group for blink-pair
+---@field BlinkPairsRed? Base46HLGroups # highlight group for blink-pair
+---@field BlinkPairsPurple? Base46HLGroups # highlight group for blink-pair
+---@field BlinkPairsOrange? Base46HLGroups # highlight group for blink-pair
+---@field BlinkPairsMatchParen? Base46HLGroups # highlight group for blink-pair
+---@field BlinkPairsGreen? Base46HLGroups # highlight group for blink-pair
+---@field BlinkPairsCyan? Base46HLGroups # highlight group for blink-pair
+---@field BlinkPairsBlue? Base46HLGroups # highlight group for blink-pair
 ---@field BlinkCmpSource? Base46HLGroups # highlight group for blink
 ---@field BlinkCmpSignatureHelpBorder? Base46HLGroups # highlight group for blink
 ---@field BlinkCmpSignatureHelpActiveParameter? Base46HLGroups # highlight group for blink
@@ -1306,6 +1316,16 @@ error("Requiring a meta file")
 ---@field BufferLineBufferSelected? Base46HLGroups # highlight group for bufferline
 ---@field BufferLineBackground? Base46HLGroups # highlight group for bufferline
 ---@field Boolean? Base46HLGroups # highlight group for syntax
+---@field BlinkPairsYellow? Base46HLGroups # highlight group for blink-pair
+---@field BlinkPairsViolet? Base46HLGroups # highlight group for blink-pair
+---@field BlinkPairsUnmatched? Base46HLGroups # highlight group for blink-pair
+---@field BlinkPairsRed? Base46HLGroups # highlight group for blink-pair
+---@field BlinkPairsPurple? Base46HLGroups # highlight group for blink-pair
+---@field BlinkPairsOrange? Base46HLGroups # highlight group for blink-pair
+---@field BlinkPairsMatchParen? Base46HLGroups # highlight group for blink-pair
+---@field BlinkPairsGreen? Base46HLGroups # highlight group for blink-pair
+---@field BlinkPairsCyan? Base46HLGroups # highlight group for blink-pair
+---@field BlinkPairsBlue? Base46HLGroups # highlight group for blink-pair
 ---@field BlinkCmpSource? Base46HLGroups # highlight group for blink
 ---@field BlinkCmpSignatureHelpBorder? Base46HLGroups # highlight group for blink
 ---@field BlinkCmpSignatureHelpActiveParameter? Base46HLGroups # highlight group for blink
@@ -1481,6 +1501,7 @@ error("Requiring a meta file")
 ---| "'alpha'"
 ---| "'avante'"
 ---| "'blankline'"
+---| "'blink-pair'"
 ---| "'blink'"
 ---| "'bufferline'"
 ---| "'cmp'"
