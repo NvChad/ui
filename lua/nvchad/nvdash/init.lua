@@ -46,6 +46,17 @@ local function multicolumn_virt_texts(tb, total_w, virt_w)
   return line
 end
 
+local function draw_cursor(win, buf, row, col)
+  local ok = pcall(api.nvim_win_set_cursor, win, { row, col })
+  if ok then
+    return
+  end
+
+  local line = api.nvim_buf_get_lines(buf, row - 1, row, false)[1] or ""
+  col = math.min(col, #line)
+  pcall(api.nvim_win_set_cursor, win, { row, col })
+end
+
 M.open = function(buf, win, action)
   action = action or "open"
 
@@ -53,7 +64,7 @@ M.open = function(buf, win, action)
 
   if not vim.bo.buflisted and action == "open" then
     if vim.t.bufs[1] then
-      win = vim.fn.bufwinid(vim.t.bufs[1])
+      win = fn.bufwinid(vim.t.bufs[1])
       api.nvim_set_current_win(win)
     end
   end
@@ -61,7 +72,7 @@ M.open = function(buf, win, action)
   local ns = api.nvim_create_namespace "nvdash"
   local winh = api.nvim_win_get_height(win)
   local winw = api.nvim_win_get_width(win)
-  buf = buf or vim.api.nvim_create_buf(false, true)
+  buf = buf or api.nvim_create_buf(false, true)
 
   vim.g.nvdash_buf = buf
   vim.g.nvdash_win = win
@@ -180,17 +191,20 @@ M.open = function(buf, win, action)
     api.nvim_buf_set_extmark(buf, ns, row_i + i, 0, v)
   end
 
+  if action == "open" then
+    vim.wo[win].virtualedit = "all"
+  end
+
+  if key_lines[1] then
+    draw_cursor(win, buf, key_lines[1].i, key_lines[1].col)
+    fn.winrestview { topline = row_i }
+  end
+
   if action == "redraw" then
     return
   end
 
   ------------------------------------ keybinds ------------------------------------------
-  vim.wo[win].virtualedit = "all"
-
-  if key_lines[1] then
-    api.nvim_win_set_cursor(win, { key_lines[1].i, key_lines[1].col })
-  end
-
   local key_movements = function(n, cmd)
     local curline = fn.line "."
 
