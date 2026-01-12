@@ -83,7 +83,7 @@ M.open = function(buf, win, action)
       nvdash_w = headerw
     end
 
-    local col = math.floor((winw / 2) - math.floor(strw(v) / 2)) - 6
+    local col = math.floor((winw / 2) - math.floor(strw(v) / 2)) - 1
     local opt = { virt_text_win_col = col, virt_text = { { v, "NvDashAscii" } } }
     table.insert(ui, opt)
   end
@@ -126,7 +126,7 @@ M.open = function(buf, win, action)
         w = groups_maxw[v.group] or btn_widths[i]
       end
 
-      col = math.floor((winw / 2) - math.floor(w / 2)) - 6
+      col = math.floor((winw / 2) - math.floor(w / 2)) - 1
       opt = { virt_text_win_col = col, virt_text = multicolumn_virt_texts(v, w, btn_widths[i]) }
     else
       local str = type(v.txt) == "string" and v.txt or v.txt()
@@ -136,7 +136,7 @@ M.open = function(buf, win, action)
 
       str = v.rep and string.rep(str, w) or str
       str = v.keys and btn_gap(str, v.keys, w) or str
-      col = math.floor((winw / 2) - math.floor(w / 2)) - 6
+      col = math.floor((winw / 2) - math.floor(w / 2)) - 1
       opt = { virt_text_win_col = col, virt_text = { { str, v.hl or "NvdashButtons" } } }
     end
 
