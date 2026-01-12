@@ -46,17 +46,6 @@ local function multicolumn_virt_texts(tb, total_w, virt_w)
   return line
 end
 
-local function draw_cursor(win, buf, row, col)
-  local ok = pcall(api.nvim_win_set_cursor, win, { row, col })
-  if ok then
-    return
-  end
-
-  local line = api.nvim_buf_get_lines(buf, row - 1, row, false)[1] or ""
-  col = math.min(col, #line)
-  pcall(api.nvim_win_set_cursor, win, { row, col })
-end
-
 M.open = function(buf, win, action)
   action = action or "open"
 
@@ -195,8 +184,19 @@ M.open = function(buf, win, action)
     vim.wo[win].virtualedit = "all"
   end
 
+  local function draw_cursor(row, col)
+    local ok = pcall(api.nvim_win_set_cursor, win, { row, col })
+    if ok then
+      return
+    end
+
+    local line = api.nvim_buf_get_lines(buf, row - 1, row, false)[1] or ""
+    col = math.min(col, #line)
+    pcall(api.nvim_win_set_cursor, win, { row, col })
+  end
+
   if key_lines[1] then
-    draw_cursor(win, buf, key_lines[1].i, key_lines[1].col)
+    draw_cursor(key_lines[1].i, key_lines[1].col)
     fn.winrestview { topline = row_i }
   end
 
@@ -220,12 +220,24 @@ M.open = function(buf, win, action)
     end
   end
 
+  local function col_from_extmark(row)
+    local marks = api.nvim_buf_get_extmarks(buf, ns, { row - 1, 0 }, { row - 1, -1 }, { details = true })
+    if marks[1] then
+      return marks[1][4].virt_text_win_col or 0
+    end
+    return 0
+  end
+
   map({ "k", "<up>" }, function()
-    api.nvim_win_set_cursor(win, key_movements(-1, false))
+    local x = key_movements(-1, false)
+    local col = col_from_extmark(x[1])
+    draw_cursor(x[1], col)
   end, buf)
 
   map({ "j", "<down>" }, function()
-    api.nvim_win_set_cursor(win, key_movements(1, false))
+    local x = key_movements(1, false)
+    local col = col_from_extmark(x[1])
+    draw_cursor(x[1], col)
   end, buf)
 
   map({ "<cr>" }, function()
