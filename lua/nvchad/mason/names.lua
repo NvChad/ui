@@ -94,6 +94,7 @@ return {
   jsonls = "json-lsp",
   jsonnet_ls = "jsonnet-language-server",
   julials = "julia-lsp",
+  kotlin_lsp = "kotlin-lsp",
   kotlin_language_server = "kotlin-language-server",
   lelwel_ls = "lelwel",
   lemminx = "lemminx",
