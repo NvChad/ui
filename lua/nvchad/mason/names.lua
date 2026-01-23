@@ -1,4 +1,5 @@
 return {
+  alejandra = "alejandra",
   als = "ada-language-server",
   angularls = "angular-language-server",
   ansiblels = "ansible-language-server",
