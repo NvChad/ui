@@ -4,7 +4,7 @@ local opt_local = vim.api.nvim_set_option_value
 local base46_path = vim.fn.fnamemodify(debug.getinfo(require("base46").merge_tb, "S").source:sub(2), ":p:h")
 
 M.list_themes = function()
-  local default_themes = vim.fn.readdir(base46_path .. '/themes')
+  local default_themes = vim.fn.readdir(base46_path .. "/themes")
   local custom_themes = vim.uv.fs_stat(fn.stdpath "config" .. "/lua/themes")
 
   if custom_themes and custom_themes.type == "directory" then
@@ -51,14 +51,14 @@ M.set_cleanbuf_opts = function(ft, buf)
 end
 
 M.reload = function(module)
+  if module then
+    require("plenary.reload").reload_module(module)
+  end
+
   require("plenary.reload").reload_module "nvconfig"
   require("plenary.reload").reload_module "chadrc"
   require("plenary.reload").reload_module "base46"
   require("plenary.reload").reload_module "nvchad"
-
-  if module then
-    require("plenary.reload").reload_module(module)
-  end
 
   require "nvchad"
   require("base46").load_all_highlights()

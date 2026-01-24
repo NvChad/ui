@@ -124,6 +124,7 @@ Base46 setup
 These are the default options for UI/Base46 plugin. No need to write them all 
 Only those you want to change and the it'll override the defaults.
 
+Always check as its Up to date. 
 nvconfig file : |https://github.com/NvChad/ui/blob/v3.0/lua/nvconfig.lua|
 >lua
  {
@@ -149,6 +150,7 @@ nvconfig file : |https://github.com/NvChad/ui/blob/v3.0/lua/nvconfig.lua|
      telescope = { style = "borderless" }, -- borderless / bordered
  
      statusline = {
+       enabled = true,
        theme = "default", -- default/vscode/vscode_colored/minimal
        -- default/round/block/arrow separators work only for default statusline theme
        -- round and block will work for minimal theme only
@@ -161,6 +163,7 @@ nvconfig file : |https://github.com/NvChad/ui/blob/v3.0/lua/nvconfig.lua|
      tabufline = {
        enabled = true,
        lazyload = true,
+       treeOffsetFt = "NvimTree",
        order = { "treeOffset", "buffers", "tabs", "btns" },
        modules = nil,
        bufwidth = 21,

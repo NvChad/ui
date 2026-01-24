@@ -32,9 +32,9 @@ vim.cmd "function! TbToggleTabs(a,b,c,d) \n let g:TbTabsToggled = !g:TbTabsToggl
 
 ---------------------------------- functions -------------------------------------------
 
-local function getNvimTreeWidth()
+local function getFileTreeWidth()
   for _, win in pairs(api.nvim_tabpage_list_wins(0)) do
-    if vim.bo[api.nvim_win_get_buf(win)].ft == "NvimTree" then
+    if vim.bo[api.nvim_win_get_buf(win)].ft == opts.treeOffsetFt then
       return api.nvim_win_get_width(win)
     end
   end
@@ -57,7 +57,7 @@ end
 ------------------------------------- modules -----------------------------------------
 
 M.treeOffset = function()
-  local w = getNvimTreeWidth()
+  local w = getFileTreeWidth()
   return w == 0 and "" or "%#NvimTreeNormal#" .. strep(" ", w) .. "%#NvimTreeWinSeparator#" .. "│"
 end
 

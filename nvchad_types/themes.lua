@@ -91,6 +91,7 @@ vim.g.nvchad_theme = 'onedark'
 ---| '"chadracula"'
 ---| '"chadracula-evondev"'
 ---| '"catppuccin"'
+---| '"catppuccin-latte"'
 ---| '"carbonfox"'
 ---| '"blossom_light"'
 ---| '"bearded-arc"'
@@ -111,6 +112,7 @@ vim.g.nvchad_theme = 'onedark'
 ---@field ["bearded-arc"]? ThemeTable # Changes for bearded-arc theme
 ---@field blossom_light? ThemeTable # Changes for blossom_light theme
 ---@field carbonfox? ThemeTable # Changes for carbonfox theme
+---@field ["catppuccin-latte"]? ThemeTable # Changes for catppuccin-latte theme
 ---@field catppuccin? ThemeTable # Changes for catppuccin theme
 ---@field ["chadracula-evondev"]? ThemeTable # Changes for chadracula-evondev theme
 ---@field chadracula? ThemeTable # Changes for chadracula theme

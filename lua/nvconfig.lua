@@ -35,6 +35,7 @@ local options = {
     tabufline = {
       enabled = true,
       lazyload = true,
+      treeOffsetFt = "NvimTree",
       order = { "treeOffset", "buffers", "tabs", "btns" },
       modules = nil,
       bufwidth = 21,
