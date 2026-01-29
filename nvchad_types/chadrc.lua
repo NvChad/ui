@@ -55,6 +55,7 @@
 ---@field telescope? NvTelescopeConfig
 ---@field statusline? NvStatusLineConfig
 ---@field tabufline? NvTabLineConfig
+---@field renamer? NvRenamerConfig
 --- Whether to enable LSP Semantic Tokens highlighting
 --- List of extras themes for other plugins not in NvChad that you want to compile
 
@@ -116,6 +117,22 @@
 ---     }
 --- ```
 ---@field modules? table<string, fun(): string>
+
+---@class NvRenamerConfig
+--- See h:api-win_config and h:winborder
+---@field border? ("single"|"double"|"bold"|"rounded"|"solid") | string[]
+--- Link the highlight group of the border characters
+---@field border_hl_group? string
+--- Width is calculated as the length of the symbol + this many chars
+---@field right_padding? number
+--- Text displayed atop window
+---@field title? string
+--- Link the highlight group of the title text
+---@field title_hl_group? string
+--- Optionally select a mode in the buffer after entering
+---@field mode? ("normal"|"insert")
+--- If false, do not copy the symbol name into the buffer
+---@field show_original boolean
 
 ---@class NvDashConfig
 --- Whether to open dashboard on opening nvim
