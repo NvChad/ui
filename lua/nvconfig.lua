@@ -39,6 +39,7 @@ local options = {
       order = { "treeOffset", "buffers", "tabs", "btns" },
       modules = nil,
       bufwidth = 21,
+      buf_close_btn = true,
     },
   },
 

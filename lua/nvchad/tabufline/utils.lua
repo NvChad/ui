@@ -5,6 +5,7 @@ local strep = string.rep
 local cur_buf = api.nvim_get_current_buf
 local buf_name = api.nvim_buf_get_name
 local get_hl = api.nvim_get_hl
+local opts = require("nvconfig").ui.tabufline
 
 M.txt = function(str, hl)
   str = str or ""
@@ -69,22 +70,27 @@ M.style_buf = function(nr, i, w)
   name = M.txt(name, tbHlName)
 
   name = strep(" ", pad - 1) .. (icon_hl .. icon .. name) .. strep(" ", pad - 1)
-
-  local close_btn = btn(" 󰅖 ", nil, "KillBuf", nr)
   name = btn(name, nil, "GoToBuf", nr)
 
   -- modified bufs icon or close icon
   local mod = get_opt("mod", { buf = nr })
   local cur_mod = get_opt("mod", { buf = 0 })
 
-  -- color close btn for focused / hidden  buffers
-  if is_curbuf then
-    close_btn = cur_mod and txt("  ", "BufOnModified") or txt(close_btn, "BufOnClose")
-  else
-    close_btn = mod and txt("  ", "BufOffModified") or txt(close_btn, "BufOffClose")
+  -- determine if buffer is modified
+  local is_modified = is_curbuf and cur_mod or mod
+
+  -- determine which highlight group to use
+  local hl_group = is_curbuf and "BufOn" or "BufOff"
+
+  local close_btn = ""
+  if is_modified then
+    close_btn = txt("  ", hl_group .. "Modified")
+  elseif opts.buf_close_btn then
+    close_btn = btn(" 󰅖 ", nil, "KillBuf", nr)
+    close_btn = txt(close_btn, hl_group .. "Close")
   end
 
-  name = txt(name .. close_btn, "BufO" .. (is_curbuf and "n" or "ff"))
+  name = txt(name .. close_btn, hl_group)
 
   return name
 end
