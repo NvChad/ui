@@ -73,10 +73,9 @@ return function()
     vim.wo[win].winhl = "Normal:Normal,FloatBorder:Removed"
     api.nvim_set_current_win(win)
 
-    api.nvim_buf_set_lines(buf, 0, -1, true, { " " .. to_rename })
-
     vim.bo[buf].buftype = "prompt"
     vim.fn.prompt_setprompt(buf, "")
+    api.nvim_buf_set_lines(buf, 0, -1, true, { " " .. to_rename })
     vim.api.nvim_input "A"
 
     vim.keymap.set({ "i", "n" }, "<Esc>", function()
