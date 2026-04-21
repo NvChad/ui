@@ -83,6 +83,15 @@ return function()
       api.nvim_buf_delete(buf, { force = true })
     end, { buffer = buf })
 
+    api.nvim_create_autocmd("BufLeave", {
+      buffer = buf,
+      callback = function()
+        vim.schedule(function()
+          vim.cmd "stopinsert"
+        end)
+      end,
+    })
+
     vim.fn.prompt_setcallback(buf, function(text)
       local newName = vim.trim(text)
       api.nvim_buf_delete(buf, { force = true })
