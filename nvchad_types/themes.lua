@@ -22,6 +22,7 @@ vim.g.nvchad_theme = 'onedark'
 ---| '"solarized_osaka"'
 ---| '"solarized_light"'
 ---| '"solarized_dark"'
+---| '"slatewave"'
 ---| '"seoul256_light"'
 ---| '"seoul256_dark"'
 ---| '"scaryforest"'
@@ -182,6 +183,7 @@ vim.g.nvchad_theme = 'onedark'
 ---@field scaryforest? ThemeTable # Changes for scaryforest theme
 ---@field ["seoul256_dark"]? ThemeTable # Changes for seoul256_dark theme
 ---@field ["seoul256_light"]? ThemeTable # Changes for seoul256_light theme
+---@field slatewave? ThemeTable # Changes for slatewave theme
 ---@field solarized_dark? ThemeTable # Changes for solarized_dark theme
 ---@field solarized_light? ThemeTable # Changes for solarized_light theme
 ---@field solarized_osaka? ThemeTable # Changes for solarized_osaka theme
