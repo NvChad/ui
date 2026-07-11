@@ -868,6 +868,7 @@ error("Requiring a meta file")
 ---@field Structure? Base46HLGroups # highlight group for syntax
 ---@field String? Base46HLGroups # highlight group for syntax
 ---@field StorageClass? Base46HLGroups # highlight group for syntax
+---@field StatusLineNC? Base46HLGroups # highlight group for statusline
 ---@field StatusLine? Base46HLGroups # highlight group for statusline
 ---@field Statement? Base46HLGroups # highlight group for syntax
 ---@field St_pos_text? Base46HLGroups # highlight group for statusline
