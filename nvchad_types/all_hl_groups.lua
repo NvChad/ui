@@ -254,6 +254,22 @@ error("Requiring a meta file")
 ---@field NormalFloat? Base46HLGroups # highlight group for defaults
 ---@field Normal? Base46HLGroups # highlight group for defaults
 ---@field NonText? Base46HLGroups # highlight group for defaults
+---@field NeotestWinSelect? Base46HLGroups # highlight group for neotest
+---@field NeotestTest? Base46HLGroups # highlight group for neotest
+---@field NeotestTarget? Base46HLGroups # highlight group for neotest
+---@field NeotestSkipped? Base46HLGroups # highlight group for neotest
+---@field NeotestRunning? Base46HLGroups # highlight group for neotest
+---@field NeotestPassed? Base46HLGroups # highlight group for neotest
+---@field NeotestNamespace? Base46HLGroups # highlight group for neotest
+---@field NeotestMarked? Base46HLGroups # highlight group for neotest
+---@field NeotestIndent? Base46HLGroups # highlight group for neotest
+---@field NeotestFocused? Base46HLGroups # highlight group for neotest
+---@field NeotestFile? Base46HLGroups # highlight group for neotest
+---@field NeotestFailed? Base46HLGroups # highlight group for neotest
+---@field NeotestExpandMarker? Base46HLGroups # highlight group for neotest
+---@field NeotestDir? Base46HLGroups # highlight group for neotest
+---@field NeotestBorder? Base46HLGroups # highlight group for neotest
+---@field NeotestAdapterName? Base46HLGroups # highlight group for neotest
 ---@field NeogitUnpushedTo? Base46HLGroups # highlight group for neogit
 ---@field NeogitUnpulledFrom? Base46HLGroups # highlight group for neogit
 ---@field NeogitUnmergedInto? Base46HLGroups # highlight group for neogit
@@ -1015,6 +1031,22 @@ error("Requiring a meta file")
 ---@field NormalFloat? Base46HLGroups # highlight group for defaults
 ---@field Normal? Base46HLGroups # highlight group for defaults
 ---@field NonText? Base46HLGroups # highlight group for defaults
+---@field NeotestWinSelect? Base46HLGroups # highlight group for neotest
+---@field NeotestTest? Base46HLGroups # highlight group for neotest
+---@field NeotestTarget? Base46HLGroups # highlight group for neotest
+---@field NeotestSkipped? Base46HLGroups # highlight group for neotest
+---@field NeotestRunning? Base46HLGroups # highlight group for neotest
+---@field NeotestPassed? Base46HLGroups # highlight group for neotest
+---@field NeotestNamespace? Base46HLGroups # highlight group for neotest
+---@field NeotestMarked? Base46HLGroups # highlight group for neotest
+---@field NeotestIndent? Base46HLGroups # highlight group for neotest
+---@field NeotestFocused? Base46HLGroups # highlight group for neotest
+---@field NeotestFile? Base46HLGroups # highlight group for neotest
+---@field NeotestFailed? Base46HLGroups # highlight group for neotest
+---@field NeotestExpandMarker? Base46HLGroups # highlight group for neotest
+---@field NeotestDir? Base46HLGroups # highlight group for neotest
+---@field NeotestBorder? Base46HLGroups # highlight group for neotest
+---@field NeotestAdapterName? Base46HLGroups # highlight group for neotest
 ---@field NeogitUnpushedTo? Base46HLGroups # highlight group for neogit
 ---@field NeogitUnpulledFrom? Base46HLGroups # highlight group for neogit
 ---@field NeogitUnmergedInto? Base46HLGroups # highlight group for neogit
@@ -1590,6 +1622,7 @@ error("Requiring a meta file")
 ---| "'mini-tabline'"
 ---| "'navic'"
 ---| "'neogit'"
+---| "'neotest'"
 ---| "'notify'"
 ---| "'nvcheatsheet'"
 ---| "'nvimtree'"
