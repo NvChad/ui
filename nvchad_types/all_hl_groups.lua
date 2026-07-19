@@ -438,6 +438,15 @@ error("Requiring a meta file")
 ---@field GrugFarResultsMatchRemoved? Base46HLGroups # highlight group for grug_far
 ---@field GrugFarResultsMatchAdded? Base46HLGroups # highlight group for grug_far
 ---@field GrugFarResultsMatch? Base46HLGroups # highlight group for grug_far
+---@field GitSignsDeleteNr? Base46HLGroups # highlight group for gitsigns
+---@field GitSignsDeleteLn? Base46HLGroups # highlight group for gitsigns
+---@field GitSignsDelete? Base46HLGroups # highlight group for gitsigns
+---@field GitSignsCurrentLineBlame? Base46HLGroups # highlight group for gitsigns
+---@field GitSignsChangeNr? Base46HLGroups # highlight group for gitsigns
+---@field GitSignsChange? Base46HLGroups # highlight group for gitsigns
+---@field GitSignsAddNr? Base46HLGroups # highlight group for gitsigns
+---@field GitSignsAddLn? Base46HLGroups # highlight group for gitsigns
+---@field GitSignsAdd? Base46HLGroups # highlight group for gitsigns
 ---@field GitConflictDiffText? Base46HLGroups # highlight group for git-conflict
 ---@field GitConflictDiffAdd? Base46HLGroups # highlight group for git-conflict
 ---@field Function? Base46HLGroups # highlight group for syntax
@@ -1216,6 +1225,15 @@ error("Requiring a meta file")
 ---@field GrugFarResultsMatchRemoved? Base46HLGroups # highlight group for grug_far
 ---@field GrugFarResultsMatchAdded? Base46HLGroups # highlight group for grug_far
 ---@field GrugFarResultsMatch? Base46HLGroups # highlight group for grug_far
+---@field GitSignsDeleteNr? Base46HLGroups # highlight group for gitsigns
+---@field GitSignsDeleteLn? Base46HLGroups # highlight group for gitsigns
+---@field GitSignsDelete? Base46HLGroups # highlight group for gitsigns
+---@field GitSignsCurrentLineBlame? Base46HLGroups # highlight group for gitsigns
+---@field GitSignsChangeNr? Base46HLGroups # highlight group for gitsigns
+---@field GitSignsChange? Base46HLGroups # highlight group for gitsigns
+---@field GitSignsAddNr? Base46HLGroups # highlight group for gitsigns
+---@field GitSignsAddLn? Base46HLGroups # highlight group for gitsigns
+---@field GitSignsAdd? Base46HLGroups # highlight group for gitsigns
 ---@field GitConflictDiffText? Base46HLGroups # highlight group for git-conflict
 ---@field GitConflictDiffAdd? Base46HLGroups # highlight group for git-conflict
 ---@field Function? Base46HLGroups # highlight group for syntax
@@ -1613,6 +1631,7 @@ error("Requiring a meta file")
 ---| "'flash'"
 ---| "'git-conflict'"
 ---| "'git'"
+---| "'gitsigns'"
 ---| "'grug_far'"
 ---| "'hop'"
 ---| "'leap'"
