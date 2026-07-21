@@ -1661,3 +1661,4 @@ error("Requiring a meta file")
 ---| "'trouble'"
 ---| "'vim-illuminate'"
 ---| "'whichkey'"
+---| string
