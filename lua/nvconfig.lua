@@ -4,6 +4,7 @@ local options = {
     theme = "onedark", -- default theme
     hl_add = {},
     hl_override = {},
+    integrations_dir = nil,
     integrations = {},
     changed_themes = {},
     transparency = false,
