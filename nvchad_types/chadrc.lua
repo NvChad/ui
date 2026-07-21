@@ -46,6 +46,8 @@
 --- You can try out the theme by executing `:Telescope themes`
 --- see https://github.com/NvChad/base46/tree/master/lua/base46/themes
 ---@field theme? ThemeName
+--- module name for loading custom integrations
+---@field integrations_dir? string
 ---@field integrations? Base46Integrations[]
 
 --- UI related configuration
