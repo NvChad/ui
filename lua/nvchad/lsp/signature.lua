@@ -15,6 +15,11 @@ local function check_triggeredChars(triggerChars)
 end
 
 M.setup = function(client, bufnr)
+  -- Guard against invalid or already deleted buffers (e.g. async vim.schedule callbacks)
+  if not bufnr or not api.nvim_buf_is_valid(bufnr) then
+    return
+  end
+
   local group = api.nvim_create_augroup("LspSignature", { clear = false })
   api.nvim_clear_autocmds { group = group, buffer = bufnr }
 
