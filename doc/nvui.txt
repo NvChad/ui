@@ -623,6 +623,16 @@ It's preferred to put the dofile code in your plugin's config func
     end
  }
 <
+To include custom integrations, use the `base46.integrations_dir` option to
+define a module name that contains the custom integration files. Loading
+from the custom module location will only be tried if there is no matching
+official integration.
+>lua
+ M.base46 = {
+   integrations_dir = "foo.integrations",
+   integrations = { "dap", "hop", "customname" },
+ }
+<
 ------------------------------------------------------------------------------
 6.5 Local themes		                      *nvui.base46.local_themes*
 
