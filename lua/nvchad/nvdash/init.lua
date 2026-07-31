@@ -263,6 +263,7 @@ M.open = function(buf, win, action)
     callback = function()
       vim.bo[vim.g.nvdash_buf].ma = true
       require("nvchad.nvdash").open(vim.g.nvdash_buf, vim.g.nvdash_win, "redraw")
+      vim.bo[vim.g.nvdash_buf].ma = false
     end,
   })
 end
