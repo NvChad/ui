@@ -79,6 +79,8 @@ vim.g.nvchad_theme = 'onedark'
 ---| '"everforest_light"'
 ---| '"everforest"'
 ---| '"everblush"'
+---| '"espresso"'
+---| '"espresso-light"'
 ---| '"embark"'
 ---| '"eldritch"'
 ---| '"doomchad"'
@@ -127,6 +129,8 @@ vim.g.nvchad_theme = 'onedark'
 ---@field doomchad? ThemeTable # Changes for doomchad theme
 ---@field eldritch? ThemeTable # Changes for eldritch theme
 ---@field embark? ThemeTable # Changes for embark theme
+---@field ["espresso-light"]? ThemeTable # Changes for espresso-light theme
+---@field espresso? ThemeTable # Changes for espresso theme
 ---@field everblush? ThemeTable # Changes for everblush theme
 ---@field everforest? ThemeTable # Changes for everforest theme
 ---@field everforest_light? ThemeTable # Changes for everforest_light theme
