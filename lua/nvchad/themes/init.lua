@@ -4,6 +4,7 @@ local volt = require "volt"
 local ui = require "nvchad.themes.ui"
 local state = require "nvchad.themes.state"
 local colors = dofile(vim.g.base46_cache .. "colors")
+local opts = require("nvconfig").themepicker
 
 state.ns = api.nvim_create_namespace "NvThemes"
 
@@ -26,12 +27,11 @@ local gen_word_pad = function()
   state.longest_name = largest
 end
 
-M.open = function(opts)
-  opts = opts or {}
+M.open = function()
   state.buf = api.nvim_create_buf(false, true)
   state.input_buf = api.nvim_create_buf(false, true)
 
-  state.style = opts.style or "bordered"
+  state.style = opts.style
 
   local style = state.style
 
