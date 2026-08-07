@@ -68,8 +68,8 @@ M.style_buf = function(nr, i, w)
   name = string.sub(name, 1, maxname_len - 2) .. (#name > maxname_len and ".." or "")
   name = M.txt(name, tbHlName)
 
-  name = strep(" ", pad - 1) .. (icon_hl .. icon .. name) .. strep(" ", pad - 1)
-
+  local num = opts.show_numbers and (M.txt(i .. " ", tbHlName)) or ""
+  name = strep(" ", pad - 1) .. (num .. icon_hl .. icon .. name) .. strep(" ", pad - 1)
   local close_btn = btn(" 󰅖 ", nil, "KillBuf", nr)
   name = btn(name, nil, "GoToBuf", nr)
 
