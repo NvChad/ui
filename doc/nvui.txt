@@ -132,6 +132,7 @@ nvconfig file : |https://github.com/NvChad/ui/blob/v3.0/lua/nvconfig.lua|
      theme = "onedark",
      hl_add = {},
      hl_override = {},
+     integrations_dir = nil,
      integrations = {},
      changed_themes = {},
      transparency = false,
@@ -224,6 +225,13 @@ nvconfig file : |https://github.com/NvChad/ui/blob/v3.0/lua/nvconfig.lua|
      virt_text = "󱓻 ",
      highlight = { hex = true, lspvars = true },
    },
+
+   themepicker = {
+     style = "bordered", -- bordered, flat, compact
+     border = false,
+     icon = nil, -- set it to nil to use default icons preferred by the style
+  },
+
  }
  
 ==============================================================================
@@ -757,20 +765,21 @@ NOTE: API
 - This is a theme picker created from volt ui library! 
 - It has 3 styles, `compact`, `minimal` & `default`
 
+These are the default options for Theme picker 
+>lua
+ M.themepicker = {
+    style = "bordered", -- bordered, flat, compact
+    border = false,
+    icon = nil, -- set it to nil to use default icons preferred by the style
+ },
+<
+
 NOTE: API
 >lua
  require("nvchad.themes").open()
 
- opts: ~  
-
-  {
-    icon = "", -- optional
-    style = "compact", -- optional! compact/flat/bordered
-    border = false,
-  }
-
  example: ~
 
-   require("nvchad.themes").open { style = "flat" }
+ require("nvchad.themes").open { style = "flat" }
 <
 vim:tw=78:ts=8:noet:ft=help:norl:

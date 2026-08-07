@@ -114,6 +114,12 @@ local options = {
     virt_text = "󱓻 ",
     highlight = { hex = true, lspvars = true },
   },
+
+  themepicker = {
+    style = "bordered", -- bordered, flat, compact
+    border = false,
+    icon = nil, -- set it to nil to use default icons preferred by the style
+  },
 }
 
 local status, chadrc = pcall(require, "chadrc")

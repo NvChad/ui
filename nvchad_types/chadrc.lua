@@ -9,6 +9,7 @@
 ---@field mason? MasonConfig
 ---@field colorify? ColorifyConfig
 ---@field nvdash? NvDashConfig
+---@field themepicker? ThemePickerConfig
 
 ---@class Base46Config
 --- List of highlights group to add.
@@ -180,3 +181,8 @@
 ---@class NvCmpFormatColors
 ---@field icon? string # icon to use for color swatches
 ---@field lsp? boolean # show colors from tailwind/css/astro lsp in menu
+
+---@class ThemePickerConfig
+---@field style? "bordered"|"flat"|"compact"
+---@field border? boolean
+---@field icon? string
