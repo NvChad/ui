@@ -53,7 +53,7 @@ M.open = function(buf, win, action)
 
   if not vim.bo.buflisted and action == "open" then
     if vim.t.bufs[1] then
-      win = vim.fn.bufwinid(vim.t.bufs[1])
+      win = fn.bufwinid(vim.t.bufs[1])
       api.nvim_set_current_win(win)
     end
   end
@@ -61,7 +61,7 @@ M.open = function(buf, win, action)
   local ns = api.nvim_create_namespace "nvdash"
   local winh = api.nvim_win_get_height(win)
   local winw = api.nvim_win_get_width(win)
-  buf = buf or vim.api.nvim_create_buf(false, true)
+  buf = buf or api.nvim_create_buf(false, true)
 
   vim.g.nvdash_buf = buf
   vim.g.nvdash_win = win
@@ -83,7 +83,7 @@ M.open = function(buf, win, action)
       nvdash_w = headerw
     end
 
-    local col = math.floor((winw / 2) - math.floor(strw(v) / 2)) - 6
+    local col = math.floor((winw / 2) - math.floor(strw(v) / 2)) - 1
     local opt = { virt_text_win_col = col, virt_text = { { v, "NvDashAscii" } } }
     table.insert(ui, opt)
   end
@@ -126,7 +126,7 @@ M.open = function(buf, win, action)
         w = groups_maxw[v.group] or btn_widths[i]
       end
 
-      col = math.floor((winw / 2) - math.floor(w / 2)) - 6
+      col = math.floor((winw / 2) - math.floor(w / 2)) - 1
       opt = { virt_text_win_col = col, virt_text = multicolumn_virt_texts(v, w, btn_widths[i]) }
     else
       local str = type(v.txt) == "string" and v.txt or v.txt()
@@ -136,7 +136,7 @@ M.open = function(buf, win, action)
 
       str = v.rep and string.rep(str, w) or str
       str = v.keys and btn_gap(str, v.keys, w) or str
-      col = math.floor((winw / 2) - math.floor(w / 2)) - 6
+      col = math.floor((winw / 2) - math.floor(w / 2)) - 1
       opt = { virt_text_win_col = col, virt_text = { { str, v.hl or "NvdashButtons" } } }
     end
 
@@ -180,17 +180,31 @@ M.open = function(buf, win, action)
     api.nvim_buf_set_extmark(buf, ns, row_i + i, 0, v)
   end
 
+  if action == "open" then
+    vim.wo[win].virtualedit = "all"
+  end
+
+  local function draw_cursor(row, col)
+    local ok = pcall(api.nvim_win_set_cursor, win, { row, col })
+    if ok then
+      return
+    end
+
+    local line = api.nvim_buf_get_lines(buf, row - 1, row, false)[1] or ""
+    col = math.min(col, #line)
+    pcall(api.nvim_win_set_cursor, win, { row, col })
+  end
+
+  if key_lines[1] then
+    draw_cursor(key_lines[1].i, key_lines[1].col)
+    fn.winrestview { topline = row_i }
+  end
+
   if action == "redraw" then
     return
   end
 
   ------------------------------------ keybinds ------------------------------------------
-  vim.wo[win].virtualedit = "all"
-
-  if key_lines[1] then
-    api.nvim_win_set_cursor(win, { key_lines[1].i, key_lines[1].col })
-  end
-
   local key_movements = function(n, cmd)
     local curline = fn.line "."
 
@@ -206,12 +220,24 @@ M.open = function(buf, win, action)
     end
   end
 
+  local function col_from_extmark(row)
+    local marks = api.nvim_buf_get_extmarks(buf, ns, { row - 1, 0 }, { row - 1, -1 }, { details = true })
+    if marks[1] then
+      return marks[1][4].virt_text_win_col or 0
+    end
+    return 0
+  end
+
   map({ "k", "<up>" }, function()
-    api.nvim_win_set_cursor(win, key_movements(-1, false))
+    local x = key_movements(-1, false)
+    local col = col_from_extmark(x[1])
+    draw_cursor(x[1], col)
   end, buf)
 
   map({ "j", "<down>" }, function()
-    api.nvim_win_set_cursor(win, key_movements(1, false))
+    local x = key_movements(1, false)
+    local col = col_from_extmark(x[1])
+    draw_cursor(x[1], col)
   end, buf)
 
   map({ "<cr>" }, function()
@@ -237,6 +263,7 @@ M.open = function(buf, win, action)
     callback = function()
       vim.bo[vim.g.nvdash_buf].ma = true
       require("nvchad.nvdash").open(vim.g.nvdash_buf, vim.g.nvdash_win, "redraw")
+      vim.bo[vim.g.nvdash_buf].ma = false
     end,
   })
 end
