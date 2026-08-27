@@ -188,7 +188,17 @@ M.open = function(buf, win, action)
   vim.wo[win].virtualedit = "all"
 
   if key_lines[1] then
-    api.nvim_win_set_cursor(win, { key_lines[1].i, key_lines[1].col })
+    local row = key_lines[1].i
+    local col = key_lines[1].col
+
+    local line = api.nvim_buf_get_lines(buf, row - 1, row, false)[1] or ""
+    if col > #line then
+      col = #line
+    elseif col < 0 then
+      col = 0
+    end
+
+    api.nvim_win_set_cursor(win, { row, col })
   end
 
   local key_movements = function(n, cmd)
@@ -200,10 +210,20 @@ M.open = function(buf, win, action)
         if cmd and x.cmd then
           vim.cmd(x.cmd)
         else
-          return { x.i, x.col }
+          local line = api.nvim_buf_get_lines(buf, x.i - 1, x.i, false)[1] or ""
+          local col = math.max(0, math.min(x.col, #line))
+          return { x.i, col }
         end
       end
     end
+
+    if key_lines[1] then
+      local line = api.nvim_buf_get_lines(buf, key_lines[1].i - 1, key_lines[1].i, false)[1] or ""
+      local col = math.max(0, math.min(key_lines[1].col, #line))
+      return { key_lines[1].i, col }
+    end
+
+    return { 1, 0 }
   end
 
   map({ "k", "<up>" }, function()
