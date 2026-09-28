@@ -75,7 +75,7 @@
 --- places lspkind icons to the left, only for non-atom styles
 --- @field format_colors? NvCmpFormatColors
 --- changes whether or not to have completion items match as typed
---- @field match? boolean
+--- @field matchl? boolean
 
 ---@class NvTelescopeConfig
 --- Telescope style
