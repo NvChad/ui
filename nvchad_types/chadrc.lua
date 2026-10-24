@@ -113,6 +113,7 @@
 --- The order is a list of module names from default modules + your modules
 ---@field order? ('"treeOffset"'|'"buffers"'|'"tabs"'|'"btns"')[] | string[]
 --- Show numbers on tabufline buffer tabs
+---@field numbers? boolean
 --- Your modules to be added to the tabufline
 --- ```lua
 ---     modules = {
