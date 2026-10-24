@@ -132,6 +132,7 @@ nvconfig file : |https://github.com/NvChad/ui/blob/v3.0/lua/nvconfig.lua|
      theme = "onedark",
      hl_add = {},
      hl_override = {},
+     integrations_dir = nil,
      integrations = {},
      changed_themes = {},
      transparency = false,
@@ -224,6 +225,13 @@ nvconfig file : |https://github.com/NvChad/ui/blob/v3.0/lua/nvconfig.lua|
      virt_text = "󱓻 ",
      highlight = { hex = true, lspvars = true },
    },
+
+   themepicker = {
+     style = "bordered", -- bordered, flat, compact
+     border = false,
+     icon = nil, -- set it to nil to use default icons preferred by the style
+  },
+
  }
  
 ==============================================================================
@@ -623,6 +631,16 @@ It's preferred to put the dofile code in your plugin's config func
     end
  }
 <
+To include custom integrations, use the `base46.integrations_dir` option to
+define a module name that contains the custom integration files. Loading
+from the custom module location will only be tried if there is no matching
+official integration.
+>lua
+ M.base46 = {
+   integrations_dir = "foo.integrations",
+   integrations = { "dap", "hop", "customname" },
+ }
+<
 ------------------------------------------------------------------------------
 6.5 Local themes		                      *nvui.base46.local_themes*
 
@@ -646,9 +664,22 @@ It's preferred to put the dofile code in your plugin's config func
 ------------------------------------------------------------------------------
 7.2 Renamer                                                   *nvui.lsp.renamer*
 
-This is a function will will rename variable under cursor
+This function renames the variable under the cursor.
 >lua
  require "nvchad.lsp.renamer"()
+
+UI can be customized by passing a table of options to this function. Defaults
+are listed in the example.
+>lua
+ require "nvchad.lsp.renamer"({
+   border = "single", -- see :h winborder for additional options
+   border_hl_group = "Removed",
+   right_padding = 15,
+   title = "Renamer",
+   title_hl_group = "@comment.danger",
+   show_original = true, -- set to false if you don't want to autofill
+   allow_normal = false, -- set to true to access normal in renamer prompt
+ })
 
 ==============================================================================
 8. Colorify			                                 *nvui.colorify*
@@ -747,20 +778,21 @@ NOTE: API
 - This is a theme picker created from volt ui library! 
 - It has 3 styles, `compact`, `minimal` & `default`
 
+These are the default options for Theme picker 
+>lua
+ M.themepicker = {
+    style = "bordered", -- bordered, flat, compact
+    border = false,
+    icon = nil, -- set it to nil to use default icons preferred by the style
+ },
+<
+
 NOTE: API
 >lua
  require("nvchad.themes").open()
 
- opts: ~  
-
-  {
-    icon = "", -- optional
-    style = "compact", -- optional! compact/flat/bordered
-    border = false,
-  }
-
  example: ~
 
-   require("nvchad.themes").open { style = "flat" }
+ require("nvchad.themes").open { style = "flat" }
 <
 vim:tw=78:ts=8:noet:ft=help:norl:

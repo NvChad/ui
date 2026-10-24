@@ -4,6 +4,7 @@ local options = {
     theme = "onedark", -- default theme
     hl_add = {},
     hl_override = {},
+    integrations_dir = nil,
     integrations = {},
     changed_themes = {},
     transparency = false,
@@ -17,6 +18,7 @@ local options = {
       abbr_maxwidth = 60,
       -- for tailwind, css lsp etc
       format_colors = { lsp = true, icon = "󱓻" },
+      matchl = true,
     },
 
     telescope = { style = "borderless" }, -- borderless / bordered
@@ -112,6 +114,12 @@ local options = {
     mode = "virtual", -- fg, bg, virtual
     virt_text = "󱓻 ",
     highlight = { hex = true, lspvars = true },
+  },
+
+  themepicker = {
+    style = "bordered", -- bordered, flat, compact
+    border = false,
+    icon = nil, -- set it to nil to use default icons preferred by the style
   },
 }
 

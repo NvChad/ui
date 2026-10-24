@@ -22,6 +22,7 @@ vim.g.nvchad_theme = 'onedark'
 ---| '"solarized_osaka"'
 ---| '"solarized_light"'
 ---| '"solarized_dark"'
+---| '"slatewave"'
 ---| '"seoul256_light"'
 ---| '"seoul256_dark"'
 ---| '"scaryforest"'
@@ -65,6 +66,7 @@ vim.g.nvchad_theme = 'onedark'
 ---| '"horizon"'
 ---| '"hiberbee"'
 ---| '"gruvchad"'
+---| '"gruvbox_material"'
 ---| '"gruvbox_light"'
 ---| '"gruvbox"'
 ---| '"github_light"'
@@ -78,6 +80,8 @@ vim.g.nvchad_theme = 'onedark'
 ---| '"everforest_light"'
 ---| '"everforest"'
 ---| '"everblush"'
+---| '"espresso"'
+---| '"espresso-light"'
 ---| '"embark"'
 ---| '"eldritch"'
 ---| '"doomchad"'
@@ -126,6 +130,8 @@ vim.g.nvchad_theme = 'onedark'
 ---@field doomchad? ThemeTable # Changes for doomchad theme
 ---@field eldritch? ThemeTable # Changes for eldritch theme
 ---@field embark? ThemeTable # Changes for embark theme
+---@field ["espresso-light"]? ThemeTable # Changes for espresso-light theme
+---@field espresso? ThemeTable # Changes for espresso theme
 ---@field everblush? ThemeTable # Changes for everblush theme
 ---@field everforest? ThemeTable # Changes for everforest theme
 ---@field everforest_light? ThemeTable # Changes for everforest_light theme
@@ -139,6 +145,7 @@ vim.g.nvchad_theme = 'onedark'
 ---@field github_light? ThemeTable # Changes for github_light theme
 ---@field gruvbox? ThemeTable # Changes for gruvbox theme
 ---@field gruvbox_light? ThemeTable # Changes for gruvbox_light theme
+---@field gruvbox_material? ThemeTable # Changes for gruvbox_material theme
 ---@field gruvchad? ThemeTable # Changes for gruvchad theme
 ---@field hiberbee? ThemeTable # Changes for hiberbee theme
 ---@field horizon? ThemeTable # Changes for horizon theme
@@ -182,6 +189,7 @@ vim.g.nvchad_theme = 'onedark'
 ---@field scaryforest? ThemeTable # Changes for scaryforest theme
 ---@field ["seoul256_dark"]? ThemeTable # Changes for seoul256_dark theme
 ---@field ["seoul256_light"]? ThemeTable # Changes for seoul256_light theme
+---@field slatewave? ThemeTable # Changes for slatewave theme
 ---@field solarized_dark? ThemeTable # Changes for solarized_dark theme
 ---@field solarized_light? ThemeTable # Changes for solarized_light theme
 ---@field solarized_osaka? ThemeTable # Changes for solarized_osaka theme

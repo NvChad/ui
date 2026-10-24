@@ -27,7 +27,7 @@ local gen_word_pad = function()
 end
 
 M.open = function(opts)
-  opts = opts or {}
+  opts = opts or require("nvconfig").themepicker
   state.buf = api.nvim_create_buf(false, true)
   state.input_buf = api.nvim_create_buf(false, true)
 

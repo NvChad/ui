@@ -43,7 +43,7 @@ local del_extmarks_on_textchange = function(buf)
 end
 
 return function(buf, event)
-  local winid = vim.fn.bufwinid(buf)
+  local winid = vim.api.nvim_get_current_win()
 
   local min = fn.line("w0", winid) - 1
   local max = fn.line("w$", winid) + 1

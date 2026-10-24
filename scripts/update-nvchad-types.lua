@@ -87,6 +87,9 @@ local gen_highlights = function()
       end
     end
   end
+  -- allow string type to keep completion through enum values
+  -- while avoiding linter warnings for custom integrations.
+  table.insert(contents, string.format "---| string")
 
   for name, integration in vim.spairs(hlgroups) do
     if string.sub(name, 1, 1) == "@" then
