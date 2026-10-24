@@ -66,7 +66,7 @@ return function(opts)
       show_original = true,
       allow_normal = false,
     }
-    opts = vim.tbl_deep_extend('force', default_opts, opts or {})
+    opts = vim.tbl_deep_extend("force", default_opts, opts or {})
 
     local winopts = {
       height = 1,
@@ -84,14 +84,14 @@ return function(opts)
     vim.wo[win].winhl = "Normal:Normal,FloatBorder:" .. opts.border_hl_group
     api.nvim_set_current_win(win)
 
+    vim.bo[buf].buftype = "prompt"
+    vim.fn.prompt_setprompt(buf, "")
+
     if opts.show_original then
       api.nvim_buf_set_lines(buf, 0, -1, true, { " " .. to_rename })
     else
       api.nvim_buf_set_lines(buf, 0, -1, true, { " " })
     end
-
-    vim.bo[buf].buftype = "prompt"
-    vim.fn.prompt_setprompt(buf, "")
 
     vim.api.nvim_input "A"
 

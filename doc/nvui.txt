@@ -124,6 +124,7 @@ Base46 setup
 These are the default options for UI/Base46 plugin. No need to write them all 
 Only those you want to change and the it'll override the defaults.
 
+Always check as its Up to date. 
 nvconfig file : |https://github.com/NvChad/ui/blob/v3.0/lua/nvconfig.lua|
 >lua
  {
@@ -131,6 +132,7 @@ nvconfig file : |https://github.com/NvChad/ui/blob/v3.0/lua/nvconfig.lua|
      theme = "onedark",
      hl_add = {},
      hl_override = {},
+     integrations_dir = nil,
      integrations = {},
      changed_themes = {},
      transparency = false,
@@ -149,6 +151,7 @@ nvconfig file : |https://github.com/NvChad/ui/blob/v3.0/lua/nvconfig.lua|
      telescope = { style = "borderless" }, -- borderless / bordered
  
      statusline = {
+       enabled = true,
        theme = "default", -- default/vscode/vscode_colored/minimal
        -- default/round/block/arrow separators work only for default statusline theme
        -- round and block will work for minimal theme only
@@ -161,6 +164,7 @@ nvconfig file : |https://github.com/NvChad/ui/blob/v3.0/lua/nvconfig.lua|
      tabufline = {
        enabled = true,
        lazyload = true,
+       treeOffsetFt = "NvimTree",
        order = { "treeOffset", "buffers", "tabs", "btns" },
        modules = nil,
        bufwidth = 21,
@@ -221,6 +225,13 @@ nvconfig file : |https://github.com/NvChad/ui/blob/v3.0/lua/nvconfig.lua|
      virt_text = "󱓻 ",
      highlight = { hex = true, lspvars = true },
    },
+
+   themepicker = {
+     style = "bordered", -- bordered, flat, compact
+     border = false,
+     icon = nil, -- set it to nil to use default icons preferred by the style
+  },
+
  }
  
 ==============================================================================
@@ -620,6 +631,16 @@ It's preferred to put the dofile code in your plugin's config func
     end
  }
 <
+To include custom integrations, use the `base46.integrations_dir` option to
+define a module name that contains the custom integration files. Loading
+from the custom module location will only be tried if there is no matching
+official integration.
+>lua
+ M.base46 = {
+   integrations_dir = "foo.integrations",
+   integrations = { "dap", "hop", "customname" },
+ }
+<
 ------------------------------------------------------------------------------
 6.5 Local themes		                      *nvui.base46.local_themes*
 
@@ -757,20 +778,21 @@ NOTE: API
 - This is a theme picker created from volt ui library! 
 - It has 3 styles, `compact`, `minimal` & `default`
 
+These are the default options for Theme picker 
+>lua
+ M.themepicker = {
+    style = "bordered", -- bordered, flat, compact
+    border = false,
+    icon = nil, -- set it to nil to use default icons preferred by the style
+ },
+<
+
 NOTE: API
 >lua
  require("nvchad.themes").open()
 
- opts: ~  
-
-  {
-    icon = "", -- optional
-    style = "compact", -- optional! compact/flat/bordered
-    border = false,
-  }
-
  example: ~
 
-   require("nvchad.themes").open { style = "flat" }
+ require("nvchad.themes").open { style = "flat" }
 <
 vim:tw=78:ts=8:noet:ft=help:norl:

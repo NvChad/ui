@@ -9,6 +9,7 @@
 ---@field mason? MasonConfig
 ---@field colorify? ColorifyConfig
 ---@field nvdash? NvDashConfig
+---@field themepicker? ThemePickerConfig
 
 ---@class Base46Config
 --- List of highlights group to add.
@@ -46,6 +47,8 @@
 --- You can try out the theme by executing `:Telescope themes`
 --- see https://github.com/NvChad/base46/tree/master/lua/base46/themes
 ---@field theme? ThemeName
+--- module name for loading custom integrations
+---@field integrations_dir? string
 ---@field integrations? Base46Integrations[]
 
 --- UI related configuration
@@ -72,6 +75,8 @@
 --- @field icons_left? boolean
 --- places lspkind icons to the left, only for non-atom styles
 --- @field format_colors? NvCmpFormatColors
+--- changes whether or not to have completion items match as typed
+--- @field matchl? boolean
 
 ---@class NvTelescopeConfig
 --- Telescope style
@@ -83,7 +88,7 @@
 ---@field theme? '"default"'|'"vscode"'|'"vscode_colored"'|'"minimal"'
 --- Separator style for NvChad Statusline
 ---     - Only when the *theme* is `minimal`, "round" or "block" will be having effect
----@field separator_style? '"default"'|'"round"'|'"block"'|'"arrow"'
+---@field separator_style? '"default"'|'"round"'|'"block"'|'"arrow"'|{ left: string, right: string }
 --- The list of module names from default modules + your modules
 --- Check https://github.com/NvChad/ui/blob/v2.5/lua/nvchad/stl/utils.lua#L12 for the modules of each statusline theme
 ---@field order? string[]
@@ -195,3 +200,8 @@
 ---@class NvCmpFormatColors
 ---@field icon? string # icon to use for color swatches
 ---@field lsp? boolean # show colors from tailwind/css/astro lsp in menu
+
+---@class ThemePickerConfig
+---@field style? "bordered"|"flat"|"compact"
+---@field border? boolean
+---@field icon? string

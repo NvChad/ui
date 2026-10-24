@@ -17,10 +17,12 @@ vim.g.nvchad_theme = 'onedark'
 ---| '"tokyonight"'
 ---| '"tokyodark"'
 ---| '"sweetpastel"'
+---| '"sunrise_breeze"'
 ---| '"starlight"'
 ---| '"solarized_osaka"'
 ---| '"solarized_light"'
 ---| '"solarized_dark"'
+---| '"slatewave"'
 ---| '"seoul256_light"'
 ---| '"seoul256_dark"'
 ---| '"scaryforest"'
@@ -52,6 +54,7 @@ vim.g.nvchad_theme = 'onedark'
 ---| '"monochrome"'
 ---| '"monekai"'
 ---| '"mito-laser"'
+---| '"midnight_breeze"'
 ---| '"melange"'
 ---| '"material-lighter"'
 ---| '"material-deep-ocean"'
@@ -63,6 +66,7 @@ vim.g.nvchad_theme = 'onedark'
 ---| '"horizon"'
 ---| '"hiberbee"'
 ---| '"gruvchad"'
+---| '"gruvbox_material"'
 ---| '"gruvbox_light"'
 ---| '"gruvbox"'
 ---| '"github_light"'
@@ -76,6 +80,8 @@ vim.g.nvchad_theme = 'onedark'
 ---| '"everforest_light"'
 ---| '"everforest"'
 ---| '"everblush"'
+---| '"espresso"'
+---| '"espresso-light"'
 ---| '"embark"'
 ---| '"eldritch"'
 ---| '"doomchad"'
@@ -89,6 +95,7 @@ vim.g.nvchad_theme = 'onedark'
 ---| '"chadracula"'
 ---| '"chadracula-evondev"'
 ---| '"catppuccin"'
+---| '"catppuccin-latte"'
 ---| '"carbonfox"'
 ---| '"blossom_light"'
 ---| '"bearded-arc"'
@@ -109,6 +116,7 @@ vim.g.nvchad_theme = 'onedark'
 ---@field ["bearded-arc"]? ThemeTable # Changes for bearded-arc theme
 ---@field blossom_light? ThemeTable # Changes for blossom_light theme
 ---@field carbonfox? ThemeTable # Changes for carbonfox theme
+---@field ["catppuccin-latte"]? ThemeTable # Changes for catppuccin-latte theme
 ---@field catppuccin? ThemeTable # Changes for catppuccin theme
 ---@field ["chadracula-evondev"]? ThemeTable # Changes for chadracula-evondev theme
 ---@field chadracula? ThemeTable # Changes for chadracula theme
@@ -122,6 +130,8 @@ vim.g.nvchad_theme = 'onedark'
 ---@field doomchad? ThemeTable # Changes for doomchad theme
 ---@field eldritch? ThemeTable # Changes for eldritch theme
 ---@field embark? ThemeTable # Changes for embark theme
+---@field ["espresso-light"]? ThemeTable # Changes for espresso-light theme
+---@field espresso? ThemeTable # Changes for espresso theme
 ---@field everblush? ThemeTable # Changes for everblush theme
 ---@field everforest? ThemeTable # Changes for everforest theme
 ---@field everforest_light? ThemeTable # Changes for everforest_light theme
@@ -135,6 +145,7 @@ vim.g.nvchad_theme = 'onedark'
 ---@field github_light? ThemeTable # Changes for github_light theme
 ---@field gruvbox? ThemeTable # Changes for gruvbox theme
 ---@field gruvbox_light? ThemeTable # Changes for gruvbox_light theme
+---@field gruvbox_material? ThemeTable # Changes for gruvbox_material theme
 ---@field gruvchad? ThemeTable # Changes for gruvchad theme
 ---@field hiberbee? ThemeTable # Changes for hiberbee theme
 ---@field horizon? ThemeTable # Changes for horizon theme
@@ -146,6 +157,7 @@ vim.g.nvchad_theme = 'onedark'
 ---@field ["material-deep-ocean"]? ThemeTable # Changes for material-deep-ocean theme
 ---@field ["material-lighter"]? ThemeTable # Changes for material-lighter theme
 ---@field melange? ThemeTable # Changes for melange theme
+---@field midnight_breeze? ThemeTable # Changes for midnight_breeze theme
 ---@field ["mito-laser"]? ThemeTable # Changes for mito-laser theme
 ---@field monekai? ThemeTable # Changes for monekai theme
 ---@field monochrome? ThemeTable # Changes for monochrome theme
@@ -177,10 +189,12 @@ vim.g.nvchad_theme = 'onedark'
 ---@field scaryforest? ThemeTable # Changes for scaryforest theme
 ---@field ["seoul256_dark"]? ThemeTable # Changes for seoul256_dark theme
 ---@field ["seoul256_light"]? ThemeTable # Changes for seoul256_light theme
+---@field slatewave? ThemeTable # Changes for slatewave theme
 ---@field solarized_dark? ThemeTable # Changes for solarized_dark theme
 ---@field solarized_light? ThemeTable # Changes for solarized_light theme
 ---@field solarized_osaka? ThemeTable # Changes for solarized_osaka theme
 ---@field starlight? ThemeTable # Changes for starlight theme
+---@field sunrise_breeze? ThemeTable # Changes for sunrise_breeze theme
 ---@field sweetpastel? ThemeTable # Changes for sweetpastel theme
 ---@field tokyodark? ThemeTable # Changes for tokyodark theme
 ---@field tokyonight? ThemeTable # Changes for tokyonight theme

@@ -53,8 +53,8 @@ M.modes = {
   [""] = { "V-BLOCK", "Visual" },
 
   ["i"] = { "INSERT", "Insert" },
-  ["ic"] = { "INSERT (completion)", "Insert" },
-  ["ix"] = { "INSERT completion", "Insert" },
+  ["ic"] = { "INSERT", "Insert" },
+  ["ix"] = { "INSERT", "Insert" },
 
   ["t"] = { "TERMINAL", "Terminal" },
 

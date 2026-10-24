@@ -4,6 +4,7 @@ local options = {
     theme = "onedark", -- default theme
     hl_add = {},
     hl_override = {},
+    integrations_dir = nil,
     integrations = {},
     changed_themes = {},
     transparency = false,
@@ -17,6 +18,7 @@ local options = {
       abbr_maxwidth = 60,
       -- for tailwind, css lsp etc
       format_colors = { lsp = true, icon = "󱓻" },
+      matchl = true,
     },
 
     telescope = { style = "borderless" }, -- borderless / bordered
@@ -35,6 +37,7 @@ local options = {
     tabufline = {
       enabled = true,
       lazyload = true,
+      treeOffsetFt = "NvimTree",
       order = { "treeOffset", "buffers", "tabs", "btns" },
       modules = nil,
       bufwidth = 21,
@@ -44,18 +47,18 @@ local options = {
   nvdash = {
     load_on_startup = false,
     header = {
-      "                            ",
-      "     ▄▄         ▄ ▄▄▄▄▄▄▄   ",
-      "   ▄▀███▄     ▄██ █████▀    ",
-      "   ██▄▀███▄   ███           ",
-      "   ███  ▀███▄ ███           ",
-      "   ███    ▀██ ███           ",
-      "   ███      ▀ ███           ",
-      "   ▀██ █████▄▀█▀▄██████▄    ",
-      "     ▀ ▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀   ",
-      "                            ",
-      "     Powered By  eovim    ",
-      "                            ",
+      "                      ",
+      "  ▄▄         ▄ ▄▄▄▄▄▄▄",
+      "▄▀███▄     ▄██ █████▀ ",
+      "██▄▀███▄   ███        ",
+      "███  ▀███▄ ███        ",
+      "███    ▀██ ███        ",
+      "███      ▀ ███        ",
+      "▀██ █████▄▀█▀▄██████▄ ",
+      "  ▀ ▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀",
+      "                      ",
+      "  Powered By  eovim ",
+      "                      ",
     },
 
     buttons = {
@@ -75,6 +78,7 @@ local options = {
         end,
         hl = "NvDashFooter",
         no_gap = true,
+        content = "fit",
       },
 
       { txt = "─", hl = "NvDashFooter", no_gap = true, rep = true },
@@ -82,6 +86,7 @@ local options = {
   },
 
   term = {
+    startinsert = true,
     base46_colors = true,
     winopts = { number = false, relativenumber = false },
     sizes = { sp = 0.3, vsp = 0.2, ["bo sp"] = 0.3, ["bo vsp"] = 0.2 },
@@ -109,6 +114,12 @@ local options = {
     mode = "virtual", -- fg, bg, virtual
     virt_text = "󱓻 ",
     highlight = { hex = true, lspvars = true },
+  },
+
+  themepicker = {
+    style = "bordered", -- bordered, flat, compact
+    border = false,
+    icon = nil, -- set it to nil to use default icons preferred by the style
   },
 }
 
