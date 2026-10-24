@@ -143,7 +143,7 @@ M.open = function(buf, win, action)
     table.insert(ui, opt)
 
     if v.cmd then
-      table.insert(key_lines, { i = #ui, cmd = v.cmd, col = col })
+      table.insert(key_lines, { i = #ui, cmd = v.cmd, col = math.max(col, 0) })
     end
 
     if not v.no_gap then
@@ -204,6 +204,8 @@ M.open = function(buf, win, action)
         end
       end
     end
+
+    return { key_lines[1].i, key_lines[1].col }
   end
 
   map({ "k", "<up>" }, function()
