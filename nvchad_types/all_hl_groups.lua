@@ -130,6 +130,20 @@ error("Requiring a meta file")
 ---@field SpecialKey? Base46HLGroups # highlight group for defaults
 ---@field SpecialChar? Base46HLGroups # highlight group for syntax
 ---@field Special? Base46HLGroups # highlight group for syntax
+---@field SnacksTitle? Base46HLGroups # highlight group for snacks
+---@field SnacksPickerTotals? Base46HLGroups # highlight group for snacks
+---@field SnacksPickerTitle? Base46HLGroups # highlight group for snacks
+---@field SnacksPickerSelected? Base46HLGroups # highlight group for snacks
+---@field SnacksPickerPrompt? Base46HLGroups # highlight group for snacks
+---@field SnacksPickerPreviewTitle? Base46HLGroups # highlight group for snacks
+---@field SnacksPickerPreviewCursorLine? Base46HLGroups # highlight group for snacks
+---@field SnacksPickerMatch? Base46HLGroups # highlight group for snacks
+---@field SnacksPickerListCursorLine? Base46HLGroups # highlight group for snacks
+---@field SnacksPickerInputBorder? Base46HLGroups # highlight group for snacks
+---@field SnacksPickerInput? Base46HLGroups # highlight group for snacks
+---@field SnacksPickerDir? Base46HLGroups # highlight group for snacks
+---@field SnacksPickerBorder? Base46HLGroups # highlight group for snacks
+---@field SnacksPicker? Base46HLGroups # highlight group for snacks
 ---@field SignColumn? Base46HLGroups # highlight group for defaults
 ---@field Search? Base46HLGroups # highlight group for defaults
 ---@field SagaNormal? Base46HLGroups # highlight group for lspsaga
@@ -1002,6 +1016,20 @@ error("Requiring a meta file")
 ---@field SpecialKey? Base46HLGroups # highlight group for defaults
 ---@field SpecialChar? Base46HLGroups # highlight group for syntax
 ---@field Special? Base46HLGroups # highlight group for syntax
+---@field SnacksTitle? Base46HLGroups # highlight group for snacks
+---@field SnacksPickerTotals? Base46HLGroups # highlight group for snacks
+---@field SnacksPickerTitle? Base46HLGroups # highlight group for snacks
+---@field SnacksPickerSelected? Base46HLGroups # highlight group for snacks
+---@field SnacksPickerPrompt? Base46HLGroups # highlight group for snacks
+---@field SnacksPickerPreviewTitle? Base46HLGroups # highlight group for snacks
+---@field SnacksPickerPreviewCursorLine? Base46HLGroups # highlight group for snacks
+---@field SnacksPickerMatch? Base46HLGroups # highlight group for snacks
+---@field SnacksPickerListCursorLine? Base46HLGroups # highlight group for snacks
+---@field SnacksPickerInputBorder? Base46HLGroups # highlight group for snacks
+---@field SnacksPickerInput? Base46HLGroups # highlight group for snacks
+---@field SnacksPickerDir? Base46HLGroups # highlight group for snacks
+---@field SnacksPickerBorder? Base46HLGroups # highlight group for snacks
+---@field SnacksPicker? Base46HLGroups # highlight group for snacks
 ---@field SignColumn? Base46HLGroups # highlight group for defaults
 ---@field Search? Base46HLGroups # highlight group for defaults
 ---@field SagaNormal? Base46HLGroups # highlight group for lspsaga
@@ -1822,6 +1850,7 @@ error("Requiring a meta file")
 ---| "'rainbowdelimiters'"
 ---| "'render-markdown'"
 ---| "'semantic_tokens'"
+---| "'snacks'"
 ---| "'statusline'"
 ---| "'syntax'"
 ---| "'tbline'"
