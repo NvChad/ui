@@ -5,6 +5,7 @@ local strep = string.rep
 local cur_buf = api.nvim_get_current_buf
 local buf_name = api.nvim_buf_get_name
 local get_hl = api.nvim_get_hl
+local opts = require("nvconfig").ui.tabufline
 
 M.txt = function(str, hl)
   str = str or ""
@@ -68,7 +69,7 @@ M.style_buf = function(nr, i, w)
   name = string.sub(name, 1, maxname_len - 2) .. (#name > maxname_len and ".." or "")
   name = M.txt(name, tbHlName)
 
-  local num = opts.show_numbers and (M.txt(i .. " ", tbHlName)) or ""
+  local num = opts.numbers and (M.txt(i .. " ", tbHlName)) or ""
   name = strep(" ", pad - 1) .. (num .. icon_hl .. icon .. name) .. strep(" ", pad - 1)
   local close_btn = btn(" 󰅖 ", nil, "KillBuf", nr)
   name = btn(name, nil, "GoToBuf", nr)
