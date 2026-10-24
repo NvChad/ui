@@ -18,6 +18,7 @@ local options = {
       abbr_maxwidth = 60,
       -- for tailwind, css lsp etc
       format_colors = { lsp = true, icon = "󱓻" },
+      matchl = true,
     },
 
     telescope = { style = "borderless" }, -- borderless / bordered
