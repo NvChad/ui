@@ -66,6 +66,7 @@ vim.g.nvchad_theme = 'onedark'
 ---| '"horizon"'
 ---| '"hiberbee"'
 ---| '"gruvchad"'
+---| '"gruvbox_material"'
 ---| '"gruvbox_light"'
 ---| '"gruvbox"'
 ---| '"github_light"'
@@ -144,6 +145,7 @@ vim.g.nvchad_theme = 'onedark'
 ---@field github_light? ThemeTable # Changes for github_light theme
 ---@field gruvbox? ThemeTable # Changes for gruvbox theme
 ---@field gruvbox_light? ThemeTable # Changes for gruvbox_light theme
+---@field gruvbox_material? ThemeTable # Changes for gruvbox_material theme
 ---@field gruvchad? ThemeTable # Changes for gruvchad theme
 ---@field hiberbee? ThemeTable # Changes for hiberbee theme
 ---@field horizon? ThemeTable # Changes for horizon theme
