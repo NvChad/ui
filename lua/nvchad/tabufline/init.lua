@@ -107,8 +107,12 @@ M.move_buf = function(n)
 
   for i, bufnr in ipairs(bufs) do
     if bufnr == cur_buf() then
-      if n < 0 and i == 1 or n > 0 and i == #bufs then
-        bufs[1], bufs[#bufs] = bufs[#bufs], bufs[1]
+      if n < 0 and i == 1 then
+        table.insert(bufs, bufs[i])
+        table.remove(bufs, i)
+      elseif n > 0 and i == #bufs then
+        table.insert(bufs, 1, bufs[i])
+        table.remove(bufs, i + 1)
       else
         bufs[i], bufs[i + n] = bufs[i + n], bufs[i]
       end
