@@ -17,7 +17,10 @@ M.next = function()
   local curbufIndex = buf_index(cur_buf())
 
   if not curbufIndex then
-    set_buf(vim.t.bufs[1])
+    if bufs[1] then
+      set_buf(bufs[1])
+    end
+
     return
   end
 
@@ -29,7 +32,10 @@ M.prev = function()
   local curbufIndex = buf_index(cur_buf())
 
   if not curbufIndex then
-    set_buf(vim.t.bufs[1])
+    if bufs[1] then
+      set_buf(bufs[1])
+    end
+
     return
   end
 
