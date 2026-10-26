@@ -107,6 +107,10 @@ return function(opts)
 
     vim.api.nvim_input "A"
 
+    vim.keymap.set("i", "<C-w>", function()
+      api.nvim_input "<c-s-w>"
+    end, { buffer = buf })
+
     local modes
 
     if opts.allow_normal then
