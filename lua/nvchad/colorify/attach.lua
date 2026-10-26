@@ -52,7 +52,7 @@ return function(buf, event)
     local cur_linenr = fn.line(".", winid) - 1
 
     if conf.highlight.hex then
-      methods.hex(buf, cur_linenr, api.nvim_get_current_line())
+      methods.hex(buf, cur_linenr, fn.getbufoneline(buf, cur_linenr + 1))
     end
 
     if conf.highlight.lspvars then
