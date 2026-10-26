@@ -105,6 +105,7 @@ local options = {
 
   cheatsheet = {
     theme = "grid", -- simple/grid
+    maxdesclen = 25, -- max length of a mapping description, longer ones get cut
     excluded_groups = { "terminal (t)", "autopairs", "Nvim", "Opens" }, -- can add group name or with mode
   },
 

@@ -68,6 +68,20 @@ M.organize_mappings = function()
   -- end
 end
 
+M.truncate = function(str, width)
+  if api.nvim_strwidth(str) <= width then
+    return str
+  end
+
+  local chars = vim.fn.strchars(str)
+
+  while chars > 0 and api.nvim_strwidth(vim.fn.strcharpart(str, 0, chars)) + 1 > width do
+    chars = chars - 1
+  end
+
+  return vim.fn.strcharpart(str, 0, chars) .. "…"
+end
+
 M.render = function(buf, rows)
   local ns = api.nvim_create_namespace "nvcheatsheet"
   local lines, marks = {}, {}

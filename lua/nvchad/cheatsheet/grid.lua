@@ -2,6 +2,7 @@ dofile(vim.g.base46_cache .. "nvcheatsheet")
 local api = vim.api
 local ch = require "nvchad.cheatsheet"
 local state = ch.state
+local conf = require("nvconfig").cheatsheet
 
 local ascii = {
   "                                      ",
@@ -38,18 +39,26 @@ return function(buf, win, action)
 
   for _, section in pairs(state.mappings_tb) do
     for _, mapping in pairs(section) do
-      local txt = vim.fn.strdisplaywidth(mapping[1] .. mapping[2])
+      local desc_width = vim.fn.strdisplaywidth(mapping[1])
+      desc_width = conf.maxdesclen and math.min(desc_width, conf.maxdesclen) or desc_width
+
+      local txt = desc_width + vim.fn.strdisplaywidth(mapping[2])
       column_width = column_width > txt and column_width or txt
     end
   end
 
-  -- 10 = space between mapping txt , 4 = 2 & 2 space around mapping txt
-  column_width = column_width + 10
+  -- 8 = space between mapping txt , 4 = 2 & 2 space around mapping txt
+  column_width = column_width + 8
 
-  local win_width = vim.o.columns - vim.fn.getwininfo(api.nvim_get_current_win())[1].textoff - 6
-  local columns_qty = math.floor(win_width / column_width)
-  columns_qty = (win_width / column_width < 10 and columns_qty == 0) and 1 or columns_qty
-  column_width = math.floor((win_width - (column_width * columns_qty)) / columns_qty) + column_width
+  local gap = 2
+  local textoff = vim.fn.getwininfo(win)[1].textoff
+  local margin = math.max(2 - textoff, 0)
+  local win_width = api.nvim_win_get_width(win) - textoff * 2 - margin * 2
+  local columns_qty = math.max(math.floor((win_width + gap) / (column_width + gap)), 1)
+  column_width = math.floor((win_width - gap * (columns_qty - 1)) / columns_qty)
+
+  local leftover = win_width - (column_width * columns_qty + gap * (columns_qty - 1))
+  local left_margin = string.rep(" ", margin + math.floor(leftover / 2))
 
   -- add mapping tables with their headings as key names
   local cards = {}
@@ -64,8 +73,9 @@ return function(buf, win, action)
 
       table.insert(cards[name], { { emptyline, "nvchsection" } })
 
-      local whitespace_len = column_width - 4 - vim.fn.strdisplaywidth(mapping[1] .. mapping[2])
-      local pretty_mapping = mapping[1] .. string.rep(" ", whitespace_len) .. mapping[2]
+      local desc = conf.maxdesclen and ch.truncate(mapping[1], conf.maxdesclen) or mapping[1]
+      local whitespace_len = column_width - 4 - vim.fn.strdisplaywidth(desc .. mapping[2])
+      local pretty_mapping = desc .. string.rep(" ", whitespace_len) .. mapping[2]
 
       table.insert(cards[name], { { "  " .. pretty_mapping .. "  ", "nvchsection" } })
     end
@@ -94,13 +104,24 @@ return function(buf, win, action)
 
   local columns = {}
 
+  local heights = {}
+
   for i = 1, columns_qty do
     columns[i] = {}
+    heights[i] = 0
   end
 
-  for index, entry in ipairs(entries) do
-    local columnIndex = (index - 1) % columns_qty + 1
-    table.insert(columns[columnIndex], entry)
+  for _, entry in ipairs(entries) do
+    local shortest = 1
+
+    for i = 2, columns_qty do
+      if heights[i] < heights[shortest] then
+        shortest = i
+      end
+    end
+
+    table.insert(columns[shortest], entry)
+    heights[shortest] = heights[shortest] + #entry
   end
 
   ------------------------------------------ build rows ------------------------------------------
@@ -126,13 +147,13 @@ return function(buf, win, action)
   end
 
   for row_i = 1, height do
-    local row = {}
+    local row = { { left_margin } }
 
     for col_i = 1, #columns do
       vim.list_extend(row, column_rows[col_i][row_i] or { { emptyline } })
 
       if col_i < #columns then
-        table.insert(row, { "  " })
+        table.insert(row, { string.rep(" ", gap) })
       end
     end
 

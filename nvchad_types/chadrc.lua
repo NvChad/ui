@@ -159,6 +159,9 @@
 --- Cheatsheet theme
 ---@field theme? '"grid"'|'"simple"'
 ---@field excluded_groups? string[]
+--- Max length of a mapping description, longer ones get truncated with `…`.
+--- A lower value makes the cards narrower, so more columns fit
+---@field maxdesclen? number
 
 ---Options for NvChad/ui lsp configuration
 ---@class NvLspConfig
