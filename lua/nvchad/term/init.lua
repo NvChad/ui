@@ -100,7 +100,7 @@ local function create(opts)
   if opts.cmd and opts.buf then
     cmd = { shell, "-c", format_cmd(opts.cmd) .. "; " .. shell }
   else
-    cmd = { shell }
+    cmd = vim.fn.executable(shell) == 1 and { shell } or shell
   end
 
   M.display(opts)
