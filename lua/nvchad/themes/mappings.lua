@@ -65,7 +65,7 @@ autocmd("TextChangedI", {
     api.nvim_set_option_value("modifiable", false, { buf = state.buf })
 
     if state.textchanged and #state.themes_shown > 0 then
-      utils.reload_theme(state.themes_shown[1])
+      nvapi.preview(state.themes_shown[1])
     end
 
     redraw(state.buf, "all")

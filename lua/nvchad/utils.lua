@@ -29,6 +29,25 @@ M.list_themes = function()
   return vim.list_extend(dark, light)
 end
 
+M.debounce = function(ms, func)
+  local timer = vim.uv.new_timer()
+
+  local wrapped = function(...)
+    local args = { ... }
+    timer:stop()
+
+    timer:start(
+      ms,
+      0,
+      vim.schedule_wrap(function()
+        func(unpack(args))
+      end)
+    )
+  end
+
+  return wrapped
+end
+
 M.replace_word = function(old, new, filepath)
   filepath = filepath or vim.fn.stdpath "config" .. "/lua/" .. "chadrc.lua"
 

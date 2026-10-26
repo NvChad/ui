@@ -26,10 +26,16 @@ end
 
 local M = {}
 
+M.preview = require("nvchad.utils").debounce(30, function(theme)
+  if state.confirmed or api.nvim_win_is_valid(state.win) then
+    utils.reload_theme(theme)
+  end
+end)
+
 M.move_down = function()
   if #state.themes_shown > 0 then
     local theme = set_index(1)
-    utils.reload_theme(theme)
+    M.preview(theme)
     redraw(state.buf, "all")
 
     if state.index + 1 > state.limit[state.style] then
@@ -44,7 +50,7 @@ end
 M.move_up = function()
   if #state.themes_shown > 0 then
     local theme = set_index(-1)
-    utils.reload_theme(theme)
+    M.preview(theme)
     redraw(state.buf, "all")
 
     api.nvim_buf_call(state.buf, function()

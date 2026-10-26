@@ -3,9 +3,35 @@ local api = vim.api
 local state = require "nvchad.themes.state"
 
 local get_theme_colors = function(name)
-  local ok1, default_theme = pcall(require, "base46.themes." .. name)
-  local _, user_theme = pcall(require, "themes." .. name)
-  return (ok1 and default_theme or user_theme).base_16
+  local ok, theme = pcall(require, "base46.themes." .. name)
+
+  if not ok then
+    theme = require("themes." .. name)
+  end
+
+  return theme.base_16
+end
+
+local hls_done = {}
+
+local theme_hls = function(name, with_bg)
+  local prefix = "NvT" .. name
+
+  if not hls_done[name] then
+    local theme_colors = get_theme_colors(name)
+    local theme_bg = with_bg and theme_colors.base00 or nil
+
+    api.nvim_set_hl(state.ns, prefix .. "line", { bg = theme_bg, fg = theme_colors.base07 })
+    api.nvim_set_hl(state.ns, prefix .. "name", { fg = theme_colors.base07, bg = theme_bg })
+
+    for color_i, color in ipairs(state.order) do
+      api.nvim_set_hl(state.ns, prefix .. color_i, { fg = theme_colors[color], bg = theme_bg })
+    end
+
+    hls_done[name] = true
+  end
+
+  return prefix
 end
 
 M.compact = function()
@@ -14,24 +40,17 @@ M.compact = function()
 
   for i = 1, #list, 1 do
     local name = list[i]
-    local theme_colors =  get_theme_colors(name)
-    local theme_bg = theme_colors.base00
-
-    local linehl = "NvT" .. i .. "line"
-    api.nvim_set_hl(state.ns, linehl, { bg = theme_bg, fg = theme_colors.base07 })
-
-    local themeNameHl = "NvT" .. i .. "name"
-    api.nvim_set_hl(state.ns, themeNameHl, { fg = theme_colors.base07, bg = theme_bg })
+    local prefix = theme_hls(name, true)
+    local linehl = prefix .. "line"
+    local themeNameHl = prefix .. "name"
 
     -- theme name + palette colors
     local padding = state.longest_name - #name + state.word_gap + 1
     local line = { { " " .. name .. string.rep(" ", padding), themeNameHl } }
 
     -- colored icons
-    for color_i, color in ipairs(state.order) do
-      local hl = "NvT" .. i .. color_i
-      api.nvim_set_hl(state.ns, hl, { fg = theme_colors[color], bg = theme_bg })
-      table.insert(line, { state.icon, hl })
+    for color_i = 1, #state.order do
+      table.insert(line, { state.icon, prefix .. color_i })
     end
 
     -- active indicator
@@ -50,14 +69,9 @@ M.flat = function()
 
   for i = 1, #list, 1 do
     local name = list[i]
-    local theme_colors =  get_theme_colors(name)
-    local theme_bg = theme_colors.base00
-
-    local linehl = "NvT" .. i .. "line"
-    api.nvim_set_hl(state.ns, linehl, { bg = theme_bg, fg = theme_colors.base07 })
-
-    local themeNameHl = "NvT" .. i .. "name"
-    api.nvim_set_hl(state.ns, themeNameHl, { fg = theme_colors.base07, bg = theme_bg })
+    local prefix = theme_hls(name, true)
+    local linehl = prefix .. "line"
+    local themeNameHl = prefix .. "name"
 
     -- theme name + palette colors
     local padding = state.longest_name - #name + state.word_gap + 4
@@ -69,10 +83,8 @@ M.flat = function()
     local line = { { "  " .. name .. active_icon .. string.rep(" ", padding), themeNameHl } }
 
     -- colored icons
-    for color_i, color in ipairs(state.order) do
-      local hl = "NvT" .. i .. color_i
-      api.nvim_set_hl(state.ns, hl, { fg = theme_colors[color], bg = theme_bg })
-      table.insert(line, { state.icon, hl })
+    for color_i = 1, #state.order do
+      table.insert(line, { state.icon, prefix .. color_i })
     end
 
     table.insert(line, { "  ", linehl })
@@ -91,7 +103,7 @@ M.bordered = function()
 
   for i = 1, #list, 1 do
     local name = list[i]
-    local theme_colors =  get_theme_colors(name)
+    local prefix = theme_hls(name, false)
 
     -- theme name + palette colors
     local padding = state.longest_name - #name + state.word_gap
@@ -104,10 +116,8 @@ M.bordered = function()
     local line = { { name .. active_icon .. string.rep(" ", padding), active_hl } }
 
     -- colored icons
-    for color_i, color in ipairs(state.order) do
-      local hl = "NvT" .. i .. color_i
-      api.nvim_set_hl(state.ns, hl, { fg = theme_colors[color] })
-      table.insert(line, { state.icon, hl })
+    for color_i = 1, #state.order do
+      table.insert(line, { state.icon, prefix .. color_i })
     end
 
     table.insert(result, line)
