@@ -166,6 +166,7 @@ M.open = function(buf, win, action)
   for i, v in ipairs(key_lines) do
     key_lines[i].i = v.i + row_i + 1
   end
+  M.key_lines = key_lines
 
   -- make all lines available
   local empty_str = {}
@@ -174,29 +175,35 @@ M.open = function(buf, win, action)
   end
 
   ------------------------------ EXTMARKS : set text + highlight -------------------------------
+  api.nvim_buf_clear_namespace(buf, ns, 0, -1)
   api.nvim_buf_set_lines(buf, 0, -1, false, empty_str)
 
   for i, v in ipairs(ui) do
     api.nvim_buf_set_extmark(buf, ns, row_i + i, 0, v)
   end
 
-  if action == "redraw" then
-    return
-  end
-
-  ------------------------------------ keybinds ------------------------------------------
   vim.wo[win].virtualedit = "all"
 
   if key_lines[1] then
     api.nvim_win_set_cursor(win, { key_lines[1].i, key_lines[1].col })
   end
 
+  api.nvim_win_call(win, function()
+    fn.winrestview { topline = 1 }
+  end)
+
+  if action == "redraw" then
+    return
+  end
+
+  ------------------------------------ keybinds ------------------------------------------
+
   local key_movements = function(n, cmd)
     local curline = fn.line "."
 
-    for i, v in ipairs(key_lines) do
+    for i, v in ipairs(M.key_lines) do
       if v.i == curline then
-        local x = key_lines[i + n] or key_lines[n == 1 and 1 or #key_lines]
+        local x = M.key_lines[i + n] or M.key_lines[n == 1 and 1 or #M.key_lines]
         if cmd and x.cmd then
           vim.cmd(x.cmd)
         else
@@ -205,7 +212,7 @@ M.open = function(buf, win, action)
       end
     end
 
-    return { key_lines[1].i, key_lines[1].col }
+    return { M.key_lines[1].i, M.key_lines[1].col }
   end
 
   map({ "k", "<up>" }, function()
