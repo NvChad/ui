@@ -7,6 +7,8 @@ state.ns = api.nvim_create_namespace "Colorify"
 M.attach = require "nvchad.colorify.attach"
 
 M.run = function()
+  vim.lsp.document_color.enable(false)
+
   api.nvim_create_autocmd({
     "TextChanged",
     "TextChangedI",
