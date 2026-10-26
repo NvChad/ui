@@ -22,13 +22,10 @@ api.nvim_create_autocmd("BufWinLeave", {
 return function(buf, win, action)
   action = action or "open"
 
-  local ns = api.nvim_create_namespace "nvcheatsheet"
   local win_w = api.nvim_win_get_width(0)
 
   if action == "open" then
     state.mappings_tb = ch.organize_mappings()
-  else
-    vim.bo[buf].ma = true
   end
 
   buf = buf or api.nvim_create_buf(false, true)
@@ -75,23 +72,21 @@ return function(buf, win, action)
       local str = "  " .. val[1] .. genstr(" ", pad) .. val[2] .. "   "
 
       table.insert(lines, { str, "NvChSection" })
-      table.insert(lines, { genstr(" ", #str), "NvChSection" })
+      table.insert(lines, { genstr(" ", strw(str)), "NvChSection" })
     end
 
     table.insert(lines, { "" })
   end
 
   local start_col = math.floor(win_w / 2) - math.floor(box_w / 2)
+  local pad = { genstr(" ", start_col) }
+  local rows = { { { "" } } }
 
-  -- make columns drawable
-  for i = 1, #lines, 1 do
-    api.nvim_buf_set_lines(buf, i, i, false, { string.rep(" ", win_w - 10) })
+  for _, line in ipairs(lines) do
+    table.insert(rows, line[2] and { pad, line } or { line })
   end
 
-  for row, val in ipairs(lines) do
-    local opts = { virt_text_pos = "overlay", virt_text = { val } }
-    api.nvim_buf_set_extmark(buf, ns, row, start_col, opts)
-  end
+  ch.render(buf, rows)
 
   if action ~= "redraw" then
     api.nvim_set_current_buf(buf)

@@ -17,8 +17,6 @@ local ascii = {
 return function(buf, win, action)
   action = action or "open"
 
-  local ns = api.nvim_create_namespace "nvcheatsheet"
-
   if action == "open" then
     state.mappings_tb = ch.organize_mappings()
   end
@@ -35,10 +33,6 @@ return function(buf, win, action)
   for i, str in ipairs(ascii_header) do
     ascii_header[i] = string.rep(" ", ascii_padding) .. str
   end
-
-  local ascii_headerlen = #ascii_header
-
-  vim.bo[buf].ma = true
 
   local column_width = 0
 
@@ -99,7 +93,6 @@ return function(buf, win, action)
   end
 
   local columns = {}
-  local column_line_lens = {}
 
   for i = 1, columns_qty do
     columns[i] = {}
@@ -108,46 +101,45 @@ return function(buf, win, action)
   for index, entry in ipairs(entries) do
     local columnIndex = (index - 1) % columns_qty + 1
     table.insert(columns[columnIndex], entry)
-    column_line_lens[columnIndex] = (column_line_lens[columnIndex] or 0) + #entry
   end
 
-  ------------------------------------------ set empty lines & extemarks ------------------------------------------
-  local max_col_height = math.max(unpack(column_line_lens)) + ascii_headerlen
-  local emptylines = {}
+  ------------------------------------------ build rows ------------------------------------------
+  local rows = {}
 
-  for _ = 1, max_col_height, 1 do
-    local txt = string.rep(" ", win_width)
-    table.insert(emptylines, txt)
+  for _, str in ipairs(ascii_header) do
+    table.insert(rows, { { str, "NvChAsciiHeader" } })
   end
 
-  if action == "redraw" then
-    api.nvim_buf_set_lines(buf, 0, -1, false, {})
-  end
-
-  api.nvim_buf_set_lines(buf, 0, max_col_height, false, emptylines)
-
-  for i, v in ipairs(ascii_header) do
-    api.nvim_buf_set_extmark(buf, ns, i - 1, 0, {
-      virt_text = { { v, "NvChAsciiHeader" } },
-      virt_text_pos = "overlay",
-    })
-  end
+  local column_rows = {}
+  local height = 0
 
   for col_i, column in ipairs(columns) do
-    local row_i = ascii_headerlen - 1
-    local col_start = (col_i - 1) * (column_width + (col_i == 1 and 0 or 2))
+    column_rows[col_i] = {}
 
-    for _, val in ipairs(column) do
-      for i, v in ipairs(val) do
-        api.nvim_buf_set_extmark(buf, ns, row_i + i, col_start, {
-          virt_text = v,
-          virt_text_pos = "overlay",
-        })
+    for _, card in ipairs(column) do
+      for _, row in ipairs(card) do
+        table.insert(column_rows[col_i], row)
       end
-
-      row_i = row_i + #val
     end
+
+    height = math.max(height, #column_rows[col_i])
   end
+
+  for row_i = 1, height do
+    local row = {}
+
+    for col_i = 1, #columns do
+      vim.list_extend(row, column_rows[col_i][row_i] or { { emptyline } })
+
+      if col_i < #columns then
+        table.insert(row, { "  " })
+      end
+    end
+
+    table.insert(rows, row)
+  end
+
+  ch.render(buf, rows)
 
   if action == "redraw" then
     return

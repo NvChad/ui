@@ -68,6 +68,37 @@ M.organize_mappings = function()
   -- end
 end
 
+M.render = function(buf, rows)
+  local ns = api.nvim_create_namespace "nvcheatsheet"
+  local lines, marks = {}, {}
+
+  for i, row in ipairs(rows) do
+    local parts, col = {}, 0
+
+    for _, seg in ipairs(row) do
+      table.insert(parts, seg[1])
+
+      if seg[2] then
+        table.insert(marks, { i - 1, col, col + #seg[1], seg[2] })
+      end
+
+      col = col + #seg[1]
+    end
+
+    lines[i] = table.concat(parts)
+  end
+
+  vim.bo[buf].ma = true
+  api.nvim_buf_clear_namespace(buf, ns, 0, -1)
+  api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+
+  for _, m in ipairs(marks) do
+    api.nvim_buf_set_extmark(buf, ns, m[1], m[2], { end_col = m[3], hl_group = m[4] })
+  end
+
+  vim.bo[buf].ma = false
+end
+
 M.autocmds = function(buf)
   require("nvchad.utils").set_cleanbuf_opts("nvcheatsheet", buf)
 
