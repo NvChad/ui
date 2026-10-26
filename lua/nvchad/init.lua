@@ -28,6 +28,10 @@ new_cmd("NvCheatsheet", function()
   end
 end, {})
 
+new_cmd("MasonInstallAll", function()
+  require("nvchad.mason").install_all()
+end, {})
+
 vim.schedule(function()
   require "nvchad.au"
 end)

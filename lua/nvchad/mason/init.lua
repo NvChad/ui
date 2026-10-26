@@ -50,19 +50,34 @@ local function parse_package(package_name)
 end
 
 M.install_all = function()
-  vim.cmd "Mason"
+  if #vim.api.nvim_list_uis() > 0 then
+    vim.cmd "Mason"
+  end
 
   local mr = require "mason-registry"
 
   mr.refresh(function()
+    local pending = 1
+
+    local function done()
+      pending = pending - 1
+
+      if pending == 0 then
+        vim.api.nvim_exec_autocmds("User", { pattern = "MasonInstallAllComplete" })
+      end
+    end
+
     for _, tool in ipairs(M.get_pkgs()) do
       local pkg = parse_package(tool)
       local p = mr.get_package(pkg.name)
 
       if not p:is_installed() then
-        p:install { version = pkg.version }
+        pending = pending + 1
+        p:install({ version = pkg.version }, done)
       end
     end
+
+    done()
   end)
 end
 
