@@ -18,7 +18,15 @@ M.list_themes = function()
     default_themes[index] = theme:match "(.+)%..+"
   end
 
-  return default_themes
+  local dark, light = {}, {}
+
+  for _, name in ipairs(default_themes) do
+    local ok, theme = pcall(require, "base46.themes." .. name)
+    local _, user_theme = pcall(require, "themes." .. name)
+    table.insert((ok and theme or user_theme).type == "light" and light or dark, name)
+  end
+
+  return vim.list_extend(dark, light)
 end
 
 M.replace_word = function(old, new, filepath)
