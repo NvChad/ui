@@ -96,11 +96,13 @@ return function(opts)
     vim.api.nvim_input "A"
 
     local modes
+
     if opts.allow_normal then
       modes = { "n" }
     else
       modes = { "n", "i" }
     end
+
     vim.keymap.set(modes, "<Esc>", function()
       api.nvim_buf_delete(buf, { force = true })
     end, { buffer = buf })
@@ -113,6 +115,10 @@ return function(opts)
         local params = lsp.util.make_position_params(0, "utf-8")
         params = vim.tbl_extend("force", params, { newName = newName })
         lsp.buf_request(0, "textDocument/rename", params)
+
+        vim.schedule(function()
+          vim.cmd "stopinsert"
+        end)
       end
     end)
   end)
