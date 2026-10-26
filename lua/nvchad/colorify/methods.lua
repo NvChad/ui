@@ -7,6 +7,10 @@ local needs_hl = utils.not_colored
 
 local M = {}
 
+local channel = function(v, a)
+  return math.max(0, math.min(255, math.floor(v * a * 255 + 0.5)))
+end
+
 M.hex = function(buf, line, str)
   for col, hex in str:gmatch "()(#%x%x%x%x%x%x)" do
     col = col - 1
@@ -53,7 +57,7 @@ M.lsp_var = function(buf, line, min, max)
             a = a / 255
           end
 
-          local hex = string.format("#%02x%02x%02x", r * a * 255, g * a * 255, b * a * 255)
+          local hex = string.format("#%02x%02x%02x", channel(r, a), channel(g, a), channel(b, a))
 
           local hl_group = utils.add_hl(hex)
 
