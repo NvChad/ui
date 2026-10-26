@@ -55,55 +55,48 @@ return function(buf, win, action)
   local margin = math.max(2 - textoff, 0)
   local win_width = api.nvim_win_get_width(win) - textoff * 2 - margin * 2
   local columns_qty = math.max(math.floor((win_width + gap) / (column_width + gap)), 1)
-  column_width = math.floor((win_width - gap * (columns_qty - 1)) / columns_qty)
+  local base_width = math.floor((win_width - gap * (columns_qty - 1)) / columns_qty)
+  local leftover = win_width - (base_width * columns_qty + gap * (columns_qty - 1))
+  local left_margin = string.rep(" ", margin)
 
-  local leftover = win_width - (column_width * columns_qty + gap * (columns_qty - 1))
-  local left_margin = string.rep(" ", margin + math.floor(leftover / 2))
+  local widths = {}
 
-  -- add mapping tables with their headings as key names
-  local cards = {}
-  local emptyline = string.rep(" ", column_width)
+  for i = 1, columns_qty do
+    widths[i] = base_width + (i <= leftover and 1 or 0)
+  end
 
-  for name, section in pairs(state.mappings_tb) do
-    name = " " .. name .. " "
+  local function build_card(name, section, width)
+    local emptyline = string.rep(" ", width)
+    local pad_l = math.floor((width - api.nvim_strwidth(name)) / 2)
+    local pad_r = width - api.nvim_strwidth(name) - pad_l
+
+    -- center the heading
+    local card = {
+      {
+        { string.rep(" ", pad_l), "nvchsection" },
+        { name, ch.rand_hlgroup() },
+        { string.rep(" ", pad_r), "nvchsection" },
+      },
+    }
+
     for _, mapping in ipairs(section) do
-      if not cards[name] then
-        cards[name] = {}
-      end
-
-      table.insert(cards[name], { { emptyline, "nvchsection" } })
+      table.insert(card, { { emptyline, "nvchsection" } })
 
       local desc = conf.maxdesclen and ch.truncate(mapping[1], conf.maxdesclen) or mapping[1]
-      local whitespace_len = column_width - 4 - vim.fn.strdisplaywidth(desc .. mapping[2])
+      local whitespace_len = width - 4 - vim.fn.strdisplaywidth(desc .. mapping[2])
       local pretty_mapping = desc .. string.rep(" ", whitespace_len) .. mapping[2]
 
-      table.insert(cards[name], { { "  " .. pretty_mapping .. "  ", "nvchsection" } })
+      table.insert(card, { { "  " .. pretty_mapping .. "  ", "nvchsection" } })
     end
-    table.insert(cards[name], { { emptyline, "nvchsection" } })
 
-    table.insert(cards[name], { { emptyline } })
+    table.insert(card, { { emptyline, "nvchsection" } })
+    table.insert(card, { { emptyline } })
+
+    return card
   end
 
   -------------------------------------------- distribute cards into columns -------------------------------------------
-  local entries = {}
-
-  for key, value in pairs(cards) do
-    local headerlen = api.nvim_strwidth(key)
-    local pad_l = math.floor((column_width - headerlen) / 2)
-    local pad_r = column_width - headerlen - pad_l
-
-    -- center the heading
-    key = {
-      { string.rep(" ", pad_l), "nvchsection" },
-      { key, ch.rand_hlgroup() },
-      { string.rep(" ", pad_r), "nvchsection" },
-    }
-
-    table.insert(entries, { key, unpack(value) }) -- Create a table with the key and its values
-  end
-
   local columns = {}
-
   local heights = {}
 
   for i = 1, columns_qty do
@@ -111,7 +104,7 @@ return function(buf, win, action)
     heights[i] = 0
   end
 
-  for _, entry in ipairs(entries) do
+  for name, section in pairs(state.mappings_tb) do
     local shortest = 1
 
     for i = 2, columns_qty do
@@ -120,8 +113,8 @@ return function(buf, win, action)
       end
     end
 
-    table.insert(columns[shortest], entry)
-    heights[shortest] = heights[shortest] + #entry
+    table.insert(columns[shortest], { " " .. name .. " ", section })
+    heights[shortest] = heights[shortest] + #section * 2 + 3
   end
 
   ------------------------------------------ build rows ------------------------------------------
@@ -137,10 +130,8 @@ return function(buf, win, action)
   for col_i, column in ipairs(columns) do
     column_rows[col_i] = {}
 
-    for _, card in ipairs(column) do
-      for _, row in ipairs(card) do
-        table.insert(column_rows[col_i], row)
-      end
+    for _, entry in ipairs(column) do
+      vim.list_extend(column_rows[col_i], build_card(entry[1], entry[2], widths[col_i]))
     end
 
     height = math.max(height, #column_rows[col_i])
@@ -150,7 +141,7 @@ return function(buf, win, action)
     local row = { { left_margin } }
 
     for col_i = 1, #columns do
-      vim.list_extend(row, column_rows[col_i][row_i] or { { emptyline } })
+      vim.list_extend(row, column_rows[col_i][row_i] or { { string.rep(" ", widths[col_i]) } })
 
       if col_i < #columns then
         table.insert(row, { string.rep(" ", gap) })
