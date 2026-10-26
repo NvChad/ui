@@ -53,6 +53,18 @@ local function get_symbol_to_rename(cb)
   end
 end
 
+local function apply_rename(err, result, ctx)
+  local loaded = vim.tbl_filter(api.nvim_buf_is_loaded, api.nvim_list_bufs())
+  lsp.handlers["textDocument/rename"](err, result, ctx)
+
+  for _, buf in ipairs(api.nvim_list_bufs()) do
+    if api.nvim_buf_is_loaded(buf) and not vim.tbl_contains(loaded, buf) then
+      api.nvim_buf_call(buf, function() vim.cmd "silent noautocmd write" end)
+      api.nvim_buf_delete(buf, {})
+    end
+  end
+end
+
 return function(opts)
   get_symbol_to_rename(function(to_rename)
     local buf = api.nvim_create_buf(false, true)
@@ -114,7 +126,7 @@ return function(opts)
       if #newName > 0 and newName ~= to_rename then
         local params = lsp.util.make_position_params(0, "utf-8")
         params = vim.tbl_extend("force", params, { newName = newName })
-        lsp.buf_request(0, "textDocument/rename", params)
+        lsp.buf_request(0, "textDocument/rename", params, apply_rename)
 
         vim.schedule(function()
           vim.cmd "stopinsert"
