@@ -62,22 +62,27 @@ M.treeOffset = function()
 end
 
 M.buffers = function()
-  local buffers = {}
-  local has_current = false -- have we seen current buffer yet?
+  local bufs = vim.tbl_filter(vim.api.nvim_buf_is_valid, vim.t.bufs)
+  vim.t.bufs = bufs
 
-  vim.t.bufs = vim.tbl_filter(vim.api.nvim_buf_is_valid, vim.t.bufs)
+  -- Show as many buffers as fit, from the first one; if the current buffer
+  -- would be cut off, end the list at it. Without a current buffer in the
+  -- list, show the last ones. Only the visible buffers get styled.
+  local fit = math.max(1, math.floor(available_space() / opts.bufwidth))
+  local last = #bufs
+  local cur = cur_buf()
 
-  for i, nr in ipairs(vim.t.bufs) do
-    if ((#buffers + 1) * opts.bufwidth) > available_space() then
-      if has_current then
-        break
-      end
-
-      table.remove(buffers, 1)
+  for i, nr in ipairs(bufs) do
+    if nr == cur then
+      last = math.max(i, math.min(fit, #bufs))
+      break
     end
+  end
 
-    has_current = cur_buf() == nr or has_current
-    table.insert(buffers, style_buf(nr, i, opts.bufwidth))
+  local buffers = {}
+
+  for i = math.max(1, last - fit + 1), last do
+    table.insert(buffers, style_buf(bufs[i], i, opts.bufwidth))
   end
 
   return table.concat(buffers) .. txt("%=", "Fill") -- buffers + empty space
